@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net5.0</TargetFramework>
+    <RootNamespace>LeanCode.ContractsGeneratorV2</RootNamespace>
+    <Nullable>annotations</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="LeanCode.CQRS" Version="5.0.1040" />
+    <PackageReference Include="LeanCode.CQRS.Security" Version="5.0.1040" />
+    <PackageReference Include="LeanCode.Time" Version="5.0.1040" />
+    <PackageReference Include="Microsoft.CodeAnalysis" Version="3.9.0" />
+  </ItemGroup>
+
+</Project>
