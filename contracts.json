@@ -22,16 +22,14 @@
           {
             "name": "UserId",
             "value": {
-              "type": "string",
-              "value": "sub"
+              "string": "sub"
             },
             "comment": ""
           },
           {
             "name": "Role",
             "value": {
-              "type": "string",
-              "value": "role"
+              "string": "role"
             },
             "comment": ""
           }
@@ -50,24 +48,21 @@
           {
             "name": "User",
             "value": {
-              "type": "string",
-              "value": "user"
+              "string": "user"
             },
             "comment": ""
           },
           {
             "name": "Admin",
             "value": {
-              "type": "string",
-              "value": "admin"
+              "string": "admin"
             },
             "comment": ""
           },
           {
             "name": "System",
             "value": {
-              "type": "string",
-              "value": "system"
+              "string": "system"
             },
             "comment": ""
           }
@@ -216,22 +211,19 @@
               {
                 "position": 0,
                 "value": {
-                  "type": "string",
-                  "value": "?"
+                  "string": "?"
                 }
               },
               {
                 "position": 1,
                 "value": {
-                  "type": "string",
-                  "value": "SA1302"
+                  "string": "SA1302"
                 }
               },
               {
                 "name": "Justification",
                 "value": {
-                  "type": "string",
-                  "value": "Convention for authorizers."
+                  "string": "Convention for authorizers."
                 }
               }
             ]
@@ -242,22 +234,19 @@
               {
                 "position": 0,
                 "value": {
-                  "type": "string",
-                  "value": "?"
+                  "string": "?"
                 }
               },
               {
                 "position": 1,
                 "value": {
-                  "type": "string",
-                  "value": "IDE1006"
+                  "string": "IDE1006"
                 }
               },
               {
                 "name": "Justification",
                 "value": {
-                  "type": "string",
-                  "value": "Convention for authorizers."
+                  "string": "Convention for authorizers."
                 }
               }
             ]
@@ -301,8 +290,7 @@
               {
                 "position": 0,
                 "value": {
-                  "type": "string",
-                  "value": "admin"
+                  "string": "admin"
                 }
               }
             ]
@@ -400,8 +388,7 @@
               {
                 "position": 0,
                 "value": {
-                  "type": "string",
-                  "value": "admin"
+                  "string": "admin"
                 }
               }
             ]

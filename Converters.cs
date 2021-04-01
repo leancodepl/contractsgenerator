@@ -3,6 +3,37 @@ using System.Text.Json;
 
 namespace LeanCode.ContractsGeneratorV2
 {
+    public sealed class ValueRefConverter : WriteOnlyJsonConverter<ValueRef>
+    {
+        public override void Write(Utf8JsonWriter writer, ValueRef value, JsonSerializerOptions options)
+        {
+            writer.WriteStartObject();
+
+            switch (value)
+            {
+                case ValueRef.Null _:
+                    writer.WriteNull("null");
+                    break;
+                case ValueRef.Number n:
+                    writer.WriteNumber("number", n.Value);
+                    break;
+                case ValueRef.FloatingPoint f:
+                    writer.WriteNumber("floating", f.Value);
+                    break;
+                case ValueRef.String s:
+                    writer.WriteString("string", s.Value);
+                    break;
+                case ValueRef.Boolean b:
+                    writer.WriteBoolean("boolean", b.Value);
+                    break;
+
+                default: throw new NotSupportedException($"ValueRef {value} is not supported.");
+            }
+
+            writer.WriteEndObject();
+        }
+    }
+
     public sealed class AttributeArgumentConverter : WriteOnlyJsonConverter<AttributeArgument>
     {
         public override void Write(Utf8JsonWriter writer, AttributeArgument value, JsonSerializerOptions options)
@@ -12,14 +43,16 @@ namespace LeanCode.ContractsGeneratorV2
                 case AttributeArgument.Positional p:
                     writer.WriteStartObject();
                     writer.WriteNumber("position", p.Position);
-                    writer.WriteValue("value", p.Value, options);
+                    writer.WritePropertyName("value");
+                    JsonSerializer.Serialize(writer, p.Value, options);
                     writer.WriteEndObject();
                     break;
 
                 case AttributeArgument.Named p:
                     writer.WriteStartObject();
                     writer.WriteString("name", p.Name);
-                    writer.WriteValue("value", p.Value, options);
+                    writer.WritePropertyName("value");
+                    JsonSerializer.Serialize(writer, p.Value, options);
                     writer.WriteEndObject();
                     break;
 

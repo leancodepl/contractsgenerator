@@ -350,19 +350,19 @@ namespace LeanCode.ContractsGeneratorV2
         {
             return val switch
             {
-                null => new(ValueType.Null, null),
-                byte v => new(ValueType.Number, (long)v),
-                sbyte v => new(ValueType.Number, (long)v),
-                int v => new(ValueType.Number, (long)v),
-                long v => new(ValueType.Number, (long)v),
-                short v => new(ValueType.Number, (long)v),
-                ushort v => new(ValueType.Number, (long)v),
-                uint v => new(ValueType.Number, (long)v),
-                ulong v => new(ValueType.Number, (long)v),
-                float v => new(ValueType.FloatingPointNumber, (double)v),
-                double v => new(ValueType.FloatingPointNumber, (double)v),
-                string v => new(ValueType.String, v),
-                bool v => new(ValueType.Boolean, v),
+                null => new ValueRef.Null(),
+                byte v => new ValueRef.Number(v),
+                sbyte v => new ValueRef.Number(v),
+                int v => new ValueRef.Number(v),
+                long v => new ValueRef.Number(v),
+                short v => new ValueRef.Number(v),
+                ushort v => new ValueRef.Number(v),
+                uint v => new ValueRef.Number(v),
+                ulong v => new ValueRef.Number((long)v),
+                float v => new ValueRef.FloatingPoint(v),
+                double v => new ValueRef.FloatingPoint(v),
+                string v => new ValueRef.String(v),
+                bool v => new ValueRef.Boolean(v),
                 _ => throw new NotSupportedException($"Cannot geenrate contracts for constant of type {val.GetType()}."),
             };
         }

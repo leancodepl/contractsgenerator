@@ -5,15 +5,6 @@ namespace LeanCode.ContractsGeneratorV2
 {
     public record Export(string BasePath, ImmutableList<Statement> Statements, ImmutableList<ErrorCode.Group> KnownErrorGroups);
 
-    public enum ValueType
-    {
-        Null,
-        Number,
-        FloatingPointNumber,
-        String,
-        Boolean,
-    }
-
     public enum KnownType
     {
         Object,
@@ -62,10 +53,24 @@ namespace LeanCode.ContractsGeneratorV2
         public sealed record Named(string Name, ValueRef Value) : AttributeArgument;
     }
 
+    public abstract record ValueRef
+    {
+        private ValueRef() { }
+
+        [DebuggerDisplay("`null`")]
+        public sealed record Null() : ValueRef;
+        [DebuggerDisplay("{Value}")]
+        public sealed record Number(long Value) : ValueRef;
+        [DebuggerDisplay("{Value}")]
+        public sealed record FloatingPoint(double Value) : ValueRef;
+        [DebuggerDisplay("{Value,nq}")]
+        public sealed record String(string Value) : ValueRef;
+        [DebuggerDisplay("{Value}")]
+        public sealed record Boolean(bool Value) : ValueRef;
+    }
+
     [DebuggerDisplay("<{Name,nq}>")]
     public sealed record GenericParameter(string Name);
-    [DebuggerDisplay("{Value} ({Type})")]
-    public sealed record ValueRef(ValueType Type, object Value);
     [DebuggerDisplay("[{AttributeName}({Arguments,results})]")]
     public sealed record AttributeRef(string AttributeName, ImmutableList<AttributeArgument> Arguments);
     [DebuggerDisplay("{Type} {Name,nq}")]

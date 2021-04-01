@@ -23,6 +23,7 @@ namespace LeanCode.ContractsGeneratorV2
                 Converters =
                 {
                     new JsonStringEnumConverter(JsonNamingPolicy.CamelCase),
+                    new ValueRefConverter(),
                     new AttributeArgumentConverter(),
                     new GenericArgumentConverter(),
                     new TypeRefConverter(),
