@@ -3,7 +3,7 @@ using System.Diagnostics;
 
 namespace LeanCode.ContractsGeneratorV2
 {
-    public record Export(string BasePath, ImmutableList<Statement> Statements);
+    public record Export(string BasePath, ImmutableList<Statement> Statements, ImmutableList<ErrorCode.Group> KnownErrorGroups);
 
     public enum ValueType
     {
