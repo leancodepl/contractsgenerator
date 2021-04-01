@@ -107,6 +107,7 @@
               "knownType": "int32"
             },
             "name": "PageNumber",
+            "attributes": [],
             "comment": ""
           },
           {
@@ -114,6 +115,7 @@
               "knownType": "int32"
             },
             "name": "PageSize",
+            "attributes": [],
             "comment": ""
           }
         ],
@@ -142,6 +144,7 @@
               ]
             },
             "name": "Items",
+            "attributes": [],
             "comment": "And this is a property comment.\n"
           },
           {
@@ -149,6 +152,7 @@
               "knownType": "int64"
             },
             "name": "TotalCount",
+            "attributes": [],
             "comment": ""
           }
         ],
@@ -172,6 +176,7 @@
               "knownType": "object"
             },
             "name": "TypeId",
+            "attributes": [],
             "comment": ""
           }
         ],
@@ -191,6 +196,7 @@
               "knownType": "guid"
             },
             "name": "SomethingId",
+            "attributes": [],
             "comment": ""
           }
         ],
@@ -314,6 +320,7 @@
               "knownType": "int32"
             },
             "name": "PageNumber",
+            "attributes": [],
             "comment": ""
           },
           {
@@ -321,6 +328,7 @@
               "knownType": "int32"
             },
             "name": "PageSize",
+            "attributes": [],
             "comment": ""
           }
         ],
@@ -419,6 +427,7 @@
               "knownType": "guid"
             },
             "name": "UserId",
+            "attributes": [],
             "comment": ""
           },
           {
@@ -426,6 +435,7 @@
               "knownType": "guid"
             },
             "name": "SomethingId",
+            "attributes": [],
             "comment": ""
           },
           {
@@ -433,6 +443,7 @@
               "internal": "LeanCode.ContractsGeneratorV2.ExampleContracts.Users.UserInfoDTO"
             },
             "name": "UserInfo",
+            "attributes": [],
             "comment": ""
           }
         ],
@@ -452,6 +463,7 @@
               "knownType": "string"
             },
             "name": "Firstname",
+            "attributes": [],
             "comment": ""
           },
           {
@@ -459,6 +471,7 @@
               "knownType": "string"
             },
             "name": "Surname",
+            "attributes": [],
             "comment": ""
           },
           {
@@ -466,6 +479,7 @@
               "knownType": "string"
             },
             "name": "Username",
+            "attributes": [],
             "comment": ""
           },
           {
@@ -473,6 +487,7 @@
               "knownType": "string"
             },
             "name": "EmailAddress",
+            "attributes": [],
             "comment": ""
           }
         ],
@@ -480,6 +495,50 @@
         "name": "LeanCode.ContractsGeneratorV2.ExampleContracts.Users.UserInfoDTO",
         "comment": ""
       }
+    }
+  ],
+  "knownErrorGroups": [
+    {
+      "name": "UserInfo",
+      "groupId": "LeanCode.ContractsGeneratorV2.ExampleContracts.Users.UserInfoDTO.ErrorCodes",
+      "innerCodes": [
+        {
+          "single": "FirstnameIsNull",
+          "code": 1001
+        },
+        {
+          "single": "SurnameIsNull",
+          "code": 1002
+        },
+        {
+          "single": "UsernameIsNull",
+          "code": 1003
+        },
+        {
+          "single": "FirstnameTooLong",
+          "code": 1004
+        },
+        {
+          "single": "SurnameTooLong",
+          "code": 1005
+        },
+        {
+          "single": "UsernameTooLong",
+          "code": 1006
+        },
+        {
+          "single": "EmailAddressTooLong",
+          "code": 1007
+        },
+        {
+          "single": "InvalidEmailAddress",
+          "code": 1009
+        },
+        {
+          "single": "EmailIsTaken",
+          "code": 1010
+        }
+      ]
     }
   ]
 }
