@@ -63,10 +63,7 @@ namespace LeanCode.ContractsGeneratorV2
             var genericParams = symbol.TypeParameters
                 .Select(ToParam)
                 .ToImmutableList();
-            var attributes = symbol.GetAttributes()
-                .Where(a => !IsIgnored(a.AttributeClass))
-                .Select(ToAttribute)
-                .ToImmutableList();
+            var attributes = GetAttributes(symbol);
             var extends = symbol.Interfaces
                 .Append(symbol.BaseType)
                 .Where(s => !IsIgnored(s))
@@ -128,22 +125,7 @@ namespace LeanCode.ContractsGeneratorV2
             ConstantRef ToConstant(IFieldSymbol fs) =>
                 new(fs.Name, ToValueRef(fs.ConstantValue), ExtractComments(fs));
             PropertyRef ToProperty(IPropertySymbol ps) =>
-                new(ToTypeRef(ps.Type), ps.Name, ExtractComments(ps));
-
-            AttributeRef ToAttribute(AttributeData a)
-            {
-                var type = ToTypeRef(a.AttributeClass);
-                var positional = a.ConstructorArguments
-                    .SelectMany(a => a.Kind == TypedConstantKind.Array ? a.Values.Select(v => v.Value) : new[] { a.Value })
-                    .Select((v, i) => new AttributeArgument.Positional(i, ToValueRef(v)))
-                    .Cast<AttributeArgument>();
-                var named = a.NamedArguments
-                    .SelectMany(a => a.Value.Kind == TypedConstantKind.Array ? a.Value.Values.Select(v => (a.Key, v.Value)) : new[] { (a.Key, a.Value.Value) })
-                    .Select(v => new AttributeArgument.Named(v.Key, ToValueRef(v.Value)))
-                    .Cast<AttributeArgument>();
-                var args = positional.Concat(named).ToImmutableList();
-                return new AttributeRef(type, args);
-            }
+                new(ToTypeRef(ps.Type), ps.Name, GetAttributes(ps), ExtractComments(ps));
 
             IEnumerable<IEnumerable<IPropertySymbol>> AllProperties(INamedTypeSymbol ns)
             {
@@ -337,7 +319,30 @@ namespace LeanCode.ContractsGeneratorV2
                 {
                     throw new InvalidOperationException($"The base class for error codes group needs to be named `{ErrorCodesName}`.");
                 }
-                return new ErrorCode.Group(ns.Name, MapCodes(ns.BaseType));
+                return new ErrorCode.Group(ns.Name, ConstructName(ns.BaseType), MapCodes(ns.BaseType));
+            }
+        }
+
+        private ImmutableList<AttributeRef> GetAttributes(ISymbol symbol)
+        {
+            return symbol.GetAttributes()
+                .Where(a => !IsIgnored(a.AttributeClass))
+                .Select(ToAttribute)
+                .ToImmutableList();
+
+            AttributeRef ToAttribute(AttributeData a)
+            {
+                var type = ToTypeRef(a.AttributeClass);
+                var positional = a.ConstructorArguments
+                    .SelectMany(a => a.Kind == TypedConstantKind.Array ? a.Values.Select(v => v.Value) : new[] { a.Value })
+                    .Select((v, i) => new AttributeArgument.Positional(i, ToValueRef(v)))
+                    .Cast<AttributeArgument>();
+                var named = a.NamedArguments
+                    .SelectMany(a => a.Value.Kind == TypedConstantKind.Array ? a.Value.Values.Select(v => (a.Key, v.Value)) : new[] { (a.Key, a.Value.Value) })
+                    .Select(v => new AttributeArgument.Named(v.Key, ToValueRef(v.Value)))
+                    .Cast<AttributeArgument>();
+                var args = positional.Concat(named).ToImmutableList();
+                return new AttributeRef(type, args);
             }
         }
 
@@ -425,6 +430,5 @@ namespace LeanCode.ContractsGeneratorV2
                 }
             }
         }
-
     }
 }

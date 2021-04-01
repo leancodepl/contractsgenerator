@@ -69,7 +69,7 @@ namespace LeanCode.ContractsGeneratorV2
     [DebuggerDisplay("[{Type}({Arguments,results})]")]
     public sealed record AttributeRef(TypeRef Type, ImmutableList<AttributeArgument> Arguments);
     [DebuggerDisplay("{Type} {Name,nq}")]
-    public sealed record PropertyRef(TypeRef Type, string Name, string Comment);
+    public sealed record PropertyRef(TypeRef Type, string Name, ImmutableList<AttributeRef> Attributes, string Comment);
     [DebuggerDisplay("{Name,nq} = {Value}")]
     public sealed record ConstantRef(string Name, ValueRef Value, string Comment);
     [DebuggerDisplay("{Name,nq} = {Value}")]
@@ -103,8 +103,8 @@ namespace LeanCode.ContractsGeneratorV2
 
         [DebuggerDisplay("{Name,nq} = {Value}")]
         public sealed record Single(string Name, int Code) : ErrorCode;
-        [DebuggerDisplay("[{Name,nq}]")]
-        public sealed record Group(string Name, ImmutableList<ErrorCode> InnerCodes) : ErrorCode;
+        [DebuggerDisplay("[{Name,nq} ({GroupId,nq})]")]
+        public sealed record Group(string Name, string GroupId, ImmutableList<ErrorCode> InnerCodes) : ErrorCode;
     }
 
     public abstract record Statement
