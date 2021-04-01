@@ -1,0 +1,183 @@
+syntax = "proto3";
+package leancode.contracts;
+option csharp_namespace = "LeanCode.Proto";
+
+enum KnownType {
+  Object = 0;
+  String = 1;
+  Guid = 3;
+  Uri = 4;
+  Boolean = 5;
+
+  UInt8 = 100;
+  Int8 = 101;
+  Int16 = 102;
+  UInt16 = 103;
+  Int32 = 104;
+  UInt32 = 105;
+  Int64 = 106;
+  UInt64 = 107;
+
+  Float = 150;
+  Double = 151;
+  Decimal = 152;
+
+  Date = 200;
+  Time = 201;
+  DateTime = 202;
+  DateTimeOffset = 203;
+
+  Array = 300;
+  Map = 301;
+
+  Query = 1000;
+  Command = 1001;
+  AuthorizeWhenAttribute = 1002;
+  AuthorizeWhenHasAnyOfAttribute = 1003;
+  QueryCacheAttribute = 1004;
+  Attribute = 1005;
+}
+
+message ValueRef {
+  message Null {}
+  message Number { int64 value = 1; }
+  message FloatingPointNumber { double value = 1; }
+  message String { string value = 1; }
+  message Boolean { bool value = 1; }
+
+  oneof value {
+    Null null = 1;
+    Number number = 2;
+    FloatingPointNumber floatingPoint = 3;
+    String string = 4;
+    Boolean bool = 5;
+  }
+}
+
+message TypeRef {
+  message Generic { string name = 1; }
+  message Internal {
+    string name = 1;
+    repeated GenericArgument arguments = 2;
+  }
+  message Known {
+    KnownType type = 1;
+    repeated GenericArgument arguments = 2;
+  }
+
+  oneof type {
+    Generic generic = 1;
+    Internal internal = 2;
+    Known known = 3;
+  }
+}
+
+message GenericParameter { string name = 1; }
+
+message GenericArgument {
+  message Param { string name = 1; }
+  message Type { TypeRef type = 1; }
+
+  oneof argument {
+    Param param = 1;
+    Type type = 2;
+  }
+}
+
+message AttributeArgument {
+  message Positional {
+    int32 position = 1;
+    ValueRef value = 2;
+  }
+  message Named {
+    string name = 1;
+    ValueRef value = 2;
+  }
+
+  oneof attribute {
+    Positional positional = 1;
+    Named named = 2;
+  }
+}
+
+message AttributeRef {
+  TypeRef type = 1;
+  repeated AttributeArgument argument = 2;
+}
+
+message PropertyRef {
+  TypeRef type = 1;
+  string name = 2;
+  repeated AttributeRef attributes = 3;
+  string comment = 4;
+}
+
+message ConstantRef {
+  string name = 1;
+  ValueRef value = 2;
+  string comment = 3;
+}
+
+message EnumValue {
+  string name = 1;
+  int64 value = 2;
+  string comment = 3;
+}
+
+message ErrorCode {
+  message Single {
+    string name = 1;
+    int32 code = 2;
+  }
+  message Group {
+    string name = 1;
+    string groupId = 2;
+    repeated ErrorCode innerCodes = 3;
+  }
+
+  oneof code {
+    Single single = 1;
+    Group group = 2;
+  }
+}
+
+message Statement {
+  message Enum { repeated EnumValue members = 1; }
+
+  message DTO {
+    repeated TypeRef extends = 1;
+    repeated GenericParameter genericParameters = 2;
+    repeated AttributeRef attributes = 3;
+    repeated PropertyRef properties = 4;
+    repeated ConstantRef constants = 5;
+  }
+
+  message Query {
+    repeated TypeRef extends = 1;
+    repeated GenericParameter genericParameters = 2;
+    repeated AttributeRef attributes = 3;
+    repeated PropertyRef properties = 4;
+    repeated ConstantRef constants = 5;
+
+    TypeRef returnType = 6;
+  }
+
+  message Command {
+    repeated TypeRef extends = 1;
+    repeated GenericParameter genericParameters = 2;
+    repeated AttributeRef attributes = 3;
+    repeated PropertyRef properties = 4;
+    repeated ConstantRef constants = 5;
+
+    repeated ErrorCode errorCodes = 6;
+  }
+
+  string name = 1;
+  string comment = 2;
+
+  oneof content {
+    DTO dto = 3;
+    Query query = 4;
+    Command command = 5;
+  }
+}
