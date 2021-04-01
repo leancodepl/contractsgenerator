@@ -332,7 +332,7 @@ namespace LeanCode.ContractsGeneratorV2
 
             AttributeRef ToAttribute(AttributeData a)
             {
-                var type = ToTypeRef(a.AttributeClass);
+                var type = ConstructName(a.AttributeClass);
                 var positional = a.ConstructorArguments
                     .SelectMany(a => a.Kind == TypedConstantKind.Array ? a.Values.Select(v => v.Value) : new[] { a.Value })
                     .Select((v, i) => new AttributeArgument.Positional(i, ToValueRef(v)))

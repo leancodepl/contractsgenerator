@@ -66,8 +66,8 @@ namespace LeanCode.ContractsGeneratorV2
     public sealed record GenericParameter(string Name);
     [DebuggerDisplay("{Value} ({Type})")]
     public sealed record ValueRef(ValueType Type, object Value);
-    [DebuggerDisplay("[{Type}({Arguments,results})]")]
-    public sealed record AttributeRef(TypeRef Type, ImmutableList<AttributeArgument> Arguments);
+    [DebuggerDisplay("[{AttributeName}({Arguments,results})]")]
+    public sealed record AttributeRef(string AttributeName, ImmutableList<AttributeArgument> Arguments);
     [DebuggerDisplay("{Type} {Name,nq}")]
     public sealed record PropertyRef(TypeRef Type, string Name, ImmutableList<AttributeRef> Attributes, string Comment);
     [DebuggerDisplay("{Name,nq} = {Value}")]

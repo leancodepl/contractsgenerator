@@ -101,7 +101,7 @@ message AttributeArgument {
 }
 
 message AttributeRef {
-  TypeRef type = 1;
+  string attributeName = 1;
   repeated AttributeArgument argument = 2;
 }
 

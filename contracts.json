@@ -211,9 +211,7 @@
         "genericParameters": [],
         "attributes": [
           {
-            "type": {
-              "internal": "System.Diagnostics.CodeAnalysis.SuppressMessageAttribute"
-            },
+            "attributeName": "System.Diagnostics.CodeAnalysis.SuppressMessageAttribute",
             "arguments": [
               {
                 "position": 0,
@@ -239,9 +237,7 @@
             ]
           },
           {
-            "type": {
-              "internal": "System.Diagnostics.CodeAnalysis.SuppressMessageAttribute"
-            },
+            "attributeName": "System.Diagnostics.CodeAnalysis.SuppressMessageAttribute",
             "arguments": [
               {
                 "position": 0,
@@ -300,9 +296,7 @@
         "genericParameters": [],
         "attributes": [
           {
-            "type": {
-              "knownType": "authorizeWhenHasAnyOfAttribute"
-            },
+            "attributeName": "LeanCode.CQRS.Security.AuthorizeWhenHasAnyOfAttribute",
             "arguments": [
               {
                 "position": 0,
@@ -401,9 +395,7 @@
         "genericParameters": [],
         "attributes": [
           {
-            "type": {
-              "knownType": "authorizeWhenHasAnyOfAttribute"
-            },
+            "attributeName": "LeanCode.CQRS.Security.AuthorizeWhenHasAnyOfAttribute",
             "arguments": [
               {
                 "position": 0,
@@ -415,9 +407,7 @@
             ]
           },
           {
-            "type": {
-              "internal": "LeanCode.ContractsGeneratorV2.ExampleContracts.Security.AuthorizeWhenHasSomethingAccessAttribute"
-            },
+            "attributeName": "LeanCode.ContractsGeneratorV2.ExampleContracts.Security.AuthorizeWhenHasSomethingAccessAttribute",
             "arguments": []
           }
         ],
