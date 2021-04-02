@@ -136,6 +136,7 @@ namespace LeanCode.ContractsGeneratorV2
 
                 case ErrorCode.Group g:
                     writer.WriteString("group", g.Name);
+                    writer.WriteString("groupId", g.GroupId);
                     writer.WritePropertyName("innerCodes");
                     JsonSerializer.Serialize(writer, g.InnerCodes, options);
                     break;

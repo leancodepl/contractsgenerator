@@ -332,6 +332,7 @@
           },
           {
             "group": "UserInfo",
+            "groupId": "LeanCode.ContractsGeneratorV2.ExampleContracts.Users.UserInfoDTO.ErrorCodes",
             "innerCodes": [
               {
                 "single": "FirstnameIsNull",
