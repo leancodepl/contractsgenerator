@@ -2,12 +2,12 @@
 
 The idea is to decouple parsing/compiling the contracts definitions (C#) from code generation. This means that:
 
-1. .NET tool will only generate and intermediate definition (JSON/Protobuf, TBD),
+1. .NET tool will only generate and intermediate definition (Protobuf),
 2. Target-lang specific tool will generate client code.
 
 This means that the only thing we must agree on (across languages) is the intermediate definition and feature set. :)
 
-You can see a first proposal of the definition in both `Types.cs` and `types.proto` files, along with example contracts definition generated in `contracts.json`.
+You can see a first proposal of the definition in `types.proto` files, along with example contracts definition generated in `example.pb`/`example.json`.
 
 Features considered first-class:
 
@@ -68,3 +68,58 @@ Additionally, we introduce error code sharing - error groups. See `ErrorCode` cl
 2. Error codes are `int32`s,
 3. `Number`s are `int64`s,
 4. There are probably more restrictions that I've missed or introduced them unawarely.
+
+## Usage
+
+It is worth noting that only the .NET part will be shared between target language tools, everything else will be platform-specific. With this approach, we can optimize whatever we like to optimize - being it tool development experience, distribution simplicity or end-user experience.
+
+We have a couple of options:
+
+### Docker container
+
+The easiest one to distribute - we can pack all the tools in a single docker container.
+
+Pros:
+
+* Easy distribution,
+* Works everywhere,
+* We can develop apps separately and mix-and-match versions.
+
+Cons:
+
+* macOS might be problematic,
+* Windows without WSL2 can also be problematic,
+* Versioning might be hard,
+* Resulting images will be heavy.
+
+### Separate tools
+
+We can distribute every tool separately, leveraging language-specific tooling.
+
+Pros:
+
+* Easy distribution,
+* We can develop apps separately and mix-and-match versions.
+
+Cons: 
+
+* Every developer has to have .NET Core installed or at least install the tool separately,
+* It might be PITA to match versions correctly, as we must manage two separate tools,
+
+### Embedded
+
+We can go a step further and embed AoT-compiled (or just a single, framework-independent executable)
+in the target-language tool.
+
+Pros:
+
+* The target tool controls version of the .NET counterpart,
+* End-users don't need to have .NET Core installed,
+* They don't need to know that the tool exists (!),
+* The usage will boil down to `npx generate` or something like that.
+
+Cons:
+
+* Tool development might be harder, as we have a hard dependency of a specific generator version,
+* Lang-dependent package will be heavy, as it needs to embed whole .NET Core runtime (if AoT does not work),
+* The packaging might be awkward.
