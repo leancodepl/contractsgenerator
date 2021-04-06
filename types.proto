@@ -142,43 +142,29 @@ message ErrorCode {
 }
 
 message Statement {
-  message Enum { repeated EnumValue members = 1; }
+  message DTO {}
 
-  message DTO {
-    repeated TypeRef extends = 1;
-    repeated GenericParameter genericParameters = 2;
-    repeated AttributeRef attributes = 3;
-    repeated PropertyRef properties = 4;
-    repeated ConstantRef constants = 5;
+  message Enum {
+    repeated EnumValue members = 1;
   }
-
   message Query {
-    repeated TypeRef extends = 1;
-    repeated GenericParameter genericParameters = 2;
-    repeated AttributeRef attributes = 3;
-    repeated PropertyRef properties = 4;
-    repeated ConstantRef constants = 5;
-
-    TypeRef returnType = 6;
+    TypeRef returnType = 1;
   }
-
   message Command {
-    repeated TypeRef extends = 1;
-    repeated GenericParameter genericParameters = 2;
-    repeated AttributeRef attributes = 3;
-    repeated PropertyRef properties = 4;
-    repeated ConstantRef constants = 5;
-
-    repeated ErrorCode errorCodes = 6;
+    repeated ErrorCode errorCodes = 1;
   }
-
   string name = 1;
   string comment = 2;
-
+  repeated TypeRef extends = 3;
+  repeated GenericParameter genericParameters = 4;
+  repeated AttributeRef attributes = 5;
+  repeated PropertyRef properties = 6;
+  repeated ConstantRef constants = 7;
   oneof content {
-    DTO dto = 3;
-    Query query = 4;
-    Command command = 5;
+    DTO dto = 10;
+    Enum enum = 11;
+    Query query = 12;
+    Command command = 13;
   }
 }
 

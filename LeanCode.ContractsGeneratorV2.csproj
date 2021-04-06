@@ -8,6 +8,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Protobuf Include="types.proto" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Google.Protobuf" Version="3.15.6" />
+    <PackageReference Include="Grpc.Tools" Version="2.36.4">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="LeanCode.CQRS" Version="5.0.1040" />
     <PackageReference Include="LeanCode.CQRS.Security" Version="5.0.1040" />
     <PackageReference Include="LeanCode.Time" Version="5.0.1040" />

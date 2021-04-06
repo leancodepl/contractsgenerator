@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
 using System.Xml;
+using Google.Protobuf.Collections;
 using Microsoft.CodeAnalysis;
 
 namespace LeanCode.ContractsGeneratorV2
@@ -19,36 +19,18 @@ namespace LeanCode.ContractsGeneratorV2
             this.contracts = contracts;
         }
 
-        public ImmutableList<Statement> Generate()
+        public Export Generate(string path)
         {
-            return contracts.ListAllTypes()
-                .Select(Process)
+            var export = new Export() { BasePath = path };
+            contracts.ListAllTypes()
+                .Select(ProcessType)
                 .Where(s => s is not null)
                 .ToList()
                 .OrderBy(s => s.Name)
-                .ToImmutableList();
-        }
-
-        private Statement? Process(INamedTypeSymbol symbol)
-        {
-            return symbol.TypeKind switch
-            {
-                TypeKind.Enum => ProcessEnum(symbol),
-                TypeKind.Interface => ProcessType(symbol),
-                TypeKind.Class => ProcessType(symbol),
-                TypeKind.Struct => ProcessType(symbol),
-                _ => null,
-            };
-        }
-
-        private Statement ProcessEnum(INamedTypeSymbol symbol)
-        {
-            var name = ConstructName(symbol);
-            var membs = symbol.GetMembers()
-                .OfType<IFieldSymbol>()
-                .Select(f => new EnumValue(f.Name, Convert.ToInt64(f.ConstantValue), ExtractComments(f)))
-                .ToImmutableList();
-            return new Statement.EnumStatement(name, membs);
+                .SaveToRepeatedField(export.Statements);
+            ListKnownGroups(export.Statements)
+                .SaveToRepeatedField(export.KnownErrorGroups);
+            return export;
         }
 
         private Statement? ProcessType(INamedTypeSymbol symbol)
@@ -58,74 +40,49 @@ namespace LeanCode.ContractsGeneratorV2
                 return null;
             }
 
-            var name = ConstructName(symbol);
-            var comment = ExtractComments(symbol);
-            var genericParams = symbol.TypeParameters
-                .Select(ToParam)
-                .ToImmutableList();
-            var attributes = GetAttributes(symbol);
-            var extends = symbol.Interfaces
-                .Append(symbol.BaseType)
-                .Where(s => !IsIgnored(s))
-                .Select(ToTypeRef)
-                .ToImmutableList();
-            var properties = AllProperties(symbol)
-                .SelectMany(s => s)
-                .Select(ToProperty)
-                .ToImmutableList();
-            var constants = symbol.GetMembers()
+            var result = new Statement
+            {
+                Name = ConstructName(symbol),
+                Comment = ExtractComments(symbol),
+            };
+            symbol.TypeParameters
+               .Select(ToParam)
+               .SaveToRepeatedField(result.GenericParameters);
+            symbol.Interfaces
+               .Append(symbol.BaseType)
+               .Where(s => !IsIgnored(s))
+               .Select(ToTypeRef)
+               .SaveToRepeatedField(result.Extends);
+            AllProperties(symbol)
+               .SelectMany(s => s)
+               .Select(ToProperty)
+               .SaveToRepeatedField(result.Properties);
+            symbol.GetMembers()
                 .OfType<IFieldSymbol>()
                 .Where(fs => fs.HasConstantValue)
                 .Select(ToConstant)
-                .ToImmutableList();
+                .SaveToRepeatedField(result.Constants);
 
-            if (IsQuery(symbol))
-            {
-                return new Statement.TypeStatement.QueryStatement(name)
-                {
-                    Comment = comment,
-                    GenericParameters = genericParams,
-                    Attributes = attributes,
-                    Extends = extends,
-                    Properties = properties,
-                    Constants = constants,
+            MapType(symbol, result);
 
-                    ReturnType = ExtractQueryResultType(symbol),
-                };
-            }
-            else if (IsCommand(symbol))
-            {
-                return new Statement.TypeStatement.CommandStatement(name)
-                {
-                    Comment = comment,
-                    GenericParameters = genericParams,
-                    Attributes = attributes,
-                    Extends = extends,
-                    Properties = properties,
-                    Constants = constants,
-
-                    ErrorCodes = ExtractErrorCodes(symbol),
-                };
-            }
-            else
-            {
-                return new Statement.TypeStatement.DTOStatement(name)
-                {
-                    Comment = comment,
-                    GenericParameters = genericParams,
-                    Attributes = attributes,
-                    Extends = extends,
-                    Properties = properties,
-                    Constants = constants,
-                };
-            }
+            return result;
 
             GenericParameter ToParam(ITypeParameterSymbol ts) =>
-                new(ts.Name);
+                new() { Name = ts.Name };
             ConstantRef ToConstant(IFieldSymbol fs) =>
-                new(fs.Name, ToValueRef(fs.ConstantValue), ExtractComments(fs));
-            PropertyRef ToProperty(IPropertySymbol ps) =>
-                new(ToTypeRef(ps.Type), ps.Name, GetAttributes(ps), ExtractComments(ps));
+                new() { Name = fs.Name, Value = ToValueRef(fs.ConstantValue), Comment = ExtractComments(fs) };
+
+            PropertyRef ToProperty(IPropertySymbol ps)
+            {
+                var res = new PropertyRef
+                {
+                    Type = ToTypeRef(ps.Type),
+                    Name = ps.Name,
+                    Comment = ExtractComments(ps)
+                };
+                GetAttributes(ps, res.Attributes);
+                return res;
+            }
 
             IEnumerable<IEnumerable<IPropertySymbol>> AllProperties(INamedTypeSymbol ns)
             {
@@ -139,25 +96,70 @@ namespace LeanCode.ContractsGeneratorV2
                     return new[] { currProps };
                 }
             }
+
+            void MapType(INamedTypeSymbol symbol, Statement result)
+            {
+                if (IsQuery(symbol))
+                {
+                    result.Query = new()
+                    {
+                        ReturnType = ExtractQueryResultType(symbol),
+                    };
+                }
+                else if (IsCommand(symbol))
+                {
+                    result.Command = new();
+                    ExtractErrorCodes(symbol, result.Command.ErrorCodes);
+                }
+                else if (symbol.TypeKind == TypeKind.Enum)
+                {
+                    result.Enum = new();
+                    symbol.GetMembers()
+                        .OfType<IFieldSymbol>()
+                        .Select(f => new EnumValue()
+                        {
+                            Name = f.Name,
+                            Value = Convert.ToInt64(f.ConstantValue),
+                            Comment = ExtractComments(f),
+                        })
+                        .SaveToRepeatedField(result.Enum.Members);
+                }
+                else
+                {
+                    result.Dto = new();
+                }
+            }
         }
 
         private TypeRef ToTypeRef(ITypeSymbol symbol)
         {
             if (symbol is INamedTypeSymbol ns)
             {
-                if (TryKnownTypeRef(ns) is TypeRef r)
+                if (TryKnownTypeRef(ns) is TypeRef.Types.Known k)
                 {
-                    return r;
+                    return new TypeRef { Known = k };
                 }
                 else
                 {
-                    var name = ConstructName(symbol);
-                    return new TypeRef.Internal(name, ns.TypeArguments.Select(ToGenericArg).ToImmutableList());
+                    var res = new TypeRef()
+                    {
+                        Internal = new()
+                        {
+                            Name = ConstructName(symbol),
+                        },
+                    };
+                    ns.TypeArguments
+                        .Select(ToGenericArg)
+                        .SaveToRepeatedField(res.Internal.Arguments);
+                    return res;
                 }
             }
             else if (symbol is ITypeParameterSymbol ts)
             {
-                return new TypeRef.Generic(ts.Name);
+                return new()
+                {
+                    Generic = new() { Name = ts.Name },
+                };
             }
             else
             {
@@ -165,65 +167,75 @@ namespace LeanCode.ContractsGeneratorV2
             }
         }
 
-        private TypeRef.Known? TryKnownTypeRef(ITypeSymbol ts)
+        private TypeRef.Types.Known? TryKnownTypeRef(ITypeSymbol ts)
         {
             return ts switch
             {
-                { SpecialType: SpecialType.System_Object } => new(KnownType.Object, ImmutableList<GenericArgument>.Empty),
-                { SpecialType: SpecialType.System_String } => new(KnownType.String, ImmutableList<GenericArgument>.Empty),
-                { SpecialType: SpecialType.System_SByte } => new(KnownType.Int8, ImmutableList<GenericArgument>.Empty),
-                { SpecialType: SpecialType.System_Byte } => new(KnownType.UInt8, ImmutableList<GenericArgument>.Empty),
-                { SpecialType: SpecialType.System_Int16 } => new(KnownType.Int16, ImmutableList<GenericArgument>.Empty),
-                { SpecialType: SpecialType.System_UInt16 } => new(KnownType.UInt16, ImmutableList<GenericArgument>.Empty),
-                { SpecialType: SpecialType.System_Int32 } => new(KnownType.Int32, ImmutableList<GenericArgument>.Empty),
-                { SpecialType: SpecialType.System_UInt32 } => new(KnownType.UInt32, ImmutableList<GenericArgument>.Empty),
-                { SpecialType: SpecialType.System_Int64 } => new(KnownType.Int64, ImmutableList<GenericArgument>.Empty),
-                { SpecialType: SpecialType.System_UInt64 } => new(KnownType.UInt64, ImmutableList<GenericArgument>.Empty),
-                { SpecialType: SpecialType.System_Single } => new(KnownType.Float, ImmutableList<GenericArgument>.Empty),
-                { SpecialType: SpecialType.System_Double } => new(KnownType.Double, ImmutableList<GenericArgument>.Empty),
-                { SpecialType: SpecialType.System_Decimal } => new(KnownType.Decimal, ImmutableList<GenericArgument>.Empty),
-                { SpecialType: SpecialType.System_Boolean } => new(KnownType.Boolean, ImmutableList<GenericArgument>.Empty),
-                { SpecialType: SpecialType.System_DateTime } => new(KnownType.DateTime, ImmutableList<GenericArgument>.Empty),
+                { SpecialType: SpecialType.System_Object } => New(KnownType.Object),
+                { SpecialType: SpecialType.System_String } => New(KnownType.String),
+                { SpecialType: SpecialType.System_SByte } => New(KnownType.Int8),
+                { SpecialType: SpecialType.System_Byte } => New(KnownType.Uint8),
+                { SpecialType: SpecialType.System_Int16 } => New(KnownType.Int16),
+                { SpecialType: SpecialType.System_UInt16 } => New(KnownType.Uint16),
+                { SpecialType: SpecialType.System_Int32 } => New(KnownType.Int32),
+                { SpecialType: SpecialType.System_UInt32 } => New(KnownType.Uint32),
+                { SpecialType: SpecialType.System_Int64 } => New(KnownType.Int64),
+                { SpecialType: SpecialType.System_UInt64 } => New(KnownType.Uint64),
+                { SpecialType: SpecialType.System_Single } => New(KnownType.Float),
+                { SpecialType: SpecialType.System_Double } => New(KnownType.Double),
+                { SpecialType: SpecialType.System_Decimal } => New(KnownType.Decimal),
+                { SpecialType: SpecialType.System_Boolean } => New(KnownType.Boolean),
+                { SpecialType: SpecialType.System_DateTime } => New(KnownType.DateTime),
 
-                { ContainingNamespace: { Name: "System" }, Name: "DateTimeOffset" } => new(KnownType.DateTimeOffset, ImmutableList<GenericArgument>.Empty),
-                { ContainingNamespace: { Name: "System" }, Name: "Date" } => new(KnownType.Date, ImmutableList<GenericArgument>.Empty),
-                { ContainingNamespace: { Name: "System" }, Name: "Time" } => new(KnownType.Time, ImmutableList<GenericArgument>.Empty),
-                { ContainingNamespace: { Name: "System" }, Name: "Guid" } => new(KnownType.Guid, ImmutableList<GenericArgument>.Empty),
-                { ContainingNamespace: { Name: "System" }, Name: "Uri" } => new(KnownType.Uri, ImmutableList<GenericArgument>.Empty),
+                { ContainingNamespace: { Name: "System" }, Name: "DateTimeOffset" } => New(KnownType.DateTimeOffset),
+                { ContainingNamespace: { Name: "System" }, Name: "Date" } => New(KnownType.Date),
+                { ContainingNamespace: { Name: "System" }, Name: "Time" } => New(KnownType.Time),
+                { ContainingNamespace: { Name: "System" }, Name: "Guid" } => New(KnownType.Guid),
+                { ContainingNamespace: { Name: "System" }, Name: "Uri" } => New(KnownType.Uri),
 
                 _ when ts is INamedTypeSymbol ns && IsQueryType(ns) =>
-                    new(KnownType.Query, ImmutableList.Create(ToGenericArg(ns.TypeArguments[0]))),
+                    New(KnownType.Query, ToGenericArg(ns.TypeArguments[0])),
                 _ when ts is INamedTypeSymbol ns && IsCommandType(ns) =>
-                    new(KnownType.Command, ImmutableList<GenericArgument>.Empty),
+                    New(KnownType.Command),
                 _ when ts.Equals(contracts.AuthorizeWhenAttribute, SymbolEqualityComparer.Default) =>
-                    new(KnownType.AuthorizeWhenAttribute, ImmutableList<GenericArgument>.Empty),
+                    New(KnownType.AuthorizeWhenAttribute),
                 _ when ts.Equals(contracts.AuthorizeWhenHasAnyOfAttribute, SymbolEqualityComparer.Default) =>
-                    new(KnownType.AuthorizeWhenHasAnyOfAttribute, ImmutableList<GenericArgument>.Empty),
+                    New(KnownType.AuthorizeWhenHasAnyOfAttribute),
                 _ when ts.Equals(contracts.QueryCacheAttribute, SymbolEqualityComparer.Default) =>
-                    new(KnownType.QueryCacheAttribute, ImmutableList<GenericArgument>.Empty),
+                    New(KnownType.QueryCacheAttribute),
                 _ when ts.Equals(contracts.Attribute, SymbolEqualityComparer.Default) =>
-                    new(KnownType.Attribute, ImmutableList<GenericArgument>.Empty),
+                    New(KnownType.Attribute),
 
-                IArrayTypeSymbol arr => new(KnownType.Array, ImmutableList.Create(ToGenericArg(arr.ElementType))),
+                IArrayTypeSymbol arr => New(KnownType.Array, ToGenericArg(arr.ElementType)),
                 _ when ts is INamedTypeSymbol ns && ns.Arity == 1 && ns.Interfaces.Any(i => i.SpecialType == SpecialType.System_Collections_IEnumerable) =>
-                    new(KnownType.Array, ImmutableList.Create(ToGenericArg(ns.TypeArguments[0]))),
+                    New(KnownType.Array, ToGenericArg(ns.TypeArguments[0])),
 
                 _ when ts is INamedTypeSymbol ns && ns.Arity == 2 && ns.Interfaces.Any(i => i.Name == "IReadOnlyDictionary") =>
-                    new(KnownType.Array, ImmutableList.Create(ToGenericArg(ns.TypeArguments[0]), ToGenericArg(ns.TypeArguments[1]))),
+                    New(KnownType.Array, ToGenericArg(ns.TypeArguments[0]), ToGenericArg(ns.TypeArguments[1])),
 
                 _ => null,
             };
+
+            static TypeRef.Types.Known New(KnownType type, params GenericArgument[] args)
+            {
+                var res = new TypeRef.Types.Known
+                {
+                    Type = type,
+                };
+                args.SaveToRepeatedField(res.Arguments);
+                return res;
+            }
         }
 
         private GenericArgument ToGenericArg(ITypeSymbol ts)
         {
             if (ts is INamedTypeSymbol named)
             {
-                return new GenericArgument.Type(ToTypeRef(named));
+                return new() { Type = new() { Type_ = ToTypeRef(named) } };
             }
             else
             {
-                return new GenericArgument.Param(ts.Name);
+                return new() { Param = new() { Name = ts.Name } };
             }
         }
 
@@ -276,7 +288,7 @@ namespace LeanCode.ContractsGeneratorV2
             return ToTypeRef(queryType.TypeArguments[0]);
         }
 
-        private ImmutableList<ErrorCode> ExtractErrorCodes(INamedTypeSymbol symbol)
+        private void ExtractErrorCodes(INamedTypeSymbol symbol, RepeatedField<ErrorCode> output)
         {
             var errCodes = symbol.GetMembers()
                 .OfType<INamedTypeSymbol>()
@@ -284,14 +296,10 @@ namespace LeanCode.ContractsGeneratorV2
                 .SingleOrDefault();
             if (errCodes is not null)
             {
-                return MapCodes(errCodes);
-            }
-            else
-            {
-                return ImmutableList<ErrorCode>.Empty;
+                MapCodes(errCodes, output);
             }
 
-            ImmutableList<ErrorCode> MapCodes(INamedTypeSymbol errCodes)
+            void MapCodes(INamedTypeSymbol errCodes, RepeatedField<ErrorCode> output)
             {
                 var consts = errCodes
                     .GetMembers()
@@ -301,7 +309,7 @@ namespace LeanCode.ContractsGeneratorV2
                     .GetMembers()
                     .OfType<INamedTypeSymbol>()
                     .Select(ToGroupCode);
-                return consts.Concat(groups).ToImmutableList();
+                consts.Concat(groups).SaveToRepeatedField(output);
             }
 
             static ErrorCode ToSingleCode(IFieldSymbol f)
@@ -310,7 +318,14 @@ namespace LeanCode.ContractsGeneratorV2
                 {
                     throw new InvalidOperationException("The error codes class can only contain constant numeric fields & derived types.");
                 }
-                return new ErrorCode.Single(f.Name, Convert.ToInt32(f.ConstantValue));
+                return new()
+                {
+                    Single = new()
+                    {
+                        Name = f.Name,
+                        Code = Convert.ToInt32(f.ConstantValue)
+                    }
+                };
             }
 
             ErrorCode ToGroupCode(INamedTypeSymbol ns)
@@ -319,30 +334,37 @@ namespace LeanCode.ContractsGeneratorV2
                 {
                     throw new InvalidOperationException($"The base class for error codes group needs to be named `{ErrorCodesName}`.");
                 }
-                return new ErrorCode.Group(ns.Name, ConstructName(ns.BaseType), MapCodes(ns.BaseType));
+                var g = new ErrorCode.Types.Group
+                {
+                    Name = ns.Name,
+                    GroupId = ConstructName(ns.BaseType),
+                };
+                MapCodes(ns.BaseType, g.InnerCodes);
+                return new() { Group = g };
             }
         }
 
-        private ImmutableList<AttributeRef> GetAttributes(ISymbol symbol)
+        private void GetAttributes(ISymbol symbol, RepeatedField<AttributeRef> output)
         {
-            return symbol.GetAttributes()
+            symbol.GetAttributes()
                 .Where(a => !IsIgnored(a.AttributeClass))
                 .Select(ToAttribute)
-                .ToImmutableList();
+                .SaveToRepeatedField(output);
 
             AttributeRef ToAttribute(AttributeData a)
             {
                 var type = ConstructName(a.AttributeClass);
                 var positional = a.ConstructorArguments
                     .SelectMany(a => a.Kind == TypedConstantKind.Array ? a.Values.Select(v => v.Value) : new[] { a.Value })
-                    .Select((v, i) => new AttributeArgument.Positional(i, ToValueRef(v)))
+                    .Select((v, i) => new AttributeArgument() { Positional = new() { Position = i, Value = ToValueRef(v) } })
                     .Cast<AttributeArgument>();
                 var named = a.NamedArguments
                     .SelectMany(a => a.Value.Kind == TypedConstantKind.Array ? a.Value.Values.Select(v => (a.Key, v.Value)) : new[] { (a.Key, a.Value.Value) })
-                    .Select(v => new AttributeArgument.Named(v.Key, ToValueRef(v.Value)))
+                    .Select((v, i) => new AttributeArgument() { Named = new() { Name = v.Key, Value = ToValueRef(v) } })
                     .Cast<AttributeArgument>();
-                var args = positional.Concat(named).ToImmutableList();
-                return new AttributeRef(type, args);
+                var result = new AttributeRef { AttributeName = type };
+                positional.Concat(named).SaveToRepeatedField(result.Argument);
+                return result;
             }
         }
 
@@ -350,19 +372,19 @@ namespace LeanCode.ContractsGeneratorV2
         {
             return val switch
             {
-                null => new ValueRef.Null(),
-                byte v => new ValueRef.Number(v),
-                sbyte v => new ValueRef.Number(v),
-                int v => new ValueRef.Number(v),
-                long v => new ValueRef.Number(v),
-                short v => new ValueRef.Number(v),
-                ushort v => new ValueRef.Number(v),
-                uint v => new ValueRef.Number(v),
-                ulong v => new ValueRef.Number((long)v),
-                float v => new ValueRef.FloatingPoint(v),
-                double v => new ValueRef.FloatingPoint(v),
-                string v => new ValueRef.String(v),
-                bool v => new ValueRef.Boolean(v),
+                null => new() { Null = new() },
+                byte v => new ValueRef { Number = new() { Value = v } },
+                sbyte v => new ValueRef { Number = new() { Value = v } },
+                int v => new ValueRef { Number = new() { Value = v } },
+                long v => new ValueRef { Number = new() { Value = v } },
+                short v => new ValueRef { Number = new() { Value = v } },
+                ushort v => new ValueRef { Number = new() { Value = v } },
+                uint v => new ValueRef { Number = new() { Value = v } },
+                ulong v => new ValueRef { Number = new() { Value = (long)v } },
+                float v => new ValueRef { FloatingPoint = new() { Value = v } },
+                double v => new ValueRef { FloatingPoint = new() { Value = v } },
+                string v => new ValueRef { String = new() { Value = v } },
+                bool v => new ValueRef { Bool = new() { Value = v } },
                 _ => throw new NotSupportedException($"Cannot geenrate contracts for constant of type {val.GetType()}."),
             };
         }
@@ -429,6 +451,41 @@ namespace LeanCode.ContractsGeneratorV2
                     yield return c;
                 }
             }
+        }
+
+        private static IEnumerable<ErrorCode.Types.Group> ListKnownGroups(IEnumerable<Statement> statements)
+        {
+            return statements
+                .Where(s => s.Command is not null)
+                .SelectMany(c => ListGroups(c.Command.ErrorCodes));
+
+            static IEnumerable<ErrorCode.Types.Group> ListGroups(IEnumerable<ErrorCode> gs)
+            {
+                foreach (var g in gs.OfType<ErrorCode.Types.Group>())
+                {
+                    yield return g;
+
+                    foreach (var i in ListGroups(g.InnerCodes))
+                    {
+                        yield return i;
+                    }
+                }
+            }
+        }
+    }
+
+    internal static class IEnumerableExtensions
+    {
+        public static RepeatedField<T> ToRepeatedField<T>(this IEnumerable<T> src)
+        {
+            var f = new RepeatedField<T>();
+            f.AddRange(src);
+            return f;
+        }
+
+        public static void SaveToRepeatedField<T>(this IEnumerable<T> src, RepeatedField<T> output)
+        {
+            output.AddRange(src);
         }
     }
 }

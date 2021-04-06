@@ -11,19 +11,19 @@ namespace LeanCode.ContractsGeneratorV2
 
             switch (value)
             {
-                case ValueRef.Null _:
+                case { Null: var n } when n is not null:
                     writer.WriteNull("null");
                     break;
-                case ValueRef.Number n:
+                case { Number: var n } when n is not null:
                     writer.WriteNumber("number", n.Value);
                     break;
-                case ValueRef.FloatingPoint f:
+                case { FloatingPoint: var f } when f is not null:
                     writer.WriteNumber("floating", f.Value);
                     break;
-                case ValueRef.String s:
+                case { String: var s } when s is not null:
                     writer.WriteString("string", s.Value);
                     break;
-                case ValueRef.Boolean b:
+                case { Bool: var b } when b is not null:
                     writer.WriteBoolean("boolean", b.Value);
                     break;
 
@@ -40,7 +40,7 @@ namespace LeanCode.ContractsGeneratorV2
         {
             switch (value)
             {
-                case AttributeArgument.Positional p:
+                case { Positional: var p } when p is not null:
                     writer.WriteStartObject();
                     writer.WriteNumber("position", p.Position);
                     writer.WritePropertyName("value");
@@ -48,7 +48,7 @@ namespace LeanCode.ContractsGeneratorV2
                     writer.WriteEndObject();
                     break;
 
-                case AttributeArgument.Named p:
+                case { Named: var p } when p is not null:
                     writer.WriteStartObject();
                     writer.WriteString("name", p.Name);
                     writer.WritePropertyName("value");
@@ -68,13 +68,13 @@ namespace LeanCode.ContractsGeneratorV2
             writer.WriteStartObject();
             switch (value)
             {
-                case GenericArgument.Param p:
+                case { Param: var p } when p is not null:
                     writer.WriteString("param", p.Name);
                     break;
 
-                case GenericArgument.Type t:
+                case { Type: var t } when t is not null:
                     writer.WritePropertyName("type");
-                    JsonSerializer.Serialize(writer, t.Ref, options);
+                    JsonSerializer.Serialize(writer, t.Type_, options);
                     break;
 
                 default: throw new NotSupportedException($"GenericArgument {value} is not supported.");
@@ -91,26 +91,26 @@ namespace LeanCode.ContractsGeneratorV2
 
             switch (value)
             {
-                case TypeRef.Generic g:
+                case { Generic: var g } when g is not null:
                     writer.WriteString("generic", g.Name);
                     break;
 
-                case TypeRef.Internal i:
+                case { Internal: var i } when i is not null:
                     writer.WriteString("internal", i.Name);
-                    if (i.GenericArguments.Count > 0)
+                    if (i.Arguments.Count > 0)
                     {
-                        writer.WritePropertyName("genericArguments");
-                        JsonSerializer.Serialize(writer, i.GenericArguments, options);
+                        writer.WritePropertyName("arguments");
+                        JsonSerializer.Serialize(writer, i.Arguments, options);
                     }
                     break;
 
-                case TypeRef.Known k:
+                case { Known: var k } when k is not null:
                     writer.WritePropertyName("knownType");
                     JsonSerializer.Serialize(writer, k.Type, options);
-                    if (k.GenericArguments.Count > 0)
+                    if (k.Arguments.Count > 0)
                     {
-                        writer.WritePropertyName("genericArguments");
-                        JsonSerializer.Serialize(writer, k.GenericArguments, options);
+                        writer.WritePropertyName("arguments");
+                        JsonSerializer.Serialize(writer, k.Arguments, options);
                     }
                     break;
 
@@ -129,12 +129,12 @@ namespace LeanCode.ContractsGeneratorV2
 
             switch (value)
             {
-                case ErrorCode.Single s:
+                case { Single: var s } when s is not null:
                     writer.WriteString("single", s.Name);
                     writer.WriteNumber("code", s.Code);
                     break;
 
-                case ErrorCode.Group g:
+                case { Group: var g } when g is not null:
                     writer.WriteString("group", g.Name);
                     writer.WriteString("groupId", g.GroupId);
                     writer.WritePropertyName("innerCodes");
@@ -148,21 +148,18 @@ namespace LeanCode.ContractsGeneratorV2
         }
     }
 
-    public sealed class EnumStatementConverter : WriteOnlyJsonConverter<Statement.EnumStatement>
+    public sealed class EnumStatementConverter : WriteOnlyJsonConverter<Statement.Types.Enum>
     {
-        public override void Write(Utf8JsonWriter writer, Statement.EnumStatement value, JsonSerializerOptions options)
+        public override void Write(Utf8JsonWriter writer, Statement.Types.Enum value, JsonSerializerOptions options)
         {
-            writer.WriteStartObject();
-            writer.WriteString("name", value.Name);
-
             writer.WritePropertyName("members");
+
+            // TODO: name
             writer.WriteStartObject();
             foreach (var e in value.Members)
             {
                 writer.WriteNumber(e.Name, e.Value);
             }
-
-            writer.WriteEndObject();
 
             writer.WriteEndObject();
         }
@@ -173,30 +170,30 @@ namespace LeanCode.ContractsGeneratorV2
         public override void Write(Utf8JsonWriter writer, Statement value, JsonSerializerOptions options)
         {
             writer.WriteStartObject();
-            switch (value)
-            {
-                case Statement.EnumStatement e:
-                    writer.WritePropertyName("enum");
-                    JsonSerializer.Serialize(writer, e, options);
-                    break;
+            // switch (value)
+            // {
+            //     case Statement.EnumStatement e:
+            //         writer.WritePropertyName("enum");
+            //         JsonSerializer.Serialize(writer, e, options);
+            //         break;
 
-                case Statement.TypeStatement.DTOStatement d:
-                    writer.WritePropertyName("dto");
-                    JsonSerializer.Serialize(writer, d, options);
-                    break;
+            //     case Statement.TypeStatement.DTOStatement d:
+            //         writer.WritePropertyName("dto");
+            //         JsonSerializer.Serialize(writer, d, options);
+            //         break;
 
-                case Statement.TypeStatement.QueryStatement q:
-                    writer.WritePropertyName("query");
-                    JsonSerializer.Serialize(writer, q, options);
-                    break;
+            //     case Statement.TypeStatement.QueryStatement q:
+            //         writer.WritePropertyName("query");
+            //         JsonSerializer.Serialize(writer, q, options);
+            //         break;
 
-                case Statement.TypeStatement.CommandStatement c:
-                    writer.WritePropertyName("command");
-                    JsonSerializer.Serialize(writer, c, options);
-                    break;
+            //     case Statement.TypeStatement.CommandStatement c:
+            //         writer.WritePropertyName("command");
+            //         JsonSerializer.Serialize(writer, c, options);
+            //         break;
 
-                default: throw new NotSupportedException($"Statement {value} is not supported.");
-            }
+            //     default: throw new NotSupportedException($"Statement {value} is not supported.");
+            // }
             writer.WriteEndObject();
         }
     }
