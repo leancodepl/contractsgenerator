@@ -1,6 +1,8 @@
 syntax = "proto3";
+
 package leancode.contracts;
-option csharp_namespace = "LeanCode.Proto";
+
+option csharp_namespace = "LeanCode.ContractsGeneratorV2";
 
 enum KnownType {
   Object = 0;
@@ -8,7 +10,6 @@ enum KnownType {
   Guid = 3;
   Uri = 4;
   Boolean = 5;
-
   UInt8 = 100;
   Int8 = 101;
   Int16 = 102;
@@ -17,19 +18,15 @@ enum KnownType {
   UInt32 = 105;
   Int64 = 106;
   UInt64 = 107;
-
   Float = 150;
   Double = 151;
   Decimal = 152;
-
   Date = 200;
   Time = 201;
   DateTime = 202;
   DateTimeOffset = 203;
-
   Array = 300;
   Map = 301;
-
   Query = 1000;
   Command = 1001;
   AuthorizeWhenAttribute = 1002;
@@ -40,11 +37,19 @@ enum KnownType {
 
 message ValueRef {
   message Null {}
-  message Number { int64 value = 1; }
-  message FloatingPointNumber { double value = 1; }
-  message String { string value = 1; }
-  message Boolean { bool value = 1; }
 
+  message Number {
+    int64 value = 1;
+  }
+  message FloatingPointNumber {
+    double value = 1;
+  }
+  message String {
+    string value = 1;
+  }
+  message Boolean {
+    bool value = 1;
+  }
   oneof value {
     Null null = 1;
     Number number = 2;
@@ -55,7 +60,9 @@ message ValueRef {
 }
 
 message TypeRef {
-  message Generic { string name = 1; }
+  message Generic {
+    string name = 1;
+  }
   message Internal {
     string name = 1;
     repeated GenericArgument arguments = 2;
@@ -64,7 +71,6 @@ message TypeRef {
     KnownType type = 1;
     repeated GenericArgument arguments = 2;
   }
-
   oneof type {
     Generic generic = 1;
     Internal internal = 2;
@@ -72,12 +78,17 @@ message TypeRef {
   }
 }
 
-message GenericParameter { string name = 1; }
+message GenericParameter {
+  string name = 1;
+}
 
 message GenericArgument {
-  message Param { string name = 1; }
-  message Type { TypeRef type = 1; }
-
+  message Param {
+    string name = 1;
+  }
+  message Type {
+    TypeRef type = 1;
+  }
   oneof argument {
     Param param = 1;
     Type type = 2;
@@ -93,7 +104,6 @@ message AttributeArgument {
     string name = 1;
     ValueRef value = 2;
   }
-
   oneof attribute {
     Positional positional = 1;
     Named named = 2;
@@ -134,7 +144,6 @@ message ErrorCode {
     string groupId = 2;
     repeated ErrorCode innerCodes = 3;
   }
-
   oneof code {
     Single single = 1;
     Group group = 2;
