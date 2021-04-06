@@ -1,0 +1,401 @@
+{
+    "basePath": "/home/fiolek/Work/leancode/tests/LeanCode.ContractsGeneratorV2/ExampleContracts",
+    "statements": [
+        {
+            "name": "LeanCode.ContractsGeneratorV2.ExampleContracts.Auth",
+            "dto": {}
+        },
+        {
+            "name": "LeanCode.ContractsGeneratorV2.ExampleContracts.Auth.KnownClaims",
+            "constants": [
+                {
+                    "name": "UserId",
+                    "value": {
+                        "string": {
+                            "value": "sub"
+                        }
+                    }
+                },
+                {
+                    "name": "Role",
+                    "value": {
+                        "string": {
+                            "value": "role"
+                        }
+                    }
+                }
+            ],
+            "dto": {}
+        },
+        {
+            "name": "LeanCode.ContractsGeneratorV2.ExampleContracts.Auth.Roles",
+            "constants": [
+                {
+                    "name": "User",
+                    "value": {
+                        "string": {
+                            "value": "user"
+                        }
+                    }
+                },
+                {
+                    "name": "Admin",
+                    "value": {
+                        "string": {
+                            "value": "admin"
+                        }
+                    }
+                },
+                {
+                    "name": "System",
+                    "value": {
+                        "string": {
+                            "value": "system"
+                        }
+                    }
+                }
+            ],
+            "dto": {}
+        },
+        {
+            "name": "LeanCode.ContractsGeneratorV2.ExampleContracts.PaginatedQuery",
+            "comment": "This is a class-level comment.\n",
+            "extends": [
+                {
+                    "known": {
+                        "type": "Query",
+                        "arguments": [
+                            {
+                                "type": {
+                                    "type": {
+                                        "internal": {
+                                            "name": "LeanCode.ContractsGeneratorV2.ExampleContracts.PaginatedResult",
+                                            "arguments": [
+                                                {
+                                                    "param": {
+                                                        "name": "TResult"
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            ],
+            "genericParameters": [
+                {
+                    "name": "TResult"
+                }
+            ],
+            "properties": [
+                {
+                    "type": {
+                        "known": {
+                            "type": "Int32"
+                        }
+                    },
+                    "name": "PageNumber"
+                },
+                {
+                    "type": {
+                        "known": {
+                            "type": "Int32"
+                        }
+                    },
+                    "name": "PageSize"
+                }
+            ],
+            "dto": {}
+        },
+        {
+            "name": "LeanCode.ContractsGeneratorV2.ExampleContracts.PaginatedResult",
+            "comment": "This one is in XML.\n",
+            "genericParameters": [
+                {
+                    "name": "TResult"
+                }
+            ],
+            "properties": [
+                {
+                    "type": {
+                        "known": {
+                            "type": "Array",
+                            "arguments": [
+                                {
+                                    "param": {
+                                        "name": "TResult"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "name": "Items",
+                    "comment": "And this is a property comment.\n"
+                },
+                {
+                    "type": {
+                        "known": {
+                            "type": "Int64"
+                        }
+                    },
+                    "name": "TotalCount"
+                }
+            ],
+            "dto": {}
+        },
+        {
+            "name": "LeanCode.ContractsGeneratorV2.ExampleContracts.Security.AuthorizeWhenHasSomethingAccessAttribute",
+            "extends": [
+                {
+                    "known": {
+                        "type": "AuthorizeWhenAttribute"
+                    }
+                }
+            ],
+            "properties": [
+                {
+                    "type": {
+                        "known": {}
+                    },
+                    "name": "TypeId"
+                }
+            ],
+            "dto": {}
+        },
+        {
+            "name": "LeanCode.ContractsGeneratorV2.ExampleContracts.Security.ISomethingRelated",
+            "properties": [
+                {
+                    "type": {
+                        "known": {
+                            "type": "Guid"
+                        }
+                    },
+                    "name": "SomethingId"
+                }
+            ],
+            "dto": {}
+        },
+        {
+            "name": "LeanCode.ContractsGeneratorV2.ExampleContracts.Security.WhenHasSomethingAccess",
+            "dto": {}
+        },
+        {
+            "name": "LeanCode.ContractsGeneratorV2.ExampleContracts.Users.AllUsers",
+            "extends": [
+                {
+                    "internal": {
+                        "name": "LeanCode.ContractsGeneratorV2.ExampleContracts.PaginatedQuery",
+                        "arguments": [
+                            {
+                                "type": {
+                                    "type": {
+                                        "internal": {
+                                            "name": "LeanCode.ContractsGeneratorV2.ExampleContracts.Users.UserInfoDTO"
+                                        }
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            ],
+            "properties": [
+                {
+                    "type": {
+                        "known": {
+                            "type": "Int32"
+                        }
+                    },
+                    "name": "PageNumber"
+                },
+                {
+                    "type": {
+                        "known": {
+                            "type": "Int32"
+                        }
+                    },
+                    "name": "PageSize"
+                }
+            ],
+            "query": {
+                "returnType": {
+                    "internal": {
+                        "name": "LeanCode.ContractsGeneratorV2.ExampleContracts.PaginatedResult",
+                        "arguments": [
+                            {
+                                "type": {
+                                    "type": {
+                                        "internal": {
+                                            "name": "LeanCode.ContractsGeneratorV2.ExampleContracts.Users.UserInfoDTO"
+                                        }
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "name": "LeanCode.ContractsGeneratorV2.ExampleContracts.Users.EditUser",
+            "extends": [
+                {
+                    "known": {
+                        "type": "Command"
+                    }
+                },
+                {
+                    "internal": {
+                        "name": "LeanCode.ContractsGeneratorV2.ExampleContracts.Security.ISomethingRelated"
+                    }
+                }
+            ],
+            "properties": [
+                {
+                    "type": {
+                        "known": {
+                            "type": "Guid"
+                        }
+                    },
+                    "name": "UserId"
+                },
+                {
+                    "type": {
+                        "known": {
+                            "type": "Guid"
+                        }
+                    },
+                    "name": "SomethingId"
+                },
+                {
+                    "type": {
+                        "internal": {
+                            "name": "LeanCode.ContractsGeneratorV2.ExampleContracts.Users.UserInfoDTO"
+                        }
+                    },
+                    "name": "UserInfo"
+                }
+            ],
+            "command": {
+                "errorCodes": [
+                    {
+                        "single": {
+                            "name": "UserDoesNotExist",
+                            "code": 1
+                        }
+                    },
+                    {
+                        "single": {
+                            "name": "UserInfoIsNull",
+                            "code": 2
+                        }
+                    },
+                    {
+                        "group": {
+                            "name": "UserInfo",
+                            "groupId": "LeanCode.ContractsGeneratorV2.ExampleContracts.Users.UserInfoDTO.ErrorCodes",
+                            "innerCodes": [
+                                {
+                                    "single": {
+                                        "name": "FirstnameIsNull",
+                                        "code": 1001
+                                    }
+                                },
+                                {
+                                    "single": {
+                                        "name": "SurnameIsNull",
+                                        "code": 1002
+                                    }
+                                },
+                                {
+                                    "single": {
+                                        "name": "UsernameIsNull",
+                                        "code": 1003
+                                    }
+                                },
+                                {
+                                    "single": {
+                                        "name": "FirstnameTooLong",
+                                        "code": 1004
+                                    }
+                                },
+                                {
+                                    "single": {
+                                        "name": "SurnameTooLong",
+                                        "code": 1005
+                                    }
+                                },
+                                {
+                                    "single": {
+                                        "name": "UsernameTooLong",
+                                        "code": 1006
+                                    }
+                                },
+                                {
+                                    "single": {
+                                        "name": "EmailAddressTooLong",
+                                        "code": 1007
+                                    }
+                                },
+                                {
+                                    "single": {
+                                        "name": "InvalidEmailAddress",
+                                        "code": 1009
+                                    }
+                                },
+                                {
+                                    "single": {
+                                        "name": "EmailIsTaken",
+                                        "code": 1010
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "LeanCode.ContractsGeneratorV2.ExampleContracts.Users.UserInfoDTO",
+            "properties": [
+                {
+                    "type": {
+                        "known": {
+                            "type": "String"
+                        }
+                    },
+                    "name": "Firstname"
+                },
+                {
+                    "type": {
+                        "known": {
+                            "type": "String"
+                        }
+                    },
+                    "name": "Surname"
+                },
+                {
+                    "type": {
+                        "known": {
+                            "type": "String"
+                        }
+                    },
+                    "name": "Username"
+                },
+                {
+                    "type": {
+                        "known": {
+                            "type": "String"
+                        }
+                    },
+                    "name": "EmailAddress"
+                }
+            ],
+            "dto": {}
+        }
+    ]
+}
