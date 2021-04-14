@@ -360,6 +360,36 @@
             }
         },
         {
+            "name": "LeanCode.ContractsGeneratorV2.ExampleContracts.Users.UserById",
+            "extends": [
+                {
+                    "known": {
+                        "type": "Query",
+                        "arguments": [
+                            {
+                                "type": {
+                                    "type": {
+                                        "nullable": true,
+                                        "internal": {
+                                            "name": "LeanCode.ContractsGeneratorV2.ExampleContracts.Users.UserInfoDTO"
+                                        }
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            ],
+            "query": {
+                "returnType": {
+                    "nullable": true,
+                    "internal": {
+                        "name": "LeanCode.ContractsGeneratorV2.ExampleContracts.Users.UserInfoDTO"
+                    }
+                }
+            }
+        },
+        {
             "name": "LeanCode.ContractsGeneratorV2.ExampleContracts.Users.UserInfoDTO",
             "properties": [
                 {
@@ -396,6 +426,36 @@
                 }
             ],
             "dto": {}
+        },
+        {
+            "name": "LeanCode.ContractsGeneratorV2.ExampleContracts.Users.UserSomething",
+            "extends": [
+                {
+                    "known": {
+                        "type": "Query",
+                        "arguments": [
+                            {
+                                "type": {
+                                    "type": {
+                                        "nullable": true,
+                                        "known": {
+                                            "type": "Int32"
+                                        }
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            ],
+            "query": {
+                "returnType": {
+                    "nullable": true,
+                    "known": {
+                        "type": "Int32"
+                    }
+                }
+            }
         }
     ]
 }
