@@ -133,11 +133,23 @@ namespace LeanCode.ContractsGeneratorV2
 
         private TypeRef ToTypeRef(ITypeSymbol symbol)
         {
+            var isNullable = symbol.NullableAnnotation == NullableAnnotation.Annotated;
+
             if (symbol is INamedTypeSymbol ns)
             {
-                if (TryKnownTypeRef(ns) is TypeRef.Types.Known k)
+                if (ns.OriginalDefinition?.SpecialType == SpecialType.System_Nullable_T)
                 {
-                    return new TypeRef { Known = k };
+                    var inner = ToTypeRef(ns.TypeArguments[0]);
+                    inner.Nullable = true;
+                    return inner;
+                }
+                else if (TryKnownTypeRef(ns) is TypeRef.Types.Known k)
+                {
+                    return new TypeRef
+                    {
+                        Known = k,
+                        Nullable = isNullable,
+                    };
                 }
                 else
                 {
@@ -147,6 +159,7 @@ namespace LeanCode.ContractsGeneratorV2
                         {
                             Name = ConstructName(symbol),
                         },
+                        Nullable = isNullable,
                     };
                     ns.TypeArguments
                         .Select(ToGenericArg)
@@ -159,6 +172,7 @@ namespace LeanCode.ContractsGeneratorV2
                 return new()
                 {
                     Generic = new() { Name = ts.Name },
+                    Nullable = isNullable,
                 };
             }
             else
@@ -235,7 +249,14 @@ namespace LeanCode.ContractsGeneratorV2
             }
             else
             {
-                return new() { Param = new() { Name = ts.Name } };
+                return new()
+                {
+                    Param = new()
+                    {
+                        Name = ts.Name,
+                        Nullable = ts.NullableAnnotation == NullableAnnotation.Annotated,
+                    }
+                };
             }
         }
 
