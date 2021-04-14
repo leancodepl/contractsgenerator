@@ -133,7 +133,7 @@ namespace LeanCode.ContractsGeneratorV2
 
         private TypeRef ToTypeRef(ITypeSymbol symbol)
         {
-            var isNullable = symbol.NullableAnnotation == NullableAnnotation.Annotated;
+            var isNullable = IsNullable(symbol);
 
             if (symbol is INamedTypeSymbol ns)
             {
@@ -254,7 +254,7 @@ namespace LeanCode.ContractsGeneratorV2
                     Param = new()
                     {
                         Name = ts.Name,
-                        Nullable = ts.NullableAnnotation == NullableAnnotation.Annotated,
+                        Nullable = IsNullable(ts),
                     }
                 };
             }
@@ -492,6 +492,11 @@ namespace LeanCode.ContractsGeneratorV2
                     }
                 }
             }
+        }
+
+        private static bool IsNullable(ITypeSymbol symbol)
+        {
+            return symbol.NullableAnnotation != NullableAnnotation.None;
         }
     }
 
