@@ -463,11 +463,11 @@ namespace LeanCode.ContractsGeneratorV2
 
             static IEnumerable<ErrorCode.Types.Group> ListGroups(IEnumerable<ErrorCode> gs)
             {
-                foreach (var g in gs.OfType<ErrorCode.Types.Group>())
+                foreach (var g in gs.Where(i => i.Group is not null))
                 {
-                    yield return g;
+                    yield return g.Group;
 
-                    foreach (var i in ListGroups(g.InnerCodes))
+                    foreach (var i in ListGroups(g.Group.InnerCodes))
                     {
                         yield return i;
                     }
