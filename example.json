@@ -66,19 +66,15 @@
                         "type": "Query",
                         "arguments": [
                             {
-                                "type": {
-                                    "type": {
-                                        "internal": {
-                                            "name": "LeanCode.ContractsGeneratorV2.ExampleContracts.PaginatedResult",
-                                            "arguments": [
-                                                {
-                                                    "param": {
-                                                        "name": "TResult"
-                                                    }
-                                                }
-                                            ]
+                                "internal": {
+                                    "name": "LeanCode.ContractsGeneratorV2.ExampleContracts.PaginatedResult",
+                                    "arguments": [
+                                        {
+                                            "generic": {
+                                                "name": "TResult"
+                                            }
                                         }
-                                    }
+                                    ]
                                 }
                             }
                         ]
@@ -125,7 +121,7 @@
                             "type": "Array",
                             "arguments": [
                                 {
-                                    "param": {
+                                    "generic": {
                                         "name": "TResult"
                                     }
                                 }
@@ -191,12 +187,8 @@
                         "name": "LeanCode.ContractsGeneratorV2.ExampleContracts.PaginatedQuery",
                         "arguments": [
                             {
-                                "type": {
-                                    "type": {
-                                        "internal": {
-                                            "name": "LeanCode.ContractsGeneratorV2.ExampleContracts.Users.UserInfoDTO"
-                                        }
-                                    }
+                                "internal": {
+                                    "name": "LeanCode.ContractsGeneratorV2.ExampleContracts.Users.UserInfoDTO"
                                 }
                             }
                         ]
@@ -227,12 +219,8 @@
                         "name": "LeanCode.ContractsGeneratorV2.ExampleContracts.PaginatedResult",
                         "arguments": [
                             {
-                                "type": {
-                                    "type": {
-                                        "internal": {
-                                            "name": "LeanCode.ContractsGeneratorV2.ExampleContracts.Users.UserInfoDTO"
-                                        }
-                                    }
+                                "internal": {
+                                    "name": "LeanCode.ContractsGeneratorV2.ExampleContracts.Users.UserInfoDTO"
                                 }
                             }
                         ]
@@ -270,6 +258,56 @@
                         }
                     },
                     "name": "SomethingId"
+                },
+                {
+                    "type": {
+                        "known": {
+                            "type": "Array",
+                            "arguments": [
+                                {
+                                    "known": {
+                                        "type": "Int32"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "name": "List"
+                },
+                {
+                    "type": {
+                        "known": {
+                            "type": "Array",
+                            "arguments": [
+                                {
+                                    "known": {
+                                        "type": "Int32"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "name": "Array"
+                },
+                {
+                    "type": {
+                        "known": {
+                            "type": "Array",
+                            "arguments": [
+                                {
+                                    "known": {
+                                        "type": "Int32"
+                                    }
+                                },
+                                {
+                                    "internal": {
+                                        "name": "LeanCode.ContractsGeneratorV2.ExampleContracts.Users.EditUser"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "name": "Dictionary"
                 },
                 {
                     "type": {
@@ -367,13 +405,9 @@
                         "type": "Query",
                         "arguments": [
                             {
-                                "type": {
-                                    "type": {
-                                        "nullable": true,
-                                        "internal": {
-                                            "name": "LeanCode.ContractsGeneratorV2.ExampleContracts.Users.UserInfoDTO"
-                                        }
-                                    }
+                                "nullable": true,
+                                "internal": {
+                                    "name": "LeanCode.ContractsGeneratorV2.ExampleContracts.Users.UserInfoDTO"
                                 }
                             }
                         ]
@@ -435,13 +469,9 @@
                         "type": "Query",
                         "arguments": [
                             {
-                                "type": {
-                                    "type": {
-                                        "nullable": true,
-                                        "known": {
-                                            "type": "Int32"
-                                        }
-                                    }
+                                "nullable": true,
+                                "known": {
+                                    "type": "Int32"
                                 }
                             }
                         ]

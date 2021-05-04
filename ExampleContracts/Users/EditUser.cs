@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using LeanCode.CQRS;
 using LeanCode.CQRS.Security;
 
@@ -10,6 +11,10 @@ namespace LeanCode.ContractsGeneratorV2.ExampleContracts.Users
     {
         public Guid UserId { get; set; }
         public Guid SomethingId { get; set; }
+
+        public List<int> List { get; set; }
+        public int[] Array { get; set; }
+        public Dictionary<int, EditUser> Dictionary { get; set; }
 
         public UserInfoDTO UserInfo { get; set; }
 
