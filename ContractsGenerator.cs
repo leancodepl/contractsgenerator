@@ -225,7 +225,7 @@ namespace LeanCode.ContractsGeneratorV2
                     New(KnownType.Array, ToTypeRef(ns.TypeArguments[0])),
 
                 _ when ts is INamedTypeSymbol ns && ns.Arity == 2 && ns.Interfaces.Any(i => i.Name == "IReadOnlyDictionary") =>
-                    New(KnownType.Array, ToTypeRef(ns.TypeArguments[0]), ToTypeRef(ns.TypeArguments[1])),
+                    New(KnownType.Map, ToTypeRef(ns.TypeArguments[0]), ToTypeRef(ns.TypeArguments[1])),
 
                 _ => null,
             };
