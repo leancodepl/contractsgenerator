@@ -162,7 +162,7 @@ namespace LeanCode.ContractsGeneratorV2
                         Nullable = isNullable,
                     };
                     ns.TypeArguments
-                        .Select(ToGenericArg)
+                        .Select(ToTypeRef)
                         .SaveToRepeatedField(res.Internal.Arguments);
                     return res;
                 }
@@ -208,7 +208,7 @@ namespace LeanCode.ContractsGeneratorV2
                 { ContainingNamespace: { Name: "System" }, Name: "Uri" } => New(KnownType.Uri),
 
                 _ when ts is INamedTypeSymbol ns && IsQueryType(ns) =>
-                    New(KnownType.Query, ToGenericArg(ns.TypeArguments[0])),
+                    New(KnownType.Query, ToTypeRef(ns.TypeArguments[0])),
                 _ when ts is INamedTypeSymbol ns && IsCommandType(ns) =>
                     New(KnownType.Command),
                 _ when ts.Equals(contracts.AuthorizeWhenAttribute, SymbolEqualityComparer.Default) =>
@@ -220,17 +220,17 @@ namespace LeanCode.ContractsGeneratorV2
                 _ when ts.Equals(contracts.Attribute, SymbolEqualityComparer.Default) =>
                     New(KnownType.Attribute),
 
-                IArrayTypeSymbol arr => New(KnownType.Array, ToGenericArg(arr.ElementType)),
+                IArrayTypeSymbol arr => New(KnownType.Array, ToTypeRef(arr.ElementType)),
                 _ when ts is INamedTypeSymbol ns && ns.Arity == 1 && ns.Interfaces.Any(i => i.SpecialType == SpecialType.System_Collections_IEnumerable) =>
-                    New(KnownType.Array, ToGenericArg(ns.TypeArguments[0])),
+                    New(KnownType.Array, ToTypeRef(ns.TypeArguments[0])),
 
                 _ when ts is INamedTypeSymbol ns && ns.Arity == 2 && ns.Interfaces.Any(i => i.Name == "IReadOnlyDictionary") =>
-                    New(KnownType.Array, ToGenericArg(ns.TypeArguments[0]), ToGenericArg(ns.TypeArguments[1])),
+                    New(KnownType.Array, ToTypeRef(ns.TypeArguments[0]), ToTypeRef(ns.TypeArguments[1])),
 
                 _ => null,
             };
 
-            static TypeRef.Types.Known New(KnownType type, params GenericArgument[] args)
+            static TypeRef.Types.Known New(KnownType type, params TypeRef[] args)
             {
                 var res = new TypeRef.Types.Known
                 {
@@ -238,25 +238,6 @@ namespace LeanCode.ContractsGeneratorV2
                 };
                 args.SaveToRepeatedField(res.Arguments);
                 return res;
-            }
-        }
-
-        private GenericArgument ToGenericArg(ITypeSymbol ts)
-        {
-            if (ts is INamedTypeSymbol named)
-            {
-                return new() { Type = new() { Type_ = ToTypeRef(named) } };
-            }
-            else
-            {
-                return new()
-                {
-                    Param = new()
-                    {
-                        Name = ts.Name,
-                        Nullable = IsNullable(ts),
-                    }
-                };
             }
         }
 

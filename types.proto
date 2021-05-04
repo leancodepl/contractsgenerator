@@ -65,11 +65,11 @@ message TypeRef {
   }
   message Internal {
     string name = 1;
-    repeated GenericArgument arguments = 2;
+    repeated TypeRef arguments = 2;
   }
   message Known {
     KnownType type = 1;
-    repeated GenericArgument arguments = 2;
+    repeated TypeRef arguments = 2;
   }
 
   bool nullable = 1;
@@ -82,20 +82,6 @@ message TypeRef {
 
 message GenericParameter {
   string name = 1;
-}
-
-message GenericArgument {
-  message Param {
-    string name = 1;
-    bool nullable = 2;
-  }
-  message Type {
-    TypeRef type = 1;
-  }
-  oneof argument {
-    Param param = 1;
-    Type type = 2;
-  }
 }
 
 message AttributeArgument {
