@@ -135,21 +135,21 @@ namespace LeanCode.ContractsGeneratorV2
         {
             var isNullable = IsNullable(symbol);
 
-            if (symbol is INamedTypeSymbol ns)
+            if (TryKnownTypeRef(symbol) is TypeRef.Types.Known k)
+            {
+                return new TypeRef
+                {
+                    Known = k,
+                    Nullable = isNullable,
+                };
+            }
+            else if (symbol is INamedTypeSymbol ns)
             {
                 if (ns.OriginalDefinition?.SpecialType == SpecialType.System_Nullable_T)
                 {
                     var inner = ToTypeRef(ns.TypeArguments[0]);
                     inner.Nullable = true;
                     return inner;
-                }
-                else if (TryKnownTypeRef(ns) is TypeRef.Types.Known k)
-                {
-                    return new TypeRef
-                    {
-                        Known = k,
-                        Nullable = isNullable,
-                    };
                 }
                 else
                 {
