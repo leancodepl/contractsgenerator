@@ -477,7 +477,7 @@ namespace LeanCode.ContractsGeneratorV2
 
         private static bool IsNullable(ITypeSymbol symbol)
         {
-            return symbol.NullableAnnotation != NullableAnnotation.None;
+            return symbol.NullableAnnotation == NullableAnnotation.Annotated;
         }
     }
 
