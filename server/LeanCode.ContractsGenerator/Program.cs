@@ -1,12 +1,12 @@
-﻿using System.IO;
+using System.IO;
 using System.Text;
 using Google.Protobuf;
 
 namespace LeanCode.ContractsGenerator
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             var fullPath = Path.GetFullPath(args.Length > 1 ? args[1] : "./ExampleContracts");
             Write(fullPath);

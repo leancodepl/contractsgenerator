@@ -51,6 +51,7 @@ namespace LeanCode.ContractsGenerator
                 {
                     sb.AppendLine(t.InnerText.Trim());
                 }
+
                 return sb.ToString();
             }
             else

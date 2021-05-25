@@ -9,7 +9,6 @@ namespace LeanCode.ContractsGenerator
     {
         private const string ErrorCodesName = "ErrorCodes";
 
-
         public static bool IsErrorCode(ISymbol? sym)
         {
             return sym.Name == ErrorCodesName || (sym.ContainingSymbol is not null && IsErrorCode(sym.ContainingSymbol));
@@ -49,13 +48,14 @@ namespace LeanCode.ContractsGenerator
                 {
                     throw new InvalidOperationException("The error codes class can only contain constant numeric fields & derived types.");
                 }
+
                 return new()
                 {
                     Single = new()
                     {
                         Name = f.Name,
-                        Code = Convert.ToInt32(f.ConstantValue)
-                    }
+                        Code = Convert.ToInt32(f.ConstantValue),
+                    },
                 };
             }
 
@@ -65,6 +65,7 @@ namespace LeanCode.ContractsGenerator
                 {
                     throw new InvalidOperationException($"The base class for error codes group needs to be named `{ErrorCodesName}`.");
                 }
+
                 var g = new ErrorCode.Types.Group
                 {
                     Name = ns.Name,
