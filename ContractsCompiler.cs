@@ -7,13 +7,13 @@ using LeanCode.CQRS;
 using LeanCode.CQRS.Security;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace LeanCode.ContractsGeneratorV2
 {
     internal class ContractsCompiler
     {
         private static readonly string ObjectAssemblyPath = Path.GetDirectoryName(typeof(object).Assembly.Location);
+
         private static readonly List<MetadataReference> DefaultAssemblies = new()
         {
             MetadataReference.CreateFromFile(typeof(IQuery<>).Assembly.Location),
@@ -33,10 +33,9 @@ namespace LeanCode.ContractsGeneratorV2
         public ContractsCompiler(string rootPath)
         {
             this.rootPath = rootPath;
-
         }
 
-        public Contracts Compile()
+        public CompiledContracts Compile()
         {
             var trees = new List<SyntaxTree>();
 
@@ -80,49 +79,6 @@ namespace LeanCode.ContractsGeneratorV2
             : base("Contracts compilation failed.")
         {
             Diagnostics = diagnostics;
-        }
-    }
-
-    public class Contracts
-    {
-        public CSharpCompilation Compilation { get; private init; }
-        public IReadOnlyList<SyntaxTree> Trees { get; private init; }
-
-        public INamedTypeSymbol QueryType { get; }
-        public INamedTypeSymbol CommandType { get; }
-
-        public INamedTypeSymbol AuthorizeWhenAttribute { get; }
-        public INamedTypeSymbol AuthorizeWhenHasAnyOfAttribute { get; }
-        public INamedTypeSymbol QueryCacheAttribute { get; }
-        public INamedTypeSymbol Attribute { get; }
-        public INamedTypeSymbol AttributeUsageAttribute { get; }
-
-        public Contracts(CSharpCompilation compilation, List<SyntaxTree> trees)
-        {
-            Compilation = compilation;
-            Trees = trees;
-
-            QueryType = Compilation.GetTypeByMetadataName(typeof(IRemoteQuery<>).FullName).ConstructUnboundGenericType();
-            CommandType = Compilation.GetTypeByMetadataName(typeof(IRemoteCommand).FullName);
-
-            AuthorizeWhenAttribute = Compilation.GetTypeByMetadataName(typeof(AuthorizeWhenAttribute).FullName);
-            AuthorizeWhenHasAnyOfAttribute = Compilation.GetTypeByMetadataName(typeof(AuthorizeWhenHasAnyOfAttribute).FullName);
-            QueryCacheAttribute = Compilation.GetTypeByMetadataName(typeof(QueryCacheAttribute).FullName);
-            Attribute = Compilation.GetTypeByMetadataName(typeof(Attribute).FullName);
-            AttributeUsageAttribute = Compilation.GetTypeByMetadataName(typeof(AttributeUsageAttribute).FullName);
-        }
-
-        public IEnumerable<INamedTypeSymbol> ListAllTypes()
-        {
-            return Trees.SelectMany(t =>
-            {
-                var model = Compilation.GetSemanticModel(t);
-                var root = t.GetRoot();
-                var symbols = root.DescendantNodes().OfType<BaseTypeDeclarationSyntax>();
-                return symbols
-                    .Select(s => model.GetDeclaredSymbol(s))
-                    .OfType<INamedTypeSymbol>();
-            });
         }
     }
 }
