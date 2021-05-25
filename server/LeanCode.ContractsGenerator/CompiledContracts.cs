@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace LeanCode.ContractsGeneratorV2
+namespace LeanCode.ContractsGenerator
 {
     public sealed class CompiledContracts
     {

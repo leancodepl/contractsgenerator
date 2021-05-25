@@ -2,7 +2,7 @@
 using System.Text;
 using Google.Protobuf;
 
-namespace LeanCode.ContractsGeneratorV2
+namespace LeanCode.ContractsGenerator
 {
     class Program
     {

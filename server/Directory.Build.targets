@@ -1,0 +1,30 @@
+<Project>
+  <PropertyGroup>
+    <CoreLibVersion>5.1.1237</CoreLibVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Update="Google.Protobuf" Version="3.15.6" />
+    <PackageReference Update="Grpc.Tools" Version="2.36.4" />
+
+    <PackageReference Update="LeanCode.CQRS" Version="$(CoreLibVersion)" />
+    <PackageReference Update="LeanCode.CQRS.Security" Version="$(CoreLibVersion)" />
+    <PackageReference Update="LeanCode.Time" Version="$(CoreLibVersion)" />
+
+    <PackageReference Update="Microsoft.CodeAnalysis" Version="3.9.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="16.10.0-release-20210330-02" />
+    <PackageReference Update="xunit.analyzers" Version="0.10.0" />
+    <PackageReference Update="xunit.runner.visualstudio" Version="2.4.3" />
+    <PackageReference Update="xunit" Version="2.4.1" />
+
+    <PackageReference Update="coverlet.collector" Version="1.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="LeanCode.CodeAnalysis" Version="$(CoreLibVersion)" PrivateAssets="all" />
+  </ItemGroup>
+
+</Project>

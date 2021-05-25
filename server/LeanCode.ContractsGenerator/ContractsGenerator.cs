@@ -4,7 +4,7 @@ using System.Linq;
 using Google.Protobuf.Collections;
 using Microsoft.CodeAnalysis;
 
-namespace LeanCode.ContractsGeneratorV2
+namespace LeanCode.ContractsGenerator
 {
     internal class ContractsGenerator
     {

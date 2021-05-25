@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package leancode.contracts;
 
-option csharp_namespace = "LeanCode.ContractsGeneratorV2";
+option csharp_namespace = "LeanCode.ContractsGenerator";
 
 enum KnownType {
   Object = 0;

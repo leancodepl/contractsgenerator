@@ -1,6 +1,6 @@
 using System;
 
-namespace LeanCode.ContractsGeneratorV2
+namespace LeanCode.ContractsGenerator
 {
     public static class ObjectExtensions
     {
