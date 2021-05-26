@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "server"
+		},
+		{
+			"path": "examples"
+		},
+		{
+			"path": "contracts"
+		}
+	],
+	"settings": {}
+}
