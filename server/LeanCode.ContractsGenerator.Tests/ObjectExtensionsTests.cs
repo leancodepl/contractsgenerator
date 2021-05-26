@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics.CodeAnalysis;
 using Xunit;
 
@@ -54,6 +55,13 @@ namespace LeanCode.ContractsGenerator.Tests
             var vr = true.ToValueRef();
             Assert.NotNull(vr.Bool);
             Assert.True(vr.Bool.Value);
+        }
+
+        [Fact]
+        public void Other_types_are_not_converted()
+        {
+            Assert.Throws<NotSupportedException>(() => new object().ToValueRef());
+            Assert.Throws<NotSupportedException>(() => new Random().ToValueRef());
         }
     }
 }

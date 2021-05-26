@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using LeanCode.CQRS;
 using LeanCode.CQRS.Security;
@@ -18,6 +19,8 @@ namespace LeanCode.ContractsGenerator
 
         public INamedTypeSymbol Attribute { get; }
         public INamedTypeSymbol AttributeUsageAttribute { get; }
+        public INamedTypeSymbol ReadOnlyDictionary { get; }
+        public INamedTypeSymbol Dictionary { get; }
 
         public ContractTypes(CSharpCompilation compilation)
         {
@@ -29,6 +32,8 @@ namespace LeanCode.ContractsGenerator
             QueryCacheAttribute = compilation.GetTypeByMetadataName(typeof(QueryCacheAttribute).FullName);
             Attribute = compilation.GetTypeByMetadataName(typeof(Attribute).FullName);
             AttributeUsageAttribute = compilation.GetTypeByMetadataName(typeof(AttributeUsageAttribute).FullName);
+            ReadOnlyDictionary = compilation.GetTypeByMetadataName(typeof(IReadOnlyDictionary<,>).FullName).ConstructUnboundGenericType();
+            Dictionary = compilation.GetTypeByMetadataName(typeof(IDictionary<,>).FullName).ConstructUnboundGenericType();
         }
 
         public bool IsQuery(ITypeSymbol symbol)
@@ -86,5 +91,14 @@ namespace LeanCode.ContractsGenerator
 
         public bool IsAttributeUsageType(ITypeSymbol i) =>
             AttributeUsageAttribute.Equals(i, SymbolEqualityComparer.Default);
+
+        public bool IsReadOnlyDictionary(ITypeSymbol i)
+        {
+            return
+                i is INamedTypeSymbol ns &&
+                ns.IsGenericType && (
+                    ReadOnlyDictionary.Equals(ns.ConstructUnboundGenericType(), SymbolEqualityComparer.Default) ||
+                    Dictionary.Equals(ns.ConstructUnboundGenericType(), SymbolEqualityComparer.Default));
+        }
     }
 }

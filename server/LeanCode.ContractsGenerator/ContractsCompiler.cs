@@ -10,7 +10,7 @@ using Microsoft.CodeAnalysis.CSharp;
 
 namespace LeanCode.ContractsGenerator
 {
-    internal class ContractsCompiler
+    public static class ContractsCompiler
     {
         private static readonly string ObjectAssemblyPath = Path.GetDirectoryName(typeof(object).Assembly.Location);
 
@@ -28,14 +28,7 @@ namespace LeanCode.ContractsGenerator
             MetadataReference.CreateFromFile(Path.Combine(ObjectAssemblyPath, "System.Private.Uri.dll")),
         };
 
-        private readonly string rootPath;
-
-        public ContractsCompiler(string rootPath)
-        {
-            this.rootPath = rootPath;
-        }
-
-        public CompiledContracts Compile()
+        public static CompiledContracts CompilePath(string rootPath)
         {
             var trees = new List<SyntaxTree>();
 
@@ -51,6 +44,17 @@ namespace LeanCode.ContractsGenerator
                 trees.Add(contractTree);
             }
 
+            return Compile(trees);
+        }
+
+        public static CompiledContracts CompileCode(string contractText)
+        {
+            var contractTree = CSharpSyntaxTree.ParseText(contractText);
+            return Compile(new() { contractTree });
+        }
+
+        private static CompiledContracts Compile(List<SyntaxTree> trees)
+        {
             var compilation = CSharpCompilation.Create("LeanCode.ContractsGenerator")
                 .WithOptions(new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary)
                     .WithConcurrentBuild(true)

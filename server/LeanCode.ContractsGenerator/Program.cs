@@ -16,7 +16,7 @@ namespace LeanCode.ContractsGenerator
 
         private static void Write(string path)
         {
-            var contracts = new ContractsCompiler(path).Compile();
+            var contracts = ContractsCompiler.CompilePath(path);
             var gen = new ContractsGenerator(contracts);
             var generated = gen.Generate(path);
             using var outputStream = File.OpenWrite("./example.pb");

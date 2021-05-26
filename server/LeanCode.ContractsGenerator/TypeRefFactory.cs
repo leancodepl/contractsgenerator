@@ -105,7 +105,8 @@ namespace LeanCode.ContractsGenerator
                 _ when ts is INamedTypeSymbol ns && ns.Arity == 1 && ns.Interfaces.Any(i => i.SpecialType == SpecialType.System_Collections_IEnumerable) =>
                     New(KnownType.Array, From(ns.TypeArguments[0])),
 
-                _ when ts is INamedTypeSymbol ns && ns.Arity == 2 && ns.Interfaces.Any(i => i.Name == "IReadOnlyDictionary") =>
+                _ when ts is INamedTypeSymbol ns && ns.Arity == 2 &&
+                    (contracts.Types.IsReadOnlyDictionary(ns) || ns.Interfaces.Any(i => contracts.Types.IsReadOnlyDictionary(i))) =>
                     New(KnownType.Map, From(ns.TypeArguments[0]), From(ns.TypeArguments[1])),
 
                 _ => null,

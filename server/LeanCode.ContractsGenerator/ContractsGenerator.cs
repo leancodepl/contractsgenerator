@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis;
 
 namespace LeanCode.ContractsGenerator
 {
-    internal class ContractsGenerator
+    public class ContractsGenerator
     {
         private readonly CompiledContracts contracts;
 
