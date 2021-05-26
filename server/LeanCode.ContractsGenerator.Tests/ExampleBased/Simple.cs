@@ -8,7 +8,7 @@ namespace LeanCode.ContractsGenerator.Tests.ExampleBased
         [Fact]
         public void Simple_command()
         {
-            @"public class Command : IRemoteCommand {}"
+            "simple/command.cs"
                 .Compiles()
                 .WithSingle()
                 .Command("Command")
@@ -18,7 +18,7 @@ namespace LeanCode.ContractsGenerator.Tests.ExampleBased
         [Fact]
         public void Simple_query()
         {
-            @"public class Query : IRemoteQuery<int> {}"
+            "simple/query.cs"
                 .Compiles()
                 .WithSingle()
                 .Query("Query")
@@ -31,7 +31,7 @@ namespace LeanCode.ContractsGenerator.Tests.ExampleBased
         [Fact]
         public void Simple_Dto()
         {
-            @"public class DTO {}"
+            "simple/dto.cs"
                 .Compiles()
                 .WithSingle()
                 .Dto("DTO");
@@ -40,7 +40,7 @@ namespace LeanCode.ContractsGenerator.Tests.ExampleBased
         [Fact]
         public void Simple_Enum()
         {
-            @"public enum SimpleEnum { A, B, C = 10 }"
+            "simple/enum.cs"
                 .Compiles()
                 .WithSingle()
                 .Enum("SimpleEnum")

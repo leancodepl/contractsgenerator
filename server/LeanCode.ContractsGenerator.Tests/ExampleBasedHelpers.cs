@@ -1,20 +1,13 @@
+using System.IO;
+
 namespace LeanCode.ContractsGenerator.Tests
 {
     public static class ExampleBasedHelpers
     {
-        private static string Wrap(this string code)
+        public static Export Compiles(this string path)
         {
-            return @$"
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using LeanCode.CQRS;
-{code}";
-        }
-
-        public static Export Compiles(this string code)
-        {
-            var compiled = ContractsCompiler.CompileCode(code.Wrap());
+            var code = File.ReadAllText(Path.Join("examples", path));
+            var compiled = ContractsCompiler.CompileCode(code);
             return new ContractsGenerator(compiled).Generate(string.Empty);
         }
     }

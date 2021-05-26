@@ -8,21 +8,7 @@ namespace LeanCode.ContractsGenerator.Tests.ExampleBased
         [Fact]
         public void Properties_with_known_types()
         {
-            @"public class Dto
-            {
-                public int A { get; set; }
-                public ulong B { get; }
-                public string C { get; set; }
-                public bool D { get; private set; }
-                public Uri E { get; set; }
-                public Date F { get; set; }
-                public Time G { get; set; }
-                public DateTime H { get; set; }
-                public DateTimeOffset I { get; set; }
-                public Guid J { get; set; }
-                public float K { get; set; }
-                public double L { get; set; }
-            }"
+            "properties/known_types.cs"
                 .Compiles()
                 .WithDto("Dto")
                     .WithProperty("A", Known(KnownType.Int32))
@@ -42,16 +28,7 @@ namespace LeanCode.ContractsGenerator.Tests.ExampleBased
         [Fact]
         public void Properties_with_composite_types()
         {
-            @"public class Dto
-            {
-                public IReadOnlyList<int> A { get; set; }
-                public IList<int> B { get; set; }
-                public List<int> C { get; set; }
-                public int[] D { get; set; }
-                public IReadOnlyDictionary<int, string> E { get; set; }
-                public IDictionary<int, string> F { get; set; }
-                public Dictionary<int, string> G { get; set; }
-            }"
+            "properties/composite_types.cs"
                 .Compiles()
                 .WithDto("Dto")
                     .WithProperty("A", Array(Known(KnownType.Int32)))
