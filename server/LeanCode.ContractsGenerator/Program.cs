@@ -1,40 +1,82 @@
 using System.IO;
-using System.Text;
 using System.Threading.Tasks;
+using CommandLine;
 using Google.Protobuf;
 
 namespace LeanCode.ContractsGenerator
 {
+    public interface IOptions
+    {
+        [Option('o', "output", Required = true, MetaValue = "FILE", HelpText = "The output file path.")]
+        public string OutputFile { get; set; }
+    }
+
+    [Verb("project", HelpText = "Generate contracts from C# project.")]
+    public class ProjectOptions : IOptions
+    {
+        public string OutputFile { get; set; }
+
+        [Option('s', "solution", Required = false, MetaValue = "FILE", HelpText = "The solution that the project is in.")]
+        public string? SolutionFile { get; set; }
+        [Option('p', "project", Required = true, MetaValue = "FILE", HelpText = "The project file with contracts.")]
+        public string ProjectFile { get; set; }
+    }
+
+    [Verb("file", HelpText = "Generate contracts from a single file.")]
+    public class FileOptions : IOptions
+    {
+        public string OutputFile { get; set; }
+
+        [Option('i', "input", Required = true, MetaValue = "FILE", HelpText = "Input file.")]
+        public string InputFile { get; set; }
+    }
+
+    [Verb("path", HelpText = "Generate contracts based on globbed path.")]
+    public class PathOptions : IOptions
+    {
+        public string OutputFile { get; set; }
+
+        [Option('p', "path", Required = true, MetaValue = "FILE", HelpText = "Input path (will glob all .cs files).")]
+        public string InputPath { get; set; }
+    }
+
     internal class Program
     {
-        private static async Task Main(string[] args)
+        private static async Task<int> Main(string[] args)
         {
-            var solutionPath = Path.GetFullPath(args[0]);
-            var projectPath = Path.GetFullPath(args[1]);
-            await Write(solutionPath, projectPath);
-            var export = Read();
-            WriteJson(export);
+            return await Parser.Default.ParseArguments<ProjectOptions, FileOptions, PathOptions>(args)
+                .MapResult(
+                    (ProjectOptions p) => HandleProjectAsync(p),
+                    (FileOptions f) => HandleFileAsync(f),
+                    (PathOptions p) => HandlePathAsync(p),
+                    err => Task.FromResult(1));
         }
 
-        private static async Task Write(string solutionPath, string projectPath)
+        private static async Task<int> HandleProjectAsync(ProjectOptions p)
         {
-            var contracts = await ContractsCompiler.CompileProjectAsync(solutionPath, projectPath);
+            var contracts = await ContractsCompiler.CompileProjectAsync(p.ProjectFile, p.SolutionFile);
+            return await WriteAsync(contracts, p.OutputFile);
+        }
+
+        private static async Task<int> HandleFileAsync(FileOptions f)
+        {
+            var contracts = await ContractsCompiler.CompileFileAsync(f.InputFile);
+            return await WriteAsync(contracts, f.OutputFile);
+        }
+
+        private static async Task<int> HandlePathAsync(PathOptions p)
+        {
+            var contracts = await ContractsCompiler.CompilePathAsync(p.InputPath);
+            return await WriteAsync(contracts, p.OutputFile);
+        }
+
+        private static async Task<int> WriteAsync(CompiledContracts contracts, string output)
+        {
             var generated = new ContractsGenerator(contracts).Generate();
-            using var outputStream = File.OpenWrite("./example.pb");
+            await using var outputStream = File.OpenWrite(output);
             using var codedOutput = new CodedOutputStream(outputStream, true);
             generated.WriteTo(codedOutput);
-        }
-
-        private static Export Read()
-        {
-            using var inputStream = File.OpenRead("./example.pb");
-            return Export.Parser.ParseFrom(inputStream);
-        }
-
-        private static void WriteJson(Export export)
-        {
-            using var writer = File.CreateText("./example.json");
-            writer.Write(export.ToString());
+            return 0;
         }
     }
 }

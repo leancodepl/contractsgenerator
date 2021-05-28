@@ -37,7 +37,7 @@ namespace LeanCode.ContractsGenerator
             "LeanCode.Time",
         };
 
-        public static async Task<CompiledContracts> CompileProjectAsync(string solutionPath, string projectPath)
+        public static async Task<CompiledContracts> CompileProjectAsync(string projectPath, string? solutionPath)
         {
             var manager = new AnalyzerManager(solutionPath);
             var project = manager.GetProject(projectPath);
@@ -71,7 +71,7 @@ namespace LeanCode.ContractsGenerator
             }
         }
 
-        public static async Task<CompiledContracts> CompilePath(string rootPath)
+        public static async Task<CompiledContracts> CompilePathAsync(string rootPath)
         {
             var trees = new List<SyntaxTree>();
 
