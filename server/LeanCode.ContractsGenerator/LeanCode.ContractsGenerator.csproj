@@ -12,6 +12,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Buildalyzer" />
+    <PackageReference Include="Buildalyzer.Workspaces" />
     <PackageReference Include="Google.Protobuf" />
     <PackageReference Include="Grpc.Tools">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

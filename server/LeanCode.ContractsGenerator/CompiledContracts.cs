@@ -9,21 +9,21 @@ namespace LeanCode.ContractsGenerator
     public sealed class CompiledContracts
     {
         private readonly CSharpCompilation compilation;
-        private readonly IReadOnlyList<SyntaxTree> trees;
 
         public ContractTypes Types { get; }
+        public string ProjectName { get; }
 
-        public CompiledContracts(CSharpCompilation compilation, List<SyntaxTree> trees)
+        public CompiledContracts(CSharpCompilation compilation, string projectName)
         {
             this.compilation = compilation;
-            this.trees = trees;
+            ProjectName = projectName;
 
             Types = new(compilation);
         }
 
         public IEnumerable<INamedTypeSymbol> ListAllTypes()
         {
-            return trees.SelectMany(t =>
+            return compilation.SyntaxTrees.SelectMany(t =>
             {
                 var model = compilation.GetSemanticModel(t);
                 var root = t.GetRoot();

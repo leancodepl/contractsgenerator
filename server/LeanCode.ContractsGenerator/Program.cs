@@ -1,24 +1,25 @@
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 using Google.Protobuf;
 
 namespace LeanCode.ContractsGenerator
 {
     internal class Program
     {
-        private static void Main(string[] args)
+        private static async Task Main(string[] args)
         {
-            var fullPath = Path.GetFullPath(args.Length > 1 ? args[1] : "./ExampleContracts");
-            Write(fullPath);
+            var solutionPath = Path.GetFullPath(args[0]);
+            var projectPath = Path.GetFullPath(args[1]);
+            await Write(solutionPath, projectPath);
             var export = Read();
             WriteJson(export);
         }
 
-        private static void Write(string path)
+        private static async Task Write(string solutionPath, string projectPath)
         {
-            var contracts = ContractsCompiler.CompilePath(path);
-            var gen = new ContractsGenerator(contracts);
-            var generated = gen.Generate(path);
+            var contracts = await ContractsCompiler.CompileProjectAsync(solutionPath, projectPath);
+            var generated = new ContractsGenerator(contracts).Generate();
             using var outputStream = File.OpenWrite("./example.pb");
             using var codedOutput = new CodedOutputStream(outputStream, true);
             generated.WriteTo(codedOutput);
