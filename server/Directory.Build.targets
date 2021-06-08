@@ -7,6 +7,11 @@
     <PackageReference Update="Google.Protobuf" Version="3.15.6" />
     <PackageReference Update="Grpc.Tools" Version="2.36.4" />
 
+    <PackageReference Update="CommandLineParser" Version="2.8.0" />
+
+    <PackageReference Update="Buildalyzer" Version="3.2.1" />
+    <PackageReference Update="Buildalyzer.Workspaces" Version="3.2.1" />
+
     <PackageReference Update="LeanCode.CQRS" Version="$(CoreLibVersion)" />
     <PackageReference Update="LeanCode.CQRS.Security" Version="$(CoreLibVersion)" />
     <PackageReference Update="LeanCode.Time" Version="$(CoreLibVersion)" />

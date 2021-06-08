@@ -19,9 +19,9 @@ namespace LeanCode.ContractsGenerator
             typeRef = new(contracts);
         }
 
-        public Export Generate(string path)
+        public Export Generate()
         {
-            var export = new Export() { BasePath = path };
+            var export = new Export() { ProjectName = contracts.ProjectName };
             contracts.ListAllTypes()
                 .Select(ProcessType)
                 .Where(s => s is not null)

@@ -7,8 +7,8 @@ namespace LeanCode.ContractsGenerator.Tests
         public static Export Compiles(this string path)
         {
             var code = File.ReadAllText(Path.Join("examples", path));
-            var compiled = ContractsCompiler.CompileCode(code);
-            return new ContractsGenerator(compiled).Generate(string.Empty);
+            var compiled = ContractsCompiler.CompileCode(code, "test");
+            return new ContractsGenerator(compiled).Generate();
         }
     }
 }

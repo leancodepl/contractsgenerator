@@ -167,7 +167,7 @@ message Statement {
 }
 
 message Export {
-  string basePath = 1;
+  string projectName = 1;
   repeated Statement statements = 2;
   repeated ErrorCode.Group knownErrorGroups = 3;
 }
