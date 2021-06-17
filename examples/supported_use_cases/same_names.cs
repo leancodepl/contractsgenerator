@@ -1,6 +1,6 @@
 using LeanCode.CQRS;
 
-namespace FirstNamespace
+namespace First
 {
     public class DTO { }
 
@@ -9,7 +9,7 @@ namespace FirstNamespace
     public class Query : IRemoteQuery<int> { }
 }
 
-namespace SecondNamespace
+namespace Second
 {
     public class DTO { }
 
