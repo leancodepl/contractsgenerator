@@ -4,9 +4,9 @@ namespace LeanCode.ContractsGenerator.Tests
 {
     public static class ExampleBasedAsserts
     {
-        private static AssertedStatement With(this Export export, string name)
+        private static AssertedStatement With(this AssertedExport export, string name)
         {
-            return new(Assert.Single(export.Statements, stmt => stmt.Name == name));
+            return new(export.Export, Assert.Single(export.Export.Statements, stmt => stmt.Name == name));
         }
 
         private static Export Without(this Export export, string name)
@@ -15,27 +15,27 @@ namespace LeanCode.ContractsGenerator.Tests
             return export;
         }
 
-        public static AssertedStatement WithSingle(this Export export)
+        public static AssertedStatement WithSingle(this AssertedExport stmt)
         {
-            return new(Assert.Single(export.Statements));
+            return new(stmt.Export, Assert.Single(stmt.Export.Statements));
         }
 
-        public static AssertedCommand WithCommand(this Export export, string name)
+        public static AssertedCommand WithCommand(this AssertedExport export, string name)
         {
             return export.With(name).Command(name);
         }
 
-        public static AssertedQuery WithQuery(this Export export, string name)
+        public static AssertedQuery WithQuery(this AssertedExport export, string name)
         {
             return export.With(name).Query(name);
         }
 
-        public static AssertedDto WithDto(this Export export, string name)
+        public static AssertedDto WithDto(this AssertedExport export, string name)
         {
             return export.With(name).Dto(name);
         }
 
-        public static AssertedEnum WithEnum(this Export export, string name)
+        public static AssertedEnum WithEnum(this AssertedExport export, string name)
         {
             return export.With(name).Enum(name);
         }
@@ -44,28 +44,28 @@ namespace LeanCode.ContractsGenerator.Tests
         {
             Assert.NotNull(stmt.Statement.Command);
             Assert.Equal(name, stmt.Statement.Name);
-            return new(stmt.Statement);
+            return new(stmt.Export, stmt.Statement);
         }
 
         public static AssertedQuery Query(this AssertedStatement stmt, string name)
         {
             Assert.NotNull(stmt.Statement.Query);
             Assert.Equal(name, stmt.Statement.Name);
-            return new(stmt.Statement);
+            return new(stmt.Export, stmt.Statement);
         }
 
         public static AssertedDto Dto(this AssertedStatement stmt, string name)
         {
             Assert.NotNull(stmt.Statement.Dto);
             Assert.Equal(name, stmt.Statement.Name);
-            return new(stmt.Statement);
+            return new(stmt.Export, stmt.Statement);
         }
 
         public static AssertedEnum Enum(this AssertedStatement stmt, string name)
         {
             Assert.NotNull(stmt.Statement.Enum);
             Assert.Equal(name, stmt.Statement.Name);
-            return new(stmt.Statement);
+            return new(stmt.Export, stmt.Statement);
         }
 
         public static AssertedStatement Commented(this AssertedStatement stmt, string comment)
@@ -133,9 +133,10 @@ namespace LeanCode.ContractsGenerator.Tests
         }
     }
 
-    public record AssertedStatement(Statement Statement);
-    public record AssertedCommand(Statement Statement) : AssertedStatement(Statement);
-    public record AssertedQuery(Statement Statement) : AssertedStatement(Statement);
-    public record AssertedDto(Statement Statement) : AssertedStatement(Statement);
-    public record AssertedEnum(Statement Statement) : AssertedStatement(Statement);
+    public record AssertedExport(Export Export);
+    public record AssertedStatement(Export Export, Statement Statement) : AssertedExport(Export);
+    public record AssertedCommand(Export Export, Statement Statement) : AssertedStatement(Export, Statement);
+    public record AssertedQuery(Export Export, Statement Statement) : AssertedStatement(Export, Statement);
+    public record AssertedDto(Export Export, Statement Statement) : AssertedStatement(Export, Statement);
+    public record AssertedEnum(Export Export, Statement Statement) : AssertedStatement(Export, Statement);
 }
