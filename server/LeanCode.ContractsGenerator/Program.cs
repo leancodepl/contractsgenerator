@@ -7,7 +7,9 @@ namespace LeanCode.ContractsGenerator
 {
     public interface IOptions
     {
-        [Option('o', "output", Required = true, MetaValue = "FILE", HelpText = "The output file path.")]
+        public const string StdoutMarker = "-";
+
+        [Option('o', "output", Required = true, MetaValue = "FILE", HelpText = "The output file path. Use `-` to write the resulting Protobuf file to `stdout`.")]
         public string OutputFile { get; set; }
     }
 
@@ -73,10 +75,30 @@ namespace LeanCode.ContractsGenerator
         private static async Task<int> WriteAsync(CompiledContracts contracts, string output)
         {
             var generated = new ContractsGenerator(contracts).Generate();
-            await using var outputStream = File.OpenWrite(output);
+            if (output == IOptions.StdoutMarker)
+            {
+                await WriteToStdoutAsync(generated);
+            }
+            else
+            {
+                await WriteToFileAsync(generated, output);
+            }
+
+            return 0;
+        }
+
+        private static async Task WriteToFileAsync(Export generated, string filepath)
+        {
+            await using var outputStream = File.OpenWrite(filepath);
             using var codedOutput = new CodedOutputStream(outputStream, true);
             generated.WriteTo(codedOutput);
-            return 0;
+        }
+
+        private static async Task WriteToStdoutAsync(Export generated)
+        {
+            await using var outputStream = System.Console.OpenStandardOutput();
+            using var codedOutput = new CodedOutputStream(outputStream, true);
+            generated.WriteTo(codedOutput);
         }
     }
 }
