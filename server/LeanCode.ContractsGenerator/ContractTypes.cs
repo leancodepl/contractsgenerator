@@ -17,6 +17,8 @@ namespace LeanCode.ContractsGenerator
         public INamedTypeSymbol AuthorizeWhenHasAnyOfAttribute { get; }
         public INamedTypeSymbol QueryCacheAttribute { get; }
 
+        public INamedTypeSymbol ExcludeFromContractsGenerationAttribute { get; }
+
         public INamedTypeSymbol Attribute { get; }
         public INamedTypeSymbol AttributeUsageAttribute { get; }
         public INamedTypeSymbol ReadOnlyDictionary { get; }
@@ -30,6 +32,7 @@ namespace LeanCode.ContractsGenerator
             AuthorizeWhenAttribute = compilation.GetTypeByMetadataName(typeof(AuthorizeWhenAttribute).FullName);
             AuthorizeWhenHasAnyOfAttribute = compilation.GetTypeByMetadataName(typeof(AuthorizeWhenHasAnyOfAttribute).FullName);
             QueryCacheAttribute = compilation.GetTypeByMetadataName(typeof(QueryCacheAttribute).FullName);
+            ExcludeFromContractsGenerationAttribute = compilation.GetTypeByMetadataName(typeof(ExcludeFromContractsGenerationAttribute).FullName);
             Attribute = compilation.GetTypeByMetadataName(typeof(Attribute).FullName);
             AttributeUsageAttribute = compilation.GetTypeByMetadataName(typeof(AttributeUsageAttribute).FullName);
             ReadOnlyDictionary = compilation.GetTypeByMetadataName(typeof(IReadOnlyDictionary<,>).FullName).ConstructUnboundGenericType();
@@ -85,6 +88,9 @@ namespace LeanCode.ContractsGenerator
 
         public bool IsQueryCacheType(ITypeSymbol i) =>
             QueryCacheAttribute.Equals(i, SymbolEqualityComparer.Default);
+
+        public bool IsExcludeFromContractsGenerationType(ITypeSymbol? i) =>
+            ExcludeFromContractsGenerationAttribute.Equals(i, SymbolEqualityComparer.Default);
 
         public bool IsAttributeType(ITypeSymbol i) =>
             Attribute.Equals(i, SymbolEqualityComparer.Default);
