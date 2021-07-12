@@ -33,9 +33,9 @@ namespace LeanCode.ContractsGenerator
             return export;
         }
 
-        private Statement? ProcessType(INamedTypeSymbol symbol)
+        private Statement? ProcessType(INamedTypeSymbol? symbol)
         {
-            if (IsIgnored(symbol))
+            if (IsIgnored(symbol) || IsExcluded(symbol))
             {
                 return null;
             }
@@ -46,17 +46,17 @@ namespace LeanCode.ContractsGenerator
                 Comment = symbol.GetComments(),
             };
             symbol.TypeParameters
-               .Select(ToParam)
-               .SaveToRepeatedField(result.GenericParameters);
+                .Select(ToParam)
+                .SaveToRepeatedField(result.GenericParameters);
             symbol.Interfaces
-               .Append(symbol.BaseType)
-               .Where(s => !IsIgnored(s))
-               .Select(typeRef.From)
-               .SaveToRepeatedField(result.Extends);
+                .Append(symbol.BaseType)
+                .Where(s => !IsIgnored(s))
+                .Select(typeRef.From)
+                .SaveToRepeatedField(result.Extends);
             AllProperties(symbol)
-               .SelectMany(s => s)
-               .Select(ToProperty)
-               .SaveToRepeatedField(result.Properties);
+                .SelectMany(s => s)
+                .Select(ToProperty)
+                .SaveToRepeatedField(result.Properties);
             symbol.GetMembers()
                 .OfType<IFieldSymbol>()
                 .Where(fs => fs.HasConstantValue)
@@ -69,7 +69,11 @@ namespace LeanCode.ContractsGenerator
 
             IEnumerable<IEnumerable<IPropertySymbol>> AllProperties(INamedTypeSymbol ns)
             {
-                var currProps = ns.GetMembers().OfType<IPropertySymbol>();
+                var currProps = ns
+                    .GetMembers()
+                    .Where(s => !IsExcluded(s))
+                    .OfType<IPropertySymbol>();
+
                 if (ns.BaseType is not null)
                 {
                     return AllProperties(ns.BaseType).Append(currProps);
@@ -109,7 +113,7 @@ namespace LeanCode.ContractsGenerator
             }
         }
 
-        private bool IsIgnored(INamedTypeSymbol? symbol)
+        private bool IsIgnored([System.Diagnostics.CodeAnalysis.NotNullWhen(false)] INamedTypeSymbol? symbol)
         {
             return symbol is null ||
                 symbol.SpecialType == SpecialType.System_Object ||
@@ -117,6 +121,13 @@ namespace LeanCode.ContractsGenerator
                 ErrorCodes.IsErrorCode(symbol) ||
                 contracts.Types.IsAttributeType(symbol) ||
                 contracts.Types.IsAttributeUsageType(symbol);
+        }
+
+        private bool IsExcluded(ISymbol symbol)
+        {
+            return symbol
+                .GetAttributes()
+                .Any(a => contracts.Types.IsExcludeFromContractsGenerationType(a.AttributeClass));
         }
 
         private GenericParameter ToParam(ITypeParameterSymbol ts)

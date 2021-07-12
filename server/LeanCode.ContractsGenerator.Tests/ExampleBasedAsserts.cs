@@ -131,6 +131,13 @@ namespace LeanCode.ContractsGenerator.Tests
             Assert.Equal(comment, prop.Comment);
             return stmt;
         }
+
+        public static T WithoutProperty<T>(this T stmt, string name)
+            where T : AssertedStatement
+        {
+            Assert.DoesNotContain(stmt.Statement.Properties, p => p.Name == name);
+            return stmt;
+        }
     }
 
     public record AssertedExport(Export Export);

@@ -34,5 +34,16 @@ namespace LeanCode.ContractsGenerator.Tests.ExampleBased
                             "DTO.ErrorCodes",
                             Single("DtoRelatedError", 1_000)));
         }
+
+        [Fact]
+        public void Excluded_types_and_properties()
+        {
+            "supported_use_cases/exclusions.cs"
+                .Compiles()
+                .WithSingle()
+                .Dto("Exclusions.IncludedDTO")
+                    .WithProperty("IncludedProperty", Known(KnownType.Int32))
+                    .WithoutProperty("ExcludedProperty");
+        }
     }
 }
