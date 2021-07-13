@@ -1,0 +1,56 @@
+name: Build & Release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  release:
+    name: Build & Release
+    runs-on: ubuntu-latest
+    env:
+      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+      DOTNET_CLI_TELEMETRY_OPTOUT: 1
+    steps:
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v2
+      - name: Restore
+        id: restore
+        working-directory: server
+        run: dotnet restore
+      - name: Build
+        id: build
+        working-directory: server
+        run: dotnet build --no-restore --configuration Release
+      - name: Test
+        id: test
+        working-directory: server
+        run: dotnet test --no-build --configuration Release
+      - name: Publish
+        id: publish
+        working-directory: server/LeanCode.ContractsGenerator
+        run: dotnet publish --output ./publish --no-self-contained --no-build --configuration Release
+      - name: Pack
+        id: pack
+        working-directory: server/LeanCode.ContractsGenerator/publish
+        run: zip --recurse-paths "../../../LeanCode.ContractsGenerator.1.0.${GITHUB_RUN_NUMBER}.zip" .
+      - name: Create Release
+        id: release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ format('v1.0.{0}', github.run_number) }}
+          release_name: ${{ format('Release v1.0.{0}', github.run_number) }}
+      - name: Upload Asset
+        id: upload
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.release.outputs.upload_url }}
+          asset_path: ${{ format('./LeanCode.ContractsGenerator.1.0.{0}.zip', github.run_number) }}
+          asset_name: ${{ format('LeanCode.ContractsGenerator.1.0.{0}.zip', github.run_number) }}
+          asset_content_type: application/zip
