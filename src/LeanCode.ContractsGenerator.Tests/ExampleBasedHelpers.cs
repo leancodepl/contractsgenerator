@@ -15,15 +15,7 @@ namespace LeanCode.ContractsGenerator.Tests
         {
             var projectPath = Path.Join("examples", path);
             // HACK: The sync execution results in much cleaner tests
-            var compiled = ContractsCompiler.CompileProjectAsync(projectPath, null).Result;
-            return new(new ContractsGenerator(compiled).Generate());
-        }
-
-        public static AssertedExport ProjectCompiles(this string path, string solution)
-        {
-            var projectPath = Path.Join("examples", path);
-            var solutionPath = Path.Join("examples", solution);
-            var compiled = ContractsCompiler.CompileProjectAsync(projectPath, solutionPath).Result;
+            var compiled = ContractsCompiler.CompileProjectAsync(projectPath).Result;
             return new(new ContractsGenerator(compiled).Generate());
         }
     }
