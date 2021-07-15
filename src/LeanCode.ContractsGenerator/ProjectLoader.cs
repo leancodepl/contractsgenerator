@@ -105,9 +105,13 @@ namespace LeanCode.ContractsGenerator
             var solutionInfo = SolutionInfo.Create(SolutionId.CreateNewId(), VersionStamp.Default, manager.SolutionFilePath);
             adhocWorkspace.AddSolution(solutionInfo);
 
-            foreach (AnalyzerResult item in list)
+            foreach (var item in list)
             {
-                item.AddToWorkspace(adhocWorkspace, true);
+                var projectId = ProjectId.CreateFromSerialized(item.ProjectGuid);
+                if (!adhocWorkspace.CurrentSolution.ContainsProject(projectId))
+                {
+                    item.AddToWorkspace(adhocWorkspace, true);
+                }
             }
 
             return adhocWorkspace;
