@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Protobuf Include="../../contracts/types.proto" />
+    <Protobuf Include="../../contracts.proto" />
   </ItemGroup>
 
   <ItemGroup>
