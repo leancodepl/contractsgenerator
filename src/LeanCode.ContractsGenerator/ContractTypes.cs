@@ -10,33 +10,52 @@ namespace LeanCode.ContractsGenerator
 {
     public sealed class ContractTypes
     {
-        public INamedTypeSymbol QueryType { get; }
-        public INamedTypeSymbol CommandType { get; }
+        private HashSet<INamedTypeSymbol> QueryType { get; }
+        private HashSet<INamedTypeSymbol> CommandType { get; }
 
-        public INamedTypeSymbol AuthorizeWhenAttribute { get; }
-        public INamedTypeSymbol AuthorizeWhenHasAnyOfAttribute { get; }
-        public INamedTypeSymbol QueryCacheAttribute { get; }
+        private HashSet<INamedTypeSymbol> AuthorizeWhenAttribute { get; }
+        private HashSet<INamedTypeSymbol> AuthorizeWhenHasAnyOfAttribute { get; }
+        private HashSet<INamedTypeSymbol> QueryCacheAttribute { get; }
 
-        public INamedTypeSymbol ExcludeFromContractsGenerationAttribute { get; }
+        private HashSet<INamedTypeSymbol> ExcludeFromContractsGenerationAttribute { get; }
 
-        public INamedTypeSymbol Attribute { get; }
-        public INamedTypeSymbol AttributeUsageAttribute { get; }
-        public INamedTypeSymbol ReadOnlyDictionary { get; }
-        public INamedTypeSymbol Dictionary { get; }
+        private HashSet<INamedTypeSymbol> Attribute { get; }
+        private HashSet<INamedTypeSymbol> AttributeUsageAttribute { get; }
+        private HashSet<INamedTypeSymbol> ReadOnlyDictionary { get; }
+        private HashSet<INamedTypeSymbol> Dictionary { get; }
 
-        public ContractTypes(CSharpCompilation compilation)
+        public ContractTypes(IReadOnlyList<CSharpCompilation> compilations)
         {
-            QueryType = compilation.GetTypeByMetadataName(typeof(IRemoteQuery<>).FullName).ConstructUnboundGenericType();
-            CommandType = compilation.GetTypeByMetadataName(typeof(IRemoteCommand).FullName);
+            QueryType = GetUnboundTypeSymbols(compilations, typeof(IRemoteQuery<>));
+            CommandType = GetTypeSymbols<IRemoteCommand>(compilations);
 
-            AuthorizeWhenAttribute = compilation.GetTypeByMetadataName(typeof(AuthorizeWhenAttribute).FullName);
-            AuthorizeWhenHasAnyOfAttribute = compilation.GetTypeByMetadataName(typeof(AuthorizeWhenHasAnyOfAttribute).FullName);
-            QueryCacheAttribute = compilation.GetTypeByMetadataName(typeof(QueryCacheAttribute).FullName);
-            ExcludeFromContractsGenerationAttribute = compilation.GetTypeByMetadataName(typeof(ExcludeFromContractsGenerationAttribute).FullName);
-            Attribute = compilation.GetTypeByMetadataName(typeof(Attribute).FullName);
-            AttributeUsageAttribute = compilation.GetTypeByMetadataName(typeof(AttributeUsageAttribute).FullName);
-            ReadOnlyDictionary = compilation.GetTypeByMetadataName(typeof(IReadOnlyDictionary<,>).FullName).ConstructUnboundGenericType();
-            Dictionary = compilation.GetTypeByMetadataName(typeof(IDictionary<,>).FullName).ConstructUnboundGenericType();
+            AuthorizeWhenAttribute = GetTypeSymbols<AuthorizeWhenAttribute>(compilations);
+            AuthorizeWhenHasAnyOfAttribute = GetTypeSymbols<AuthorizeWhenHasAnyOfAttribute>(compilations);
+            QueryCacheAttribute = GetTypeSymbols<QueryCacheAttribute>(compilations);
+            ExcludeFromContractsGenerationAttribute = GetTypeSymbols<ExcludeFromContractsGenerationAttribute>(compilations);
+            Attribute = GetTypeSymbols<Attribute>(compilations);
+            AttributeUsageAttribute = GetTypeSymbols<AttributeUsageAttribute>(compilations);
+            ReadOnlyDictionary = GetUnboundTypeSymbols(compilations, typeof(IReadOnlyDictionary<,>));
+            Dictionary = GetUnboundTypeSymbols(compilations, typeof(IDictionary<,>));
+        }
+
+        private static HashSet<INamedTypeSymbol> GetTypeSymbols<T>(
+            IReadOnlyList<CSharpCompilation> compilations)
+        {
+            var name = typeof(T).FullName;
+            return compilations
+                .Select(c => c.GetTypeByMetadataName(name))
+                .ToHashSet();
+        }
+
+        private static HashSet<INamedTypeSymbol> GetUnboundTypeSymbols(
+            IReadOnlyList<CSharpCompilation> compilations,
+            Type type)
+        {
+            var name = type.FullName;
+            return compilations
+                .Select(c => c.GetTypeByMetadataName(name).ConstructUnboundGenericType())
+                .ToHashSet();
         }
 
         public bool IsQuery(ITypeSymbol symbol)
@@ -75,36 +94,36 @@ namespace LeanCode.ContractsGenerator
         }
 
         public bool IsQueryType(ITypeSymbol i) =>
-            i is INamedTypeSymbol ns && ns.IsGenericType && QueryType.Equals(ns.ConstructUnboundGenericType(), SymbolEqualityComparer.Default);
+            i is INamedTypeSymbol ns && ns.IsGenericType && QueryType.Contains(ns.ConstructUnboundGenericType());
 
         public bool IsCommandType(ITypeSymbol i) =>
-            CommandType.Equals(i, SymbolEqualityComparer.Default);
+            CommandType.Contains(i);
 
         public bool IsAuthorizeWhenType(ITypeSymbol i) =>
-            AuthorizeWhenAttribute.Equals(i, SymbolEqualityComparer.Default);
+            AuthorizeWhenAttribute.Contains(i);
 
         public bool IsAuthorizeWhenHasAnyOfType(ITypeSymbol i) =>
-            AuthorizeWhenHasAnyOfAttribute.Equals(i, SymbolEqualityComparer.Default);
+            AuthorizeWhenHasAnyOfAttribute.Contains(i);
 
         public bool IsQueryCacheType(ITypeSymbol i) =>
-            QueryCacheAttribute.Equals(i, SymbolEqualityComparer.Default);
+            QueryCacheAttribute.Contains(i);
 
         public bool IsExcludeFromContractsGenerationType(ITypeSymbol? i) =>
-            ExcludeFromContractsGenerationAttribute.Equals(i, SymbolEqualityComparer.Default);
+            ExcludeFromContractsGenerationAttribute.Contains(i);
 
         public bool IsAttributeType(ITypeSymbol i) =>
-            Attribute.Equals(i, SymbolEqualityComparer.Default);
+            Attribute.Contains(i);
 
         public bool IsAttributeUsageType(ITypeSymbol i) =>
-            AttributeUsageAttribute.Equals(i, SymbolEqualityComparer.Default);
+            AttributeUsageAttribute.Contains(i);
 
         public bool IsReadOnlyDictionary(ITypeSymbol i)
         {
             return
                 i is INamedTypeSymbol ns &&
                 ns.IsGenericType && (
-                    ReadOnlyDictionary.Equals(ns.ConstructUnboundGenericType(), SymbolEqualityComparer.Default) ||
-                    Dictionary.Equals(ns.ConstructUnboundGenericType(), SymbolEqualityComparer.Default));
+                    ReadOnlyDictionary.Contains(ns.ConstructUnboundGenericType()) ||
+                    Dictionary.Contains(ns.ConstructUnboundGenericType()));
         }
     }
 }

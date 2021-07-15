@@ -13,7 +13,7 @@ namespace LeanCode.ContractsGenerator.Tests.ExampleBased
         }
 
         [Fact]
-        public void Aggregated_project_compiles()
+        public void Aggregated_project_compiles_with_solution()
         {
             "project/aggregated/Combined/Combined.csproj"
                 .ProjectCompiles("project/aggregated/aggregated.sln")

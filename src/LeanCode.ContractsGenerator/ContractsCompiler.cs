@@ -42,8 +42,8 @@ namespace LeanCode.ContractsGenerator
             var manager = new AnalyzerManager(solutionPath);
             var project = manager.GetProject(projectPath);
             VerifyProject(project);
-            var compilation = await CompileProjectAsync(project);
-            return Compile(compilation, compilation.AssemblyName ?? string.Empty);
+            var compilations = await CompileProjectAsync(project);
+            return Compile(compilations, compilations[0].AssemblyName ?? string.Empty);
 
             static void VerifyProject(IProjectAnalyzer project)
             {
@@ -56,18 +56,36 @@ namespace LeanCode.ContractsGenerator
                 }
             }
 
-            static async Task<CSharpCompilation> CompileProjectAsync(IProjectAnalyzer project)
+            static async Task<List<CSharpCompilation>> CompileProjectAsync(IProjectAnalyzer project)
             {
                 var id = ProjectId.CreateFromSerialized(project.ProjectGuid);
                 var ws = project.GetWorkspace(true);
-                var proj = ws.CurrentSolution.GetProject(id)?.WithCompilationOptions(PrepareCompilationOptions());
+
+                var output = new List<CSharpCompilation>();
+                await CompileTransitivelyAsync(ws, id, output);
+                return output;
+            }
+
+            static async Task CompileTransitivelyAsync(
+                AdhocWorkspace workspace,
+                ProjectId id,
+                List<CSharpCompilation> output)
+            {
+                var proj = workspace.CurrentSolution.GetProject(id);
                 if (proj is null)
                 {
-                    throw new InvalidProjectException("Cannot compile project - the project is not in the solution.");
+                    throw new InvalidProjectException($"Cannot compile project - the project {id} cannot be located.");
                 }
 
-                var compilation = await proj.GetCompilationAsync();
-                return (CSharpCompilation)compilation;
+                var compilation = await proj
+                    .WithCompilationOptions(PrepareCompilationOptions())
+                    .GetCompilationAsync();
+                output.Add((CSharpCompilation)compilation);
+
+                foreach (var dependency in proj.AllProjectReferences)
+                {
+                    await CompileTransitivelyAsync(workspace, dependency.ProjectId, output);
+                }
             }
         }
 
@@ -123,14 +141,22 @@ namespace LeanCode.ContractsGenerator
 
         private static CompiledContracts Compile(CSharpCompilation compilation, string name)
         {
-            var diags = compilation.GetDiagnostics();
-            if (diags.Any(d => d.Severity == DiagnosticSeverity.Error))
+            return Compile(new List<CSharpCompilation> { compilation }, name);
+        }
+
+        private static CompiledContracts Compile(List<CSharpCompilation> compilations, string name)
+        {
+            foreach (var compilation in compilations)
             {
-                var errors = diags.Where(d => d.Severity == DiagnosticSeverity.Error).ToImmutableArray();
-                throw new CompilationFailedException(errors);
+                var diags = compilation.GetDiagnostics();
+                if (diags.Any(d => d.Severity == DiagnosticSeverity.Error))
+                {
+                    var errors = diags.Where(d => d.Severity == DiagnosticSeverity.Error).ToImmutableArray();
+                    throw new CompilationFailedException(errors);
+                }
             }
 
-            return new(compilation, name);
+            return new(compilations, name);
         }
     }
 
