@@ -31,62 +31,13 @@ namespace LeanCode.ContractsGenerator
             MetadataReference.CreateFromFile(Path.Combine(ObjectAssemblyPath, "System.Private.Uri.dll")),
         };
 
-        private static readonly IReadOnlySet<string> AllowedPackaged = new HashSet<string>
+        public static async Task<CompiledContracts> CompileProjectsAsync(IEnumerable<string> projectPaths)
         {
-            "LeanCode.CQRS",
-            "LeanCode.Time",
-        };
-
-        public static async Task<CompiledContracts> CompileProjectAsync(string projectPath)
-        {
-            var manager = new AnalyzerManager(null);
-            var project = manager.GetProject(projectPath);
-            VerifyProject(project);
-            var compilations = await CompileProjectAsync(project);
-            return Compile(compilations, compilations[0].AssemblyName ?? string.Empty);
-
-            static void VerifyProject(IProjectAnalyzer project)
-            {
-                foreach (var package in project.ProjectFile.PackageReferences)
-                {
-                    if (!AllowedPackaged.Contains(package.Name))
-                    {
-                        throw new InvalidProjectException($"The project references package {package.Name} that is not allowed.");
-                    }
-                }
-            }
-
-            static async Task<List<CSharpCompilation>> CompileProjectAsync(IProjectAnalyzer project)
-            {
-                var id = ProjectId.CreateFromSerialized(project.ProjectGuid);
-                var ws = project.GetWorkspace(true);
-
-                var output = new List<CSharpCompilation>();
-                await CompileTransitivelyAsync(ws, id, output);
-                return output;
-            }
-
-            static async Task CompileTransitivelyAsync(
-                AdhocWorkspace workspace,
-                ProjectId id,
-                List<CSharpCompilation> output)
-            {
-                var proj = workspace.CurrentSolution.GetProject(id);
-                if (proj is null)
-                {
-                    throw new InvalidProjectException($"Cannot compile project - the project {id} cannot be located.");
-                }
-
-                var compilation = await proj
-                    .WithCompilationOptions(PrepareCompilationOptions())
-                    .GetCompilationAsync();
-                output.Add((CSharpCompilation)compilation);
-
-                foreach (var dependency in proj.AllProjectReferences)
-                {
-                    await CompileTransitivelyAsync(workspace, dependency.ProjectId, output);
-                }
-            }
+            var loader = new ProjectLoader(PrepareCompilationOptions());
+            loader.LoadProjects(projectPaths);
+            loader.VerifyAll();
+            var compilations = await loader.CompileAsync();
+            return Compile(compilations, compilations.First().AssemblyName ?? string.Empty);
         }
 
         public static async Task<CompiledContracts> CompilePathAsync(string rootPath)
@@ -144,7 +95,7 @@ namespace LeanCode.ContractsGenerator
             return Compile(new List<CSharpCompilation> { compilation }, name);
         }
 
-        private static CompiledContracts Compile(List<CSharpCompilation> compilations, string name)
+        private static CompiledContracts Compile(IReadOnlyCollection<CSharpCompilation> compilations, string name)
         {
             foreach (var compilation in compilations)
             {

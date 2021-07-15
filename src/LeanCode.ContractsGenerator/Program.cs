@@ -54,7 +54,7 @@ namespace LeanCode.ContractsGenerator
 
         private static async Task<int> HandleProjectAsync(ProjectOptions p)
         {
-            var contracts = await ContractsCompiler.CompileProjectAsync(p.ProjectFile);
+            var contracts = await ContractsCompiler.CompileProjectsAsync(new[] { p.ProjectFile });
             return await WriteAsync(contracts, p.OutputFile);
         }
 

@@ -8,12 +8,12 @@ namespace LeanCode.ContractsGenerator
 {
     public sealed class CompiledContracts
     {
-        private readonly IReadOnlyList<CSharpCompilation> compilations;
+        private readonly IReadOnlyCollection<CSharpCompilation> compilations;
 
         public ContractTypes Types { get; }
         public string ProjectName { get; }
 
-        public CompiledContracts(IReadOnlyList<CSharpCompilation> compilations, string projectName)
+        public CompiledContracts(IReadOnlyCollection<CSharpCompilation> compilations, string projectName)
         {
             this.compilations = compilations;
             ProjectName = projectName;

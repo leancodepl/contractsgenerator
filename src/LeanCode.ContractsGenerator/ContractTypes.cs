@@ -24,7 +24,7 @@ namespace LeanCode.ContractsGenerator
         private HashSet<INamedTypeSymbol> ReadOnlyDictionary { get; }
         private HashSet<INamedTypeSymbol> Dictionary { get; }
 
-        public ContractTypes(IReadOnlyList<CSharpCompilation> compilations)
+        public ContractTypes(IReadOnlyCollection<CSharpCompilation> compilations)
         {
             QueryType = GetUnboundTypeSymbols(compilations, typeof(IRemoteQuery<>));
             CommandType = GetTypeSymbols<IRemoteCommand>(compilations);
@@ -40,7 +40,7 @@ namespace LeanCode.ContractsGenerator
         }
 
         private static HashSet<INamedTypeSymbol> GetTypeSymbols<T>(
-            IReadOnlyList<CSharpCompilation> compilations)
+            IReadOnlyCollection<CSharpCompilation> compilations)
         {
             var name = typeof(T).FullName;
             return compilations
@@ -49,7 +49,7 @@ namespace LeanCode.ContractsGenerator
         }
 
         private static HashSet<INamedTypeSymbol> GetUnboundTypeSymbols(
-            IReadOnlyList<CSharpCompilation> compilations,
+            IReadOnlyCollection<CSharpCompilation> compilations,
             Type type)
         {
             var name = type.FullName;

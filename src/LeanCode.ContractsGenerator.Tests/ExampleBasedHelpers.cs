@@ -1,4 +1,5 @@
 using System.IO;
+using System.Linq;
 
 namespace LeanCode.ContractsGenerator.Tests
 {
@@ -13,9 +14,14 @@ namespace LeanCode.ContractsGenerator.Tests
 
         public static AssertedExport ProjectCompiles(this string path)
         {
-            var projectPath = Path.Join("examples", path);
+            return ProjectsCompile(path);
+        }
+
+        public static AssertedExport ProjectsCompile(params string[] paths)
+        {
+            var projectPaths = paths.Select(p => Path.Join("examples", p));
             // HACK: The sync execution results in much cleaner tests
-            var compiled = ContractsCompiler.CompileProjectAsync(projectPath).Result;
+            var compiled = ContractsCompiler.CompileProjectsAsync(projectPaths).Result;
             return new(new ContractsGenerator(compiled).Generate());
         }
     }
