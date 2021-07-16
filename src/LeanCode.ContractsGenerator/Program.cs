@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using CommandLine;
@@ -18,10 +19,8 @@ namespace LeanCode.ContractsGenerator
     {
         public string OutputFile { get; set; }
 
-        [Option('s', "solution", Required = false, MetaValue = "FILE", HelpText = "The solution that the project is in.")]
-        public string? SolutionFile { get; set; }
-        [Option('p', "project", Required = true, MetaValue = "FILE", HelpText = "The project file with contracts.")]
-        public string ProjectFile { get; set; }
+        [Option('p', "project", Required = true, Separator = ';', MetaValue = "FILE", HelpText = "The project file with contracts. To pass multiple projects, separate the paths with ';'.")]
+        public IEnumerable<string> ProjectFiles { get; set; }
     }
 
     [Verb("file", HelpText = "Generate contracts from a single file.")]
@@ -56,7 +55,7 @@ namespace LeanCode.ContractsGenerator
 
         private static async Task<int> HandleProjectAsync(ProjectOptions p)
         {
-            var contracts = await ContractsCompiler.CompileProjectAsync(p.ProjectFile, p.SolutionFile);
+            var contracts = await ContractsCompiler.CompileProjectsAsync(p.ProjectFiles);
             return await WriteAsync(contracts, p.OutputFile);
         }
 

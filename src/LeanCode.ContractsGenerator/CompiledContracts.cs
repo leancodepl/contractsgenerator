@@ -8,30 +8,32 @@ namespace LeanCode.ContractsGenerator
 {
     public sealed class CompiledContracts
     {
-        private readonly CSharpCompilation compilation;
+        private readonly IReadOnlyCollection<CSharpCompilation> compilations;
 
         public ContractTypes Types { get; }
         public string ProjectName { get; }
 
-        public CompiledContracts(CSharpCompilation compilation, string projectName)
+        public CompiledContracts(IReadOnlyCollection<CSharpCompilation> compilations, string projectName)
         {
-            this.compilation = compilation;
+            this.compilations = compilations;
             ProjectName = projectName;
 
-            Types = new(compilation);
+            Types = new(compilations);
         }
 
         public IEnumerable<INamedTypeSymbol> ListAllTypes()
         {
-            return compilation.SyntaxTrees.SelectMany(t =>
-            {
-                var model = compilation.GetSemanticModel(t);
-                var root = t.GetRoot();
-                var symbols = root.DescendantNodes().OfType<BaseTypeDeclarationSyntax>();
-                return symbols
-                    .Select(s => model.GetDeclaredSymbol(s))
-                    .OfType<INamedTypeSymbol>();
-            });
+            return compilations
+                .SelectMany(c => c.SyntaxTrees
+                    .SelectMany(t =>
+                    {
+                        var model = c.GetSemanticModel(t);
+                        var root = t.GetRoot();
+                        var symbols = root.DescendantNodes().OfType<BaseTypeDeclarationSyntax>();
+                        return symbols
+                            .Select(s => model.GetDeclaredSymbol(s))
+                            .OfType<INamedTypeSymbol>();
+                    }));
         }
     }
 }
