@@ -38,18 +38,10 @@ enum KnownType {
 message ValueRef {
   message Null {}
 
-  message Number {
-    int64 value = 1;
-  }
-  message FloatingPointNumber {
-    double value = 1;
-  }
-  message String {
-    string value = 1;
-  }
-  message Boolean {
-    bool value = 1;
-  }
+  message Number { int64 value = 1; }
+  message FloatingPointNumber { double value = 1; }
+  message String { string value = 1; }
+  message Boolean { bool value = 1; }
   oneof value {
     Null null = 1;
     Number number = 2;
@@ -60,9 +52,7 @@ message ValueRef {
 }
 
 message TypeRef {
-  message Generic {
-    string name = 1;
-  }
+  message Generic { string name = 1; }
   message Internal {
     string name = 1;
     repeated TypeRef arguments = 2;
@@ -80,9 +70,7 @@ message TypeRef {
   }
 }
 
-message GenericParameter {
-  string name = 1;
-}
+message GenericParameter { string name = 1; }
 
 message AttributeArgument {
   message Positional {
@@ -139,25 +127,28 @@ message ErrorCode {
   }
 }
 
-message Statement {
-  message DTO {}
+message TypeDescriptor {
+  repeated TypeRef extends = 1;
+  repeated GenericParameter genericParameters = 2;
+  repeated PropertyRef properties = 3;
+  repeated ConstantRef constants = 4;
+}
 
-  message Enum {
-    repeated EnumValue members = 1;
-  }
+message Statement {
+  message DTO { TypeDescriptor typeDescriptor = 1; }
+
+  message Enum { repeated EnumValue members = 1; }
   message Query {
-    TypeRef returnType = 1;
+    TypeDescriptor typeDescriptor = 1;
+    TypeRef returnType = 2;
   }
   message Command {
-    repeated ErrorCode errorCodes = 1;
+    TypeDescriptor typeDescriptor = 1;
+    repeated ErrorCode errorCodes = 2;
   }
   string name = 1;
   string comment = 2;
-  repeated TypeRef extends = 3;
-  repeated GenericParameter genericParameters = 4;
-  repeated AttributeRef attributes = 5;
-  repeated PropertyRef properties = 6;
-  repeated ConstantRef constants = 7;
+  repeated AttributeRef attributes = 3;
   oneof content {
     DTO dto = 10;
     Enum enum = 11;
