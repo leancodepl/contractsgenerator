@@ -45,7 +45,6 @@ namespace LeanCode.ContractsGenerator
                 Name = symbol.ToFullName(),
                 Comment = symbol.GetComments(),
             };
-            GetAttributes(symbol, result.Attributes);
             MapType(symbol, result);
             return result;
 
