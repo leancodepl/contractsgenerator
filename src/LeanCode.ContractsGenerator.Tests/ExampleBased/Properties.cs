@@ -22,7 +22,8 @@ namespace LeanCode.ContractsGenerator.Tests.ExampleBased
                     .WithProperty("I", Known(KnownType.DateTimeOffset))
                     .WithProperty("J", Known(KnownType.Guid))
                     .WithProperty("K", Known(KnownType.Float))
-                    .WithProperty("L", Known(KnownType.Double));
+                    .WithProperty("L", Known(KnownType.Double))
+                    .WithProperty("M", Known(KnownType.TimeSpan));
         }
 
         [Fact]

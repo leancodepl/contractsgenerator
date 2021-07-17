@@ -87,6 +87,7 @@ namespace LeanCode.ContractsGenerator
                 { ContainingNamespace: { Name: "System" }, Name: "Time" } => New(KnownType.Time),
                 { ContainingNamespace: { Name: "System" }, Name: "Guid" } => New(KnownType.Guid),
                 { ContainingNamespace: { Name: "System" }, Name: "Uri" } => New(KnownType.Uri),
+                { ContainingNamespace: { Name: "System" }, Name: "TimeSpan" } => New(KnownType.TimeSpan),
 
                 _ when contracts.Types.IsQueryType(ts) =>
                     New(KnownType.Query, From(contracts.Types.ExtractQueryResult(ts))),
