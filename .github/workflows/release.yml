@@ -1,6 +1,8 @@
 name: Build & Release
 
-on: workflow_dispatch
+on:
+  push:
+    tags: ["v*.*.*"]
 
 jobs:
   release:
@@ -10,41 +12,34 @@ jobs:
       DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
       DOTNET_CLI_TELEMETRY_OPTOUT: 1
     steps:
+      - name: Get the version
+        id: get_version
+        run: echo ::set-output name=version::$(echo $GITHUB_REF | cut -d / -f 3)
       - name: Checkout
-        id: checkout
         uses: actions/checkout@v2
       - name: Restore
-        id: restore
         run: dotnet restore
       - name: Build
-        id: build
+        env:
+          BUILD_VERSION: ${{ steps.get_version.outputs.version }}
         run: dotnet build --no-restore --configuration Release
       - name: Test
-        id: test
         run: dotnet test --no-build --configuration Release
       - name: Publish
-        id: publish
+        env:
+          BUILD_VERSION: ${{ steps.get_version.outputs.version }}
         working-directory: src/LeanCode.ContractsGenerator
         run: dotnet publish --output ./publish --no-self-contained --no-build --configuration Release
       - name: Pack
-        id: pack
+        env:
+          BUILD_VERSION: ${{ steps.get_version.outputs.version }}
         working-directory: src/LeanCode.ContractsGenerator/publish
-        run: zip --recurse-paths "../../../LeanCode.ContractsGenerator.1.0.${GITHUB_RUN_NUMBER}.zip" .
-      - name: Create Release
-        id: release
-        uses: actions/create-release@v1
+        run: zip --recurse-paths "../../../LeanCode.ContractsGenerator.${BUILD_VERSION}.zip" .
+      - name: Release
+        uses: softprops/action-gh-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ format('v1.0.{0}', github.run_number) }}
-          release_name: ${{ format('Release v1.0.{0}', github.run_number) }}
-      - name: Upload Asset
-        id: upload
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.release.outputs.upload_url }}
-          asset_path: ${{ format('./LeanCode.ContractsGenerator.1.0.{0}.zip', github.run_number) }}
-          asset_name: ${{ format('LeanCode.ContractsGenerator.1.0.{0}.zip', github.run_number) }}
-          asset_content_type: application/zip
+          name: ${{ format('Release {0}', steps.get_version.outputs.version) }}
+          tag_name: ${{ steps.get_version.outputs.version }}
+          files: ${{ format('./LeanCode.ContractsGenerator.{0}.zip', steps.get_version.outputs.version) }}
