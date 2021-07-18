@@ -4,12 +4,12 @@ using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Buildalyzer;
-using Buildalyzer.Workspaces;
 using LeanCode.CQRS;
 using LeanCode.CQRS.Security;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.Extensions.FileSystemGlobbing;
+using Microsoft.Extensions.FileSystemGlobbing.Abstractions;
 
 namespace LeanCode.ContractsGenerator
 {
@@ -63,6 +63,23 @@ namespace LeanCode.ContractsGenerator
         {
             var content = await File.ReadAllTextAsync(filename);
             return CompileCode(content, filename);
+        }
+
+        public static async Task<CompiledContracts> CompileGlobAsync(
+            Matcher matcher,
+            DirectoryInfo directory)
+        {
+            var dir = new DirectoryInfoWrapper(directory);
+            var result = matcher.Execute(dir);
+            var trees = new List<SyntaxTree>();
+            foreach (var f in result.Files)
+            {
+                var fp = dir.GetFile(f.Path).FullName;
+                var content = await File.ReadAllTextAsync(fp);
+                trees.Add(CSharpSyntaxTree.ParseText(content));
+            }
+
+            return CompileTrees(trees, directory.FullName);
         }
 
         public static CompiledContracts CompileCode(string contractText, string name)

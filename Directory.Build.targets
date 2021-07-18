@@ -17,6 +17,7 @@
     <PackageReference Update="LeanCode.Time" Version="$(CoreLibVersion)" />
 
     <PackageReference Update="Microsoft.CodeAnalysis" Version="3.9.0" />
+    <PackageReference Update="Microsoft.Extensions.FileSystemGlobbing" Version="5.0.0" />
   </ItemGroup>
 
   <ItemGroup>
