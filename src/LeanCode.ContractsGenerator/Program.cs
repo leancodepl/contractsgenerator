@@ -19,7 +19,7 @@ namespace LeanCode.ContractsGenerator
     {
         public string OutputFile { get; set; }
 
-        [Option('p', "project", Required = true, Separator = ',', MetaValue = "FILE", HelpText = "The project file with contracts. To pass multiple projects, separate the paths with ','.")]
+        [Option('p', "project", Required = true, MetaValue = "FILE", HelpText = "The project file with contracts. To pass multiple projects, separate the values with space.")]
         public IEnumerable<string> ProjectFiles { get; set; }
     }
 
