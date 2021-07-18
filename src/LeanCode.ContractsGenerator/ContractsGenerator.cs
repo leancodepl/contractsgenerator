@@ -46,6 +46,7 @@ namespace LeanCode.ContractsGenerator
                 Comment = symbol.GetComments(),
             };
             MapType(symbol, result);
+            GetAttributes(symbol, result.Attributes);
             return result;
 
             void MapType(INamedTypeSymbol symbol, Statement result)
@@ -130,7 +131,6 @@ namespace LeanCode.ContractsGenerator
                 symbol.SpecialType == SpecialType.System_Object ||
                 symbol.SpecialType == SpecialType.System_Enum ||
                 ErrorCodes.IsErrorCode(symbol) ||
-                contracts.Types.IsAttributeType(symbol) ||
                 contracts.Types.IsAttributeUsageType(symbol);
         }
 
@@ -207,7 +207,7 @@ namespace LeanCode.ContractsGenerator
                         Named = new()
                         {
                             Name = v.Key,
-                            Value = v.ToValueRef(),
+                            Value = v.Value.ToValueRef(),
                         },
                     };
                 }
