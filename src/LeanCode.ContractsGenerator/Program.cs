@@ -3,6 +3,7 @@ using System.IO;
 using System.Threading.Tasks;
 using CommandLine;
 using Google.Protobuf;
+using Microsoft.Extensions.FileSystemGlobbing;
 
 namespace LeanCode.ContractsGenerator
 {
@@ -37,8 +38,14 @@ namespace LeanCode.ContractsGenerator
     {
         public string OutputFile { get; set; }
 
-        [Option('p', "path", Required = true, MetaValue = "FILE", HelpText = "Input path (will glob all .cs files).")]
-        public string InputPath { get; set; }
+        [Option('i', "include", Required = true, MetaValue = "PATTERN", HelpText = "Include files from glob pattern. To pass multiple patterns, separate them with space.")]
+        public IEnumerable<string> Include { get; set; }
+
+        [Option('e', "exclude", Required = false, MetaValue = "PATTERN", HelpText = "Exclude files from glob pattern. Has higher precedence than includes. To pass multiple patterns, separate them with space.")]
+        public IEnumerable<string> Exclude { get; set; }
+
+        [Option('d', "directory", MetaValue = "PATH", HelpText = "The base directory used for globbing. Uses current directory if not specified.")]
+        public string? BaseDirectory { get; set; }
     }
 
     internal class Program
@@ -67,7 +74,11 @@ namespace LeanCode.ContractsGenerator
 
         private static async Task<int> HandlePathAsync(PathOptions p)
         {
-            var contracts = await ContractsCompiler.CompilePathAsync(p.InputPath);
+            var matcher = new Matcher();
+            matcher.AddIncludePatterns(p.Include);
+            matcher.AddExcludePatterns(p.Exclude);
+            var directory = new DirectoryInfo(p.BaseDirectory ?? Directory.GetCurrentDirectory());
+            var contracts = await ContractsCompiler.CompileGlobAsync(matcher, directory);
             return await WriteAsync(contracts, p.OutputFile);
         }
 
