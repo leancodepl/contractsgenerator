@@ -14,7 +14,7 @@ jobs:
     steps:
       - name: Get the version
         id: get_version
-        run: echo ::set-output name=version::$(echo $GITHUB_REF | cut -d / -f 3)
+        run: echo ::set-output name=version::$(echo $GITHUB_REF | cut -d / -f 3 | cut -c2-)
       - name: Checkout
         uses: actions/checkout@v2
       - name: Setup .NET Core SDK 5.0
@@ -38,12 +38,12 @@ jobs:
         env:
           BUILD_VERSION: ${{ steps.get_version.outputs.version }}
         working-directory: src/LeanCode.ContractsGenerator/publish
-        run: zip --recurse-paths "../../../LeanCode.ContractsGenerator.${BUILD_VERSION}.zip" .
+        run: zip --recurse-paths "../../../LeanCode.ContractsGenerator.v${BUILD_VERSION}.zip" .
       - name: Release
         uses: softprops/action-gh-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          name: ${{ format('Release {0}', steps.get_version.outputs.version) }}
-          tag_name: ${{ steps.get_version.outputs.version }}
-          files: ${{ format('./LeanCode.ContractsGenerator.{0}.zip', steps.get_version.outputs.version) }}
+          name: ${{ format('Release v{0}', steps.get_version.outputs.version) }}
+          tag_name: ${{ format('v{0}', steps.get_version.outputs.version) }}
+          files: ${{ format('./LeanCode.ContractsGenerator.v{0}.zip', steps.get_version.outputs.version) }}
