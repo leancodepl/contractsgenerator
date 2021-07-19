@@ -9,9 +9,10 @@ namespace LeanCode.ContractsGenerator.Tests
             return new(export.Export, Assert.Single(export.Export.Statements, stmt => stmt.Name == name));
         }
 
-        private static Export Without(this Export export, string name)
+        public static T Without<T>(this T export, string name)
+            where T : AssertedExport
         {
-            Assert.DoesNotContain(export.Statements, stmt => stmt.Name == name);
+            Assert.DoesNotContain(export.Export.Statements, stmt => stmt.Name == name);
             return export;
         }
 

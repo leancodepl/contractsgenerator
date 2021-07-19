@@ -1,5 +1,6 @@
 using System.IO;
 using System.Linq;
+using Microsoft.Extensions.FileSystemGlobbing;
 
 namespace LeanCode.ContractsGenerator.Tests
 {
@@ -22,6 +23,17 @@ namespace LeanCode.ContractsGenerator.Tests
             var projectPaths = paths.Select(p => Path.Join("examples", p));
             // HACK: The sync execution results in much cleaner tests
             var compiled = ContractsCompiler.CompileProjectsAsync(projectPaths).Result;
+            return new(new ContractsGenerator(compiled).Generate());
+        }
+
+        public static AssertedExport GlobCompiles(string[] includes, string[] excludes)
+        {
+            var matcher = new Matcher();
+            matcher.AddIncludePatterns(includes);
+            matcher.AddExcludePatterns(excludes);
+            var di = new DirectoryInfo("examples");
+            // HACK: The sync execution results in much cleaner tests
+            var compiled = ContractsCompiler.CompileGlobAsync(matcher, di).Result;
             return new(new ContractsGenerator(compiled).Generate());
         }
     }
