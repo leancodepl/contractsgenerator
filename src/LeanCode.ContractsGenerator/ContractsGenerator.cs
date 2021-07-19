@@ -45,27 +45,66 @@ namespace LeanCode.ContractsGenerator
                 Name = symbol.ToFullName(),
                 Comment = symbol.GetComments(),
             };
+            MapType(symbol, result);
+            return result;
+
+            void MapType(INamedTypeSymbol symbol, Statement result)
+            {
+                if (contracts.Types.IsQuery(symbol))
+                {
+                    result.Query = new()
+                    {
+                        TypeDescriptor = MapTypeDescriptor(symbol),
+                        ReturnType = typeRef.From(contracts.Types.ExtractQueryResult(symbol)),
+                    };
+                }
+                else if (contracts.Types.IsCommand(symbol))
+                {
+                    result.Command = new()
+                    {
+                        TypeDescriptor = MapTypeDescriptor(symbol),
+                    };
+                    ErrorCodes.Extract(symbol).SaveToRepeatedField(result.Command.ErrorCodes);
+                }
+                else if (symbol.TypeKind == TypeKind.Enum)
+                {
+                    result.Enum = new();
+                    symbol.GetMembers()
+                        .OfType<IFieldSymbol>()
+                        .Select(ToEnumValue)
+                        .SaveToRepeatedField(result.Enum.Members);
+                }
+                else
+                {
+                    result.Dto = new()
+                    {
+                        TypeDescriptor = MapTypeDescriptor(symbol),
+                    };
+                }
+            }
+        }
+
+        private TypeDescriptor MapTypeDescriptor(INamedTypeSymbol symbol)
+        {
+            var descriptor = new TypeDescriptor();
             symbol.TypeParameters
                 .Select(ToParam)
-                .SaveToRepeatedField(result.GenericParameters);
+                .SaveToRepeatedField(descriptor.GenericParameters);
             symbol.Interfaces
                 .Append(symbol.BaseType)
                 .Where(s => !IsIgnored(s))
                 .Select(typeRef.From)
-                .SaveToRepeatedField(result.Extends);
+                .SaveToRepeatedField(descriptor.Extends);
             AllProperties(symbol)
                 .SelectMany(s => s)
                 .Select(ToProperty)
-                .SaveToRepeatedField(result.Properties);
+                .SaveToRepeatedField(descriptor.Properties);
             symbol.GetMembers()
                 .OfType<IFieldSymbol>()
                 .Where(fs => fs.HasConstantValue)
                 .Select(ToConstant)
-                .SaveToRepeatedField(result.Constants);
-
-            MapType(symbol, result);
-
-            return result;
+                .SaveToRepeatedField(descriptor.Constants);
+            return descriptor;
 
             IEnumerable<IEnumerable<IPropertySymbol>> AllProperties(INamedTypeSymbol ns)
             {
@@ -81,34 +120,6 @@ namespace LeanCode.ContractsGenerator
                 else
                 {
                     return new[] { currProps };
-                }
-            }
-
-            void MapType(INamedTypeSymbol symbol, Statement result)
-            {
-                if (contracts.Types.IsQuery(symbol))
-                {
-                    result.Query = new()
-                    {
-                        ReturnType = typeRef.From(contracts.Types.ExtractQueryResult(symbol)),
-                    };
-                }
-                else if (contracts.Types.IsCommand(symbol))
-                {
-                    result.Command = new();
-                    ErrorCodes.Extract(symbol).SaveToRepeatedField(result.Command.ErrorCodes);
-                }
-                else if (symbol.TypeKind == TypeKind.Enum)
-                {
-                    result.Enum = new();
-                    symbol.GetMembers()
-                        .OfType<IFieldSymbol>()
-                        .Select(ToEnumValue)
-                        .SaveToRepeatedField(result.Enum.Members);
-                }
-                else
-                {
-                    result.Dto = new();
                 }
             }
         }
