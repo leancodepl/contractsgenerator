@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Xunit;
 
 namespace LeanCode.ContractsGenerator.Tests
@@ -133,19 +136,70 @@ namespace LeanCode.ContractsGenerator.Tests
             return stmt;
         }
 
+        public static T WithProperty<T>(this T stmt, string name, Action<AssertedProperty> assert)
+            where T : AssertedType
+        {
+            var prop = Assert.Single(stmt.Descriptor.Properties, p => p.Name == name);
+            assert(new(prop!));
+            return stmt;
+        }
+
         public static T WithoutProperty<T>(this T stmt, string name)
             where T : AssertedType
         {
             Assert.DoesNotContain(stmt.Descriptor.Properties, p => p.Name == name);
             return stmt;
         }
+
+        public static AssertedProperty OfType(this AssertedProperty prop, TypeRef type)
+        {
+            Assert.Equal(type, prop.Property.Type);
+            return prop;
+        }
+
+        public static AssertedProperty WithAttribute(this AssertedProperty prop, string name, params AttributeArgument[] args)
+        {
+            var attr = Assert.Single(prop.Property.Attributes, a => a.AttributeName == name);
+            Assert.Equal(Positional(args), Positional(attr.Argument));
+            Assert.Equal(Named(args), Named(attr.Argument));
+            return prop;
+        }
+
+        public static T WithAttribute<T>(this T stmt, string name, params AttributeArgument[] args)
+            where T : AssertedStatement
+        {
+            var attr = Assert.Single(stmt.Statement.Attributes, a => a.AttributeName == name);
+            Assert.Equal(Positional(args), Positional(attr.Argument));
+            Assert.Equal(Named(args), Named(attr.Argument));
+            return stmt;
+        }
+
+        private static IEnumerable<AttributeArgument.Types.Positional> Positional(IEnumerable<AttributeArgument> args)
+        {
+            return args
+                .Select(a => a.Positional)
+                .Where(p => p is not null)
+                .OrderBy(p => p.Position)
+                .Cast<AttributeArgument.Types.Positional>();
+        }
+
+        private static IEnumerable<AttributeArgument.Types.Named> Named(IEnumerable<AttributeArgument> args)
+        {
+            return args
+                .Select(a => a.Named)
+                .Where(p => p is not null)
+                .OrderBy(p => p.Name)
+                .Cast<AttributeArgument.Types.Named>();
+        }
     }
 
     public record AssertedExport(Export Export);
     public record AssertedStatement(Export Export, Statement Statement) : AssertedExport(Export);
-    public record AssertedType(Export Export, Statement Statement, TypeDescriptor Descriptor) : AssertedExport(Export);
+    public record AssertedType(Export Export, Statement Statement, TypeDescriptor Descriptor) : AssertedStatement(Export, Statement);
     public record AssertedCommand(Export Export, Statement Statement, TypeDescriptor Descriptor) : AssertedType(Export, Statement, Descriptor);
     public record AssertedQuery(Export Export, Statement Statement, TypeDescriptor Descriptor) : AssertedType(Export, Statement, Descriptor);
     public record AssertedDto(Export Export, Statement Statement, TypeDescriptor Descriptor) : AssertedType(Export, Statement, Descriptor);
     public record AssertedEnum(Export Export, Statement Statement) : AssertedStatement(Export, Statement);
+
+    public record AssertedProperty(PropertyRef Property);
 }
