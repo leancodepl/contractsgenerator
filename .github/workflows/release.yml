@@ -38,7 +38,7 @@ jobs:
         env:
           BUILD_VERSION: ${{ steps.get_version.outputs.version }}
         working-directory: src/LeanCode.ContractsGenerator/publish
-        run: zip --recurse-paths "../../../LeanCode.ContractsGenerator.v${BUILD_VERSION}.zip" .
+        run: zip --recurse-paths "../../../LeanCode.ContractsGenerator.${BUILD_VERSION}.zip" .
       - name: Release
         uses: softprops/action-gh-release@v1
         env:
@@ -46,4 +46,4 @@ jobs:
         with:
           name: ${{ format('Release v{0}', steps.get_version.outputs.version) }}
           tag_name: ${{ format('v{0}', steps.get_version.outputs.version) }}
-          files: ${{ format('./LeanCode.ContractsGenerator.v{0}.zip', steps.get_version.outputs.version) }}
+          files: ${{ format('./LeanCode.ContractsGenerator.{0}.zip', steps.get_version.outputs.version) }}
