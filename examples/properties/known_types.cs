@@ -13,4 +13,5 @@ public class Dto
     public Guid J { get; set; }
     public float K { get; set; }
     public double L { get; set; }
+    public TimeSpan M { get; set; }
 }
