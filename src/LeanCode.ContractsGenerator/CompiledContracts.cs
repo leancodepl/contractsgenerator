@@ -32,6 +32,7 @@ namespace LeanCode.ContractsGenerator
                         var symbols = root.DescendantNodes().OfType<BaseTypeDeclarationSyntax>();
                         return symbols
                             .Select(s => model.GetDeclaredSymbol(s))
+                            .Where(s => s is not null)
                             .OfType<INamedTypeSymbol>();
                     }));
         }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
@@ -18,31 +19,31 @@ namespace LeanCode.ContractsGenerator
     [Verb("project", HelpText = "Generate contracts from C# project.")]
     public class ProjectOptions : IOptions
     {
-        public string OutputFile { get; set; }
+        public string OutputFile { get; set; } = string.Empty;
 
         [Option('p', "project", Required = true, MetaValue = "FILE", HelpText = "The project file with contracts. To pass multiple projects, separate the values with space.")]
-        public IEnumerable<string> ProjectFiles { get; set; }
+        public IEnumerable<string> ProjectFiles { get; set; } = Array.Empty<string>();
     }
 
     [Verb("file", HelpText = "Generate contracts from a single file.")]
     public class FileOptions : IOptions
     {
-        public string OutputFile { get; set; }
+        public string OutputFile { get; set; } = string.Empty;
 
         [Option('i', "input", Required = true, MetaValue = "FILE", HelpText = "Input file.")]
-        public string InputFile { get; set; }
+        public string InputFile { get; set; } = string.Empty;
     }
 
     [Verb("path", HelpText = "Generate contracts based on globbed path.")]
     public class PathOptions : IOptions
     {
-        public string OutputFile { get; set; }
+        public string OutputFile { get; set; } = string.Empty;
 
         [Option('i', "include", Required = true, MetaValue = "PATTERN", HelpText = "Include files from glob pattern. To pass multiple patterns, separate them with space.")]
-        public IEnumerable<string> Include { get; set; }
+        public IEnumerable<string> Include { get; set; } = Array.Empty<string>();
 
         [Option('e', "exclude", Required = false, MetaValue = "PATTERN", HelpText = "Exclude files from glob pattern. Has higher precedence than includes. To pass multiple patterns, separate them with space.")]
-        public IEnumerable<string> Exclude { get; set; }
+        public IEnumerable<string> Exclude { get; set; } = Array.Empty<string>();
 
         [Option('d', "directory", MetaValue = "PATH", HelpText = "The base directory used for globbing. Uses current directory if not specified.")]
         public string? BaseDirectory { get; set; }

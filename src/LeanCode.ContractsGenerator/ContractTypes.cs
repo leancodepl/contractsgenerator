@@ -42,20 +42,40 @@ namespace LeanCode.ContractsGenerator
         private static HashSet<INamedTypeSymbol> GetTypeSymbols<T>(
             IReadOnlyCollection<CSharpCompilation> compilations)
         {
-            var name = typeof(T).FullName;
-            return compilations
-                .Select(c => c.GetTypeByMetadataName(name))
-                .ToHashSet();
+            var name = typeof(T).FullName!;
+            var result = new HashSet<INamedTypeSymbol>(SymbolEqualityComparer.Default);
+            foreach (var c in compilations)
+            {
+                var type = c.GetTypeByMetadataName(name);
+                if (type is null)
+                {
+                    throw new GenerationFailedException($"Cannot locate type {name} in compilation unit `{c.AssemblyName ?? "UNKNOWN"}`.");
+                }
+
+                result.Add(type);
+            }
+
+            return result;
         }
 
         private static HashSet<INamedTypeSymbol> GetUnboundTypeSymbols(
             IReadOnlyCollection<CSharpCompilation> compilations,
             Type type)
         {
-            var name = type.FullName;
-            return compilations
-                .Select(c => c.GetTypeByMetadataName(name).ConstructUnboundGenericType())
-                .ToHashSet();
+            var name = type.FullName!;
+            var result = new HashSet<INamedTypeSymbol>(SymbolEqualityComparer.Default);
+            foreach (var c in compilations)
+            {
+                var t = c.GetTypeByMetadataName(name)?.ConstructUnboundGenericType();
+                if (t is null)
+                {
+                    throw new GenerationFailedException($"Cannot locate generic type {name} in compilation unit `{c.AssemblyName ?? "UNKNOWN"}`.");
+                }
+
+                result.Add(t);
+            }
+
+            return result;
         }
 
         public bool IsQuery(ITypeSymbol symbol)

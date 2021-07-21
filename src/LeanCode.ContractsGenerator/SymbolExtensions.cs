@@ -46,13 +46,20 @@ namespace LeanCode.ContractsGenerator
                 var doc = new XmlDocument();
                 doc.LoadXml(xml);
 
-                var sb = new StringBuilder();
-                foreach (var t in FlattenAllNodes(doc.DocumentElement))
+                if (doc.DocumentElement is not null)
                 {
-                    sb.AppendLine(t.InnerText.Trim());
-                }
+                    var sb = new StringBuilder();
+                    foreach (var t in FlattenAllNodes(doc.DocumentElement))
+                    {
+                        sb.AppendLine(t.InnerText.Trim());
+                    }
 
-                return sb.ToString();
+                    return sb.ToString();
+                }
+                else
+                {
+                    return string.Empty;
+                }
             }
             else
             {
