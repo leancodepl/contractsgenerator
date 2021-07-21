@@ -63,7 +63,7 @@ namespace LeanCode.ContractsGenerator
             {
                 if (!AllowedPackaged.Contains(package.Name))
                 {
-                    throw new InvalidProjectException($"The project references package {package.Name} that is not allowed.");
+                    throw new InvalidProjectException($"The project {project.ProjectFile.Name} references package {package.Name} that is not allowed.");
                 }
             }
         }

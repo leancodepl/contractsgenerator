@@ -4,6 +4,7 @@ using System.IO;
 using System.Threading.Tasks;
 using CommandLine;
 using Google.Protobuf;
+using Microsoft.CodeAnalysis;
 using Microsoft.Extensions.FileSystemGlobbing;
 
 namespace LeanCode.ContractsGenerator
@@ -53,12 +54,46 @@ namespace LeanCode.ContractsGenerator
     {
         private static async Task<int> Main(string[] args)
         {
-            return await Parser.Default.ParseArguments<ProjectOptions, FileOptions, PathOptions>(args)
-                .MapResult(
-                    (ProjectOptions p) => HandleProjectAsync(p),
-                    (FileOptions f) => HandleFileAsync(f),
-                    (PathOptions p) => HandlePathAsync(p),
-                    err => Task.FromResult(1));
+            try
+            {
+                return await Parser.Default.ParseArguments<ProjectOptions, FileOptions, PathOptions>(args)
+                    .MapResult(
+                        (ProjectOptions p) => HandleProjectAsync(p),
+                        (FileOptions f) => HandleFileAsync(f),
+                        (PathOptions p) => HandlePathAsync(p),
+                        err => Task.FromResult(1));
+            }
+            catch (InvalidProjectException ex)
+            {
+                Console.WriteLine("Cannot load one of the projects: {0}", ex.Message);
+                Console.WriteLine("At");
+                Console.WriteLine(ex.StackTrace);
+                return 2;
+            }
+            catch (CompilationFailedException ex)
+            {
+                Console.WriteLine("Cannot compile contracts. There were errors during project compilation:");
+                foreach (var d in ex.Diagnostics)
+                {
+                    Console.WriteLine("[{0}] {1} at {2}", d.Severity, d.GetMessage(), FormatLocation(d.Location));
+                }
+
+                return 3;
+            }
+            catch (GenerationFailedException ex)
+            {
+                Console.WriteLine("Cannot generate contracts: {0}", ex.Message);
+                Console.WriteLine("At");
+                Console.WriteLine(ex.StackTrace);
+                return 4;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Cannot compile project or generate contracts: {0}", ex.Message);
+                Console.WriteLine("At");
+                Console.WriteLine(ex.StackTrace);
+                return 5;
+            }
         }
 
         private static async Task<int> HandleProjectAsync(ProjectOptions p)
@@ -110,6 +145,27 @@ namespace LeanCode.ContractsGenerator
             await using var outputStream = System.Console.OpenStandardOutput();
             using var codedOutput = new CodedOutputStream(outputStream, true);
             generated.WriteTo(codedOutput);
+        }
+
+        private static string FormatLocation(Location location)
+        {
+            var lineSpan = location.GetMappedLineSpan();
+            if (lineSpan.Path is not null)
+            {
+                return lineSpan.Path + "@" + (lineSpan.StartLinePosition.Line + 1) + ":" + (lineSpan.StartLinePosition.Character + 1);
+            }
+            else if (location.IsInSource)
+            {
+                return location.Kind + "(" + location.SourceTree?.FilePath + location.SourceSpan.ToString() + ")";
+            }
+            else if (location.IsInMetadata && location.MetadataModule is not null)
+            {
+                return location.Kind + "(" + location.MetadataModule.Name + ")";
+            }
+            else
+            {
+                return location.Kind.ToString();
+            }
         }
     }
 }
