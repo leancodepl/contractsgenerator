@@ -35,7 +35,7 @@ namespace LeanCode.ContractsGenerator
         {
             if (string.IsNullOrEmpty(ObjectAssemblyPath))
             {
-                throw new InvalidProjectException("Cannot locate `System.Runtime.dll`. Please check if the generator is run as a framewrok-dependent executable.");
+                throw new InvalidProjectException("Cannot locate `System.Runtime.dll`. Please check if the generator is run as a framework-dependent executable.");
             }
         }
 
