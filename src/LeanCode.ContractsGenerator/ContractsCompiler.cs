@@ -15,7 +15,7 @@ namespace LeanCode.ContractsGenerator
 {
     public static class ContractsCompiler
     {
-        private static readonly string ObjectAssemblyPath = Path.GetDirectoryName(typeof(object).Assembly.Location);
+        private static readonly string ObjectAssemblyPath = Path.GetDirectoryName(typeof(object).Assembly.Location) ?? string.Empty;
 
         private static readonly List<MetadataReference> DefaultAssemblies = new()
         {
@@ -30,6 +30,14 @@ namespace LeanCode.ContractsGenerator
             MetadataReference.CreateFromFile(Path.Combine(ObjectAssemblyPath, "System.Runtime.dll")),
             MetadataReference.CreateFromFile(Path.Combine(ObjectAssemblyPath, "System.Private.Uri.dll")),
         };
+
+        static ContractsCompiler()
+        {
+            if (string.IsNullOrEmpty(ObjectAssemblyPath))
+            {
+                throw new InvalidProjectException("Cannot locate `System.Runtime.dll`. Please check if the generator is run as a framework-dependent executable.");
+            }
+        }
 
         public static async Task<CompiledContracts> CompileProjectsAsync(IEnumerable<string> projectPaths)
         {
@@ -125,24 +133,6 @@ namespace LeanCode.ContractsGenerator
             }
 
             return new(compilations, name);
-        }
-    }
-
-    public class InvalidProjectException : Exception
-    {
-        public InvalidProjectException(string msg)
-            : base(msg)
-        { }
-    }
-
-    public class CompilationFailedException : Exception
-    {
-        public ImmutableArray<Diagnostic> Diagnostics { get; }
-
-        public CompilationFailedException(ImmutableArray<Diagnostic> diagnostics)
-            : base("Contracts compilation failed.")
-        {
-            Diagnostics = diagnostics;
         }
     }
 }

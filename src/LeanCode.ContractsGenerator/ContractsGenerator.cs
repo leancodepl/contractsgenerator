@@ -25,6 +25,7 @@ namespace LeanCode.ContractsGenerator
             contracts.ListAllTypes()
                 .Select(ProcessType)
                 .Where(s => s is not null)
+                .Cast<Statement>()
                 .ToList()
                 .OrderBy(s => s.Name)
                 .SaveToRepeatedField(export.Statements);
@@ -93,8 +94,8 @@ namespace LeanCode.ContractsGenerator
                 .SaveToRepeatedField(descriptor.GenericParameters);
             symbol.Interfaces
                 .Append(symbol.BaseType)
-                .Where(s => !IsIgnored(s))
-                .Select(typeRef.From)
+                .Where(IsNotIgnored)
+                .Select(typeRef.From!)
                 .SaveToRepeatedField(descriptor.Extends);
             AllProperties(symbol)
                 .SelectMany(s => s)
@@ -123,6 +124,11 @@ namespace LeanCode.ContractsGenerator
                     return new[] { currProps };
                 }
             }
+        }
+
+        private bool IsNotIgnored([System.Diagnostics.CodeAnalysis.NotNullWhen(true)] INamedTypeSymbol? symbol)
+        {
+            return !IsIgnored(symbol);
         }
 
         private bool IsIgnored([System.Diagnostics.CodeAnalysis.NotNullWhen(false)] INamedTypeSymbol? symbol)
@@ -183,10 +189,16 @@ namespace LeanCode.ContractsGenerator
             symbol.GetAttributes()
                 .Where(a => !IsIgnored(a.AttributeClass))
                 .Select(ToAttribute)
-                .SaveToRepeatedField(output);
+                .Where(a => a is not null)
+                .SaveToRepeatedField(output!);
 
-            AttributeRef ToAttribute(AttributeData a)
+            AttributeRef? ToAttribute(AttributeData a)
             {
+                if (a.AttributeClass is null)
+                {
+                    return null;
+                }
+
                 var type = a.AttributeClass.ToFullName();
                 var positional = a.ConstructorArguments
                     .SelectMany(FlattenPositionalArray)
@@ -200,7 +212,7 @@ namespace LeanCode.ContractsGenerator
                 positional.Concat(named).SaveToRepeatedField(result.Argument);
                 return result;
 
-                static AttributeArgument ToNamedArgument((string Key, object Value) v)
+                static AttributeArgument ToNamedArgument((string Key, object? Value) v)
                 {
                     return new()
                     {
@@ -212,7 +224,7 @@ namespace LeanCode.ContractsGenerator
                     };
                 }
 
-                static AttributeArgument ToPositionalArgument(object v, int i)
+                static AttributeArgument ToPositionalArgument(object? v, int i)
                 {
                     return new()
                     {
@@ -224,12 +236,12 @@ namespace LeanCode.ContractsGenerator
                     };
                 }
 
-                static IEnumerable<object> FlattenPositionalArray(TypedConstant a)
+                static IEnumerable<object?> FlattenPositionalArray(TypedConstant a)
                 {
                     return a.Kind == TypedConstantKind.Array ? a.Values.Select(v => v.Value) : new[] { a.Value };
                 }
 
-                static IEnumerable<(string Key, object Value)> FlattenNamedArray(KeyValuePair<string, TypedConstant> a)
+                static IEnumerable<(string Key, object? Value)> FlattenNamedArray(KeyValuePair<string, TypedConstant> a)
                 {
                     if (a.Value.Kind == TypedConstantKind.Array)
                     {

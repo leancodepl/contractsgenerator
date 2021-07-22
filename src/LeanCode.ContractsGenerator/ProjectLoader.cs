@@ -63,7 +63,7 @@ namespace LeanCode.ContractsGenerator
             {
                 if (!AllowedPackaged.Contains(package.Name))
                 {
-                    throw new InvalidProjectException($"The project references package {package.Name} that is not allowed.");
+                    throw new InvalidProjectException($"The project {project.ProjectFile.Name} references package {package.Name} that is not allowed.");
                 }
             }
         }
@@ -79,19 +79,28 @@ namespace LeanCode.ContractsGenerator
             }
 
             var proj = workspace.CurrentSolution.GetProject(id);
-            if (proj is null)
+            if (proj is not null)
+            {
+                var compilation = await proj
+                    .WithCompilationOptions(options)
+                    .GetCompilationAsync();
+                if (compilation is CSharpCompilation cs)
+                {
+                    output.Add(id, cs);
+
+                    foreach (var dependency in proj.AllProjectReferences)
+                    {
+                        await CompileTransitivelyAsync(workspace, dependency.ProjectId, output);
+                    }
+                }
+                else
+                {
+                    throw new InvalidProjectException($"Cannot compile project {id}. The project does not support compilation.");
+                }
+            }
+            else
             {
                 throw new InvalidProjectException($"Cannot compile project - the project {id} cannot be located.");
-            }
-
-            var compilation = await proj
-                .WithCompilationOptions(options)
-                .GetCompilationAsync();
-            output.Add(id, (CSharpCompilation)compilation);
-
-            foreach (var dependency in proj.AllProjectReferences)
-            {
-                await CompileTransitivelyAsync(workspace, dependency.ProjectId, output);
             }
         }
 
@@ -99,7 +108,8 @@ namespace LeanCode.ContractsGenerator
         {
             var list = manager.Projects.Values.AsParallel()
                 .Select(x => x.Build().FirstOrDefault())
-                .Where(x => x != null)
+                .Where(x => x is not null)
+                .Cast<IAnalyzerResult>()
                 .ToList();
             var adhocWorkspace = new AdhocWorkspace();
             var solutionInfo = SolutionInfo.Create(SolutionId.CreateNewId(), VersionStamp.Default, manager.SolutionFilePath);

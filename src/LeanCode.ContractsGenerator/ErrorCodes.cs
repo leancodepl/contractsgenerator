@@ -11,7 +11,9 @@ namespace LeanCode.ContractsGenerator
 
         public static bool IsErrorCode(ISymbol? sym)
         {
-            return sym.Name == ErrorCodesName || (sym.ContainingSymbol is not null && IsErrorCode(sym.ContainingSymbol));
+            return
+                sym?.Name == ErrorCodesName ||
+                (sym?.ContainingSymbol is not null && IsErrorCode(sym.ContainingSymbol));
         }
 
         public static IEnumerable<ErrorCode> Extract(INamedTypeSymbol symbol)
