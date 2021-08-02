@@ -34,6 +34,7 @@ enum KnownType {
   AuthorizeWhenHasAnyOfAttribute = 1003;
   QueryCacheAttribute = 1004;
   Attribute = 1005;
+  Operation = 1006;
 }
 
 message ValueRef {
@@ -146,6 +147,10 @@ message Statement {
   message Command {
     TypeDescriptor typeDescriptor = 1;
     repeated ErrorCode errorCodes = 2;
+  }
+  message Operation {
+    TypeDescriptor typeDescriptor = 1;
+    TypeRef returnType = 2;
   }
   string name = 1;
   string comment = 2;
