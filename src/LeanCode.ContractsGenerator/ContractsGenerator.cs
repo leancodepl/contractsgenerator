@@ -97,8 +97,10 @@ namespace LeanCode.ContractsGenerator
                 .Where(IsNotIgnored)
                 .Select(typeRef.From!)
                 .SaveToRepeatedField(descriptor.Extends);
-            AllProperties(symbol)
-                .SelectMany(s => s)
+            symbol
+                .GetMembers()
+                .OfType<IPropertySymbol>()
+                .Where(s => !IsExcluded(s) && !RealizesInterface(s, symbol))
                 .Select(ToProperty)
                 .SaveToRepeatedField(descriptor.Properties);
             symbol.GetMembers()
@@ -107,23 +109,6 @@ namespace LeanCode.ContractsGenerator
                 .Select(ToConstant)
                 .SaveToRepeatedField(descriptor.Constants);
             return descriptor;
-
-            IEnumerable<IEnumerable<IPropertySymbol>> AllProperties(INamedTypeSymbol ns)
-            {
-                var currProps = ns
-                    .GetMembers()
-                    .Where(s => !IsExcluded(s))
-                    .OfType<IPropertySymbol>();
-
-                if (ns.BaseType is not null)
-                {
-                    return AllProperties(ns.BaseType).Append(currProps);
-                }
-                else
-                {
-                    return new[] { currProps };
-                }
-            }
         }
 
         private bool IsNotIgnored([System.Diagnostics.CodeAnalysis.NotNullWhen(true)] INamedTypeSymbol? symbol)
@@ -145,6 +130,14 @@ namespace LeanCode.ContractsGenerator
             return symbol
                 .GetAttributes()
                 .Any(a => contracts.Types.IsExcludeFromContractsGenerationType(a.AttributeClass));
+        }
+
+        private static bool RealizesInterface(IPropertySymbol prop, INamedTypeSymbol ns)
+        {
+            return ns.AllInterfaces
+                .SelectMany(i => i.GetMembers())
+                .OfType<IPropertySymbol>()
+                .Any(p => prop.Name == p.Name);
         }
 
         private GenericParameter ToParam(ITypeParameterSymbol ts)
