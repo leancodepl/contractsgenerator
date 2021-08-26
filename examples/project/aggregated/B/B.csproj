@@ -1,11 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="LeanCode.CQRS" Version="5.1.1237" />
+    <PackageReference Include="LeanCode.CQRS" Version="6.0.1447" />
   </ItemGroup>
 
 </Project>

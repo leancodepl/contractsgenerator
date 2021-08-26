@@ -22,7 +22,6 @@ namespace LeanCode.ContractsGenerator
             MetadataReference.CreateFromFile(typeof(IQuery<>).Assembly.Location),
             MetadataReference.CreateFromFile(typeof(ICustomAuthorizer<>).Assembly.Location),
             MetadataReference.CreateFromFile(typeof(List<>).Assembly.Location),
-            MetadataReference.CreateFromFile(typeof(Date).Assembly.Location),
             MetadataReference.CreateFromFile(typeof(Uri).Assembly.Location),
             MetadataReference.CreateFromFile(Path.Combine(ObjectAssemblyPath, "mscorlib.dll")),
             MetadataReference.CreateFromFile(Path.Combine(ObjectAssemblyPath, "System.dll")),

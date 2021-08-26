@@ -1,27 +1,26 @@
 <Project>
   <PropertyGroup>
-    <CoreLibVersion>5.1.1237</CoreLibVersion>
+    <CoreLibVersion>6.0.1447</CoreLibVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Update="Google.Protobuf" Version="3.15.6" />
-    <PackageReference Update="Grpc.Tools" Version="2.36.4" />
+    <PackageReference Update="Google.Protobuf" Version="3.17.3" />
+    <PackageReference Update="Grpc.Tools" Version="2.39.1" />
 
     <PackageReference Update="CommandLineParser" Version="2.9.0-preview1" />
 
-    <PackageReference Update="Buildalyzer" Version="3.2.1" />
-    <PackageReference Update="Buildalyzer.Workspaces" Version="3.2.1" />
+    <PackageReference Update="Buildalyzer" Version="3.2.3" />
+    <PackageReference Update="Buildalyzer.Workspaces" Version="3.2.3" />
 
     <PackageReference Update="LeanCode.CQRS" Version="$(CoreLibVersion)" />
     <PackageReference Update="LeanCode.CQRS.Security" Version="$(CoreLibVersion)" />
-    <PackageReference Update="LeanCode.Time" Version="$(CoreLibVersion)" />
 
-    <PackageReference Update="Microsoft.CodeAnalysis" Version="3.9.0" />
-    <PackageReference Update="Microsoft.Extensions.FileSystemGlobbing" Version="5.0.0" />
+    <PackageReference Update="Microsoft.CodeAnalysis" Version="3.11.0" />
+    <PackageReference Update="Microsoft.Extensions.FileSystemGlobbing" Version="6.0.0-preview.7.21377.19" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="16.10.0-release-20210330-02" />
+    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="16.11.0" />
     <PackageReference Update="xunit.analyzers" Version="0.10.0" />
     <PackageReference Update="xunit.runner.visualstudio" Version="2.4.3" />
     <PackageReference Update="xunit" Version="2.4.1" />
