@@ -18,12 +18,14 @@ namespace LeanCode.ContractsGenerator.Tests.ExampleBased
                     .WithProperty("E", Known(KnownType.Uri))
                     .WithProperty("F", Known(KnownType.DateOnly))
                     .WithProperty("G", Known(KnownType.TimeOnly))
-                    .WithProperty("H", Known(KnownType.DateTime))
-                    .WithProperty("I", Known(KnownType.DateTimeOffset))
-                    .WithProperty("J", Known(KnownType.Guid))
-                    .WithProperty("K", Known(KnownType.Float))
-                    .WithProperty("L", Known(KnownType.Double))
-                    .WithProperty("M", Known(KnownType.TimeSpan));
+                    .WithProperty("H", Known(KnownType.Date))
+                    .WithProperty("I", Known(KnownType.Time))
+                    .WithProperty("J", Known(KnownType.DateTime))
+                    .WithProperty("K", Known(KnownType.DateTimeOffset))
+                    .WithProperty("L", Known(KnownType.Guid))
+                    .WithProperty("M", Known(KnownType.Float))
+                    .WithProperty("N", Known(KnownType.Double))
+                    .WithProperty("O", Known(KnownType.TimeSpan));
         }
 
         [Fact]

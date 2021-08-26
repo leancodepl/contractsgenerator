@@ -22,6 +22,7 @@
 
     <PackageReference Include="LeanCode.CQRS" />
     <PackageReference Include="LeanCode.CQRS.Security" />
+    <PackageReference Include="LeanCode.Time" />
     <PackageReference Include="Microsoft.CodeAnalysis" />
     <PackageReference Include="Microsoft.Extensions.FileSystemGlobbing" />
   </ItemGroup>

@@ -26,6 +26,8 @@ enum KnownType {
   DateTime = 202;
   DateTimeOffset = 203;
   TimeSpan = 204;
+  Date = 205;
+  Time = 206;
   Array = 300;
   Map = 301;
   Query = 1000;
