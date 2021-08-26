@@ -21,11 +21,13 @@ enum KnownType {
   Float = 150;
   Double = 151;
   Decimal = 152;
-  Date = 200;
-  Time = 201;
+  DateOnly = 200;
+  TimeOnly = 201;
   DateTime = 202;
   DateTimeOffset = 203;
   TimeSpan = 204;
+  Date = 205;
+  Time = 206;
   Array = 300;
   Map = 301;
   Query = 1000;

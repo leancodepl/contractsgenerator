@@ -1,7 +1,9 @@
 <Project>
 
   <PropertyGroup>
+    <LangVersion>preview</LangVersion>
     <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
 
     <Company>LeanCode</Company>
     <RepositoryUrl>https://github.com/leancodepl/contractsgenerator</RepositoryUrl>
