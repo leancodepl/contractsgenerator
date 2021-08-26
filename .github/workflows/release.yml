@@ -17,10 +17,11 @@ jobs:
         run: echo ::set-output name=version::$(echo $GITHUB_REF | cut -d / -f 3 | cut -c2-)
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Setup .NET Core SDK 5.0
+      - name: Setup .NET Core SDK 6.0
         uses: actions/setup-dotnet@v1.7.2
         with:
-          dotnet-version: 5.0.x
+          dotnet-version: 6.0.x
+          include-prerelease: true
       - name: Restore
         run: dotnet restore
       - name: Build
