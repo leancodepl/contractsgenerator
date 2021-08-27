@@ -1,4 +1,6 @@
 using System;
+using LeanCode.CQRS;
+
 public class Dto
 {
     public int A { get; set; }
@@ -16,4 +18,5 @@ public class Dto
     public float M { get; set; }
     public double N { get; set; }
     public TimeSpan O { get; set; }
+    public CommandResult P { get; set; }
 }
