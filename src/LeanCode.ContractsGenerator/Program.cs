@@ -65,33 +65,33 @@ namespace LeanCode.ContractsGenerator
             }
             catch (InvalidProjectException ex)
             {
-                Console.WriteLine("Cannot load one of the projects: {0}", ex.Message);
-                Console.WriteLine("At");
-                Console.WriteLine(ex.StackTrace);
+                Console.Error.WriteLine("Cannot load one of the projects: {0}", ex.Message);
+                Console.Error.WriteLine("At");
+                Console.Error.WriteLine(ex.StackTrace);
                 return 2;
             }
             catch (CompilationFailedException ex)
             {
-                Console.WriteLine("Cannot compile contracts. There were errors during project compilation:");
+                Console.Error.WriteLine("Cannot compile contracts. There were errors during project compilation:");
                 foreach (var d in ex.Diagnostics)
                 {
-                    Console.WriteLine("[{0}] {1} at {2}", d.Severity, d.GetMessage(), FormatLocation(d.Location));
+                    Console.Error.WriteLine("[{0}] {1} at {2}", d.Severity, d.GetMessage(), FormatLocation(d.Location));
                 }
 
                 return 3;
             }
             catch (GenerationFailedException ex)
             {
-                Console.WriteLine("Cannot generate contracts: {0}", ex.Message);
-                Console.WriteLine("At");
-                Console.WriteLine(ex.StackTrace);
+                Console.Error.WriteLine("Cannot generate contracts: {0}", ex.Message);
+                Console.Error.WriteLine("At");
+                Console.Error.WriteLine(ex.StackTrace);
                 return 4;
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Cannot compile project or generate contracts: {0}", ex.Message);
-                Console.WriteLine("At");
-                Console.WriteLine(ex.StackTrace);
+                Console.Error.WriteLine("Cannot compile project or generate contracts: {0}", ex.Message);
+                Console.Error.WriteLine("At");
+                Console.Error.WriteLine(ex.StackTrace);
                 return 5;
             }
         }
