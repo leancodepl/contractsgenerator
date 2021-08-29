@@ -18,8 +18,8 @@ enum KnownType {
   UInt32 = 105;
   Int64 = 106;
   UInt64 = 107;
-  Float = 150;
-  Double = 151;
+  Float32 = 150;
+  Float64 = 151;
   Decimal = 152;
   DateOnly = 200;
   TimeOnly = 201;
