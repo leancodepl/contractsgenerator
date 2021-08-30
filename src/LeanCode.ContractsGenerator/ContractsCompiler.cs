@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using LeanCode.CQRS;
 using LeanCode.CQRS.Security;
@@ -24,6 +25,7 @@ namespace LeanCode.ContractsGenerator
             MetadataReference.CreateFromFile(typeof(List<>).Assembly.Location),
             MetadataReference.CreateFromFile(typeof(Date).Assembly.Location),
             MetadataReference.CreateFromFile(typeof(Uri).Assembly.Location),
+            MetadataReference.CreateFromFile(typeof(HttpClient).Assembly.Location),
             MetadataReference.CreateFromFile(Path.Combine(ObjectAssemblyPath, "mscorlib.dll")),
             MetadataReference.CreateFromFile(Path.Combine(ObjectAssemblyPath, "System.dll")),
             MetadataReference.CreateFromFile(Path.Combine(ObjectAssemblyPath, "System.Core.dll")),
@@ -84,7 +86,7 @@ namespace LeanCode.ContractsGenerator
             {
                 var fp = dir.GetFile(f.Path).FullName;
                 var content = await File.ReadAllTextAsync(fp);
-                trees.Add(CSharpSyntaxTree.ParseText(content));
+                trees.Add(CSharpSyntaxTree.ParseText(content, new(LanguageVersion.Preview)));
             }
 
             return CompileTrees(trees, directory.FullName);
