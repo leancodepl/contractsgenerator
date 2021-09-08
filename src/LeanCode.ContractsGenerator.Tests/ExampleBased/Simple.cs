@@ -50,22 +50,7 @@ namespace LeanCode.ContractsGenerator.Tests.ExampleBased
         }
 
         [Fact]
-        public void Inheritance_old()
-        {
-            "simple/inheritance.cs"
-                .Compiles()
-                .WithDto("A")
-                    .WithProperty("PropA", Known(KnownType.Int32))
-                .WithDto("B")
-                    .WithProperty("PropB", Known(KnownType.Int32))
-                .WithDto("C")
-                    .WithProperty("PropA", Known(KnownType.Int32))
-                    .WithProperty("PropB", Known(KnownType.Int32))
-                    .WithProperty("PropC", Known(KnownType.Int32));
-        }
-
-        [Fact]
-        public void Inheritance_proposed()
+        public void Inherited_properties()
         {
             "simple/inheritance.cs"
                 .Compiles()

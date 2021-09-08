@@ -97,18 +97,24 @@ namespace LeanCode.ContractsGenerator
                 .Where(IsNotIgnored)
                 .Select(typeRef.From!)
                 .SaveToRepeatedField(descriptor.Extends);
-            symbol
-                .GetMembers()
-                .OfType<IPropertySymbol>()
-                .Where(s => !IsExcluded(s) && !RealizesInterface(s, symbol))
-                .Select(ToProperty)
-                .SaveToRepeatedField(descriptor.Properties);
+            MapProperties(symbol, descriptor);
             symbol.GetMembers()
                 .OfType<IFieldSymbol>()
                 .Where(fs => fs.HasConstantValue)
                 .Select(ToConstant)
                 .SaveToRepeatedField(descriptor.Constants);
             return descriptor;
+
+            void MapProperties(INamedTypeSymbol symbol, TypeDescriptor descriptor)
+            {
+                var baseProps = GatherBaseProperties(symbol);
+                symbol
+                    .GetMembers()
+                    .OfType<IPropertySymbol>()
+                    .Where(s => !IsExcluded(s) && !AlreadyImplemented(s, baseProps))
+                    .Select(ToProperty)
+                    .SaveToRepeatedField(descriptor.Properties);
+            }
         }
 
         private bool IsNotIgnored([System.Diagnostics.CodeAnalysis.NotNullWhen(true)] INamedTypeSymbol? symbol)
@@ -132,12 +138,18 @@ namespace LeanCode.ContractsGenerator
                 .Any(a => contracts.Types.IsExcludeFromContractsGenerationType(a.AttributeClass));
         }
 
-        private static bool RealizesInterface(IPropertySymbol prop, INamedTypeSymbol ns)
+        private static HashSet<string> GatherBaseProperties(INamedTypeSymbol ns)
         {
             return ns.AllInterfaces
                 .SelectMany(i => i.GetMembers())
                 .OfType<IPropertySymbol>()
-                .Any(p => prop.Name == p.Name);
+                .Select(p => p.Name)
+                .ToHashSet();
+        }
+
+        private static bool AlreadyImplemented(IPropertySymbol prop, HashSet<string> baseProps)
+        {
+            return baseProps.Contains(prop.Name);
         }
 
         private GenericParameter ToParam(ITypeParameterSymbol ts)
