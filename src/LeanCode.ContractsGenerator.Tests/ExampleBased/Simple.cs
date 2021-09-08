@@ -48,5 +48,20 @@ namespace LeanCode.ContractsGenerator.Tests.ExampleBased
                     .WithMember("B", 1)
                     .WithMember("C", 10);
         }
+
+        [Fact]
+        public void Inherited_properties()
+        {
+            "simple/inheritance.cs"
+                .Compiles()
+                .WithDto("A")
+                    .WithProperty("PropA", Known(KnownType.Int32))
+                .WithDto("B")
+                    .WithProperty("PropB", Known(KnownType.Int32))
+                .WithDto("C")
+                    .WithProperty("PropC", Known(KnownType.Int32))
+                    .WithoutProperty("PropA")
+                    .WithoutProperty("PropB");
+        }
     }
 }

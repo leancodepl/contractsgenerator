@@ -97,10 +97,7 @@ namespace LeanCode.ContractsGenerator
                 .Where(IsNotIgnored)
                 .Select(typeRef.From!)
                 .SaveToRepeatedField(descriptor.Extends);
-            AllProperties(symbol)
-                .SelectMany(s => s)
-                .Select(ToProperty)
-                .SaveToRepeatedField(descriptor.Properties);
+            MapProperties(symbol, descriptor);
             symbol.GetMembers()
                 .OfType<IFieldSymbol>()
                 .Where(fs => fs.HasConstantValue)
@@ -108,21 +105,15 @@ namespace LeanCode.ContractsGenerator
                 .SaveToRepeatedField(descriptor.Constants);
             return descriptor;
 
-            IEnumerable<IEnumerable<IPropertySymbol>> AllProperties(INamedTypeSymbol ns)
+            void MapProperties(INamedTypeSymbol symbol, TypeDescriptor descriptor)
             {
-                var currProps = ns
+                var baseProps = GatherBaseProperties(symbol);
+                symbol
                     .GetMembers()
-                    .Where(s => !IsExcluded(s))
-                    .OfType<IPropertySymbol>();
-
-                if (ns.BaseType is not null)
-                {
-                    return AllProperties(ns.BaseType).Append(currProps);
-                }
-                else
-                {
-                    return new[] { currProps };
-                }
+                    .OfType<IPropertySymbol>()
+                    .Where(s => !IsExcluded(s) && !AlreadyImplemented(s, baseProps))
+                    .Select(ToProperty)
+                    .SaveToRepeatedField(descriptor.Properties);
             }
         }
 
@@ -145,6 +136,20 @@ namespace LeanCode.ContractsGenerator
             return symbol
                 .GetAttributes()
                 .Any(a => contracts.Types.IsExcludeFromContractsGenerationType(a.AttributeClass));
+        }
+
+        private static HashSet<string> GatherBaseProperties(INamedTypeSymbol ns)
+        {
+            return ns.AllInterfaces
+                .SelectMany(i => i.GetMembers())
+                .OfType<IPropertySymbol>()
+                .Select(p => p.Name)
+                .ToHashSet();
+        }
+
+        private static bool AlreadyImplemented(IPropertySymbol prop, HashSet<string> baseProps)
+        {
+            return baseProps.Contains(prop.Name);
         }
 
         private GenericParameter ToParam(ITypeParameterSymbol ts)
