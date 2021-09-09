@@ -34,8 +34,7 @@ namespace LeanCode.ContractsGenerator.Analyzers
 
         public override IEnumerable<AnalyzeError> AnalyzeCommand(Statement stmt, Statement.Types.Command command)
         {
-            return command.ErrorCodes
-                .SelectMany(AnalyzeErrorCode)
+            return AnalyzeErrorCodes(command.ErrorCodes)
                 .Select(e => e with { Name = stmt.Name });
         }
 

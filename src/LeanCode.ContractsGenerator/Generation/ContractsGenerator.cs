@@ -19,6 +19,12 @@ public class ContractsGenerator
 
     public Export Generate()
     {
+        var export = GenerateCore();
+        return Analyze(export);
+    }
+
+    private Export GenerateCore()
+    {
         var export = new Export() { ProjectName = contracts.ProjectName };
         contracts.ListAllTypes()
             .Select(ProcessType)
@@ -30,6 +36,19 @@ public class ContractsGenerator
         ErrorCodes.ListKnownGroups(export.Statements)
             .SaveToRepeatedField(export.KnownErrorGroups);
         return export;
+    }
+
+    private static Export Analyze(Export export)
+    {
+        var errors = new Analyzers.AllAnalyzers().Analyze(export).ToList();
+        if (errors.Count > 0)
+        {
+            throw new AnalyzeFailedException(errors);
+        }
+        else
+        {
+            return export;
+        }
     }
 
     private Statement? ProcessType(INamedTypeSymbol? symbol)
