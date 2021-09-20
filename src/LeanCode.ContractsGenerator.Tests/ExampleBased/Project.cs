@@ -4,6 +4,10 @@ using static LeanCode.ContractsGenerator.Tests.ExampleBasedHelpers;
 
 namespace LeanCode.ContractsGenerator.Tests.ExampleBased
 {
+    [CollectionDefinition(nameof(MSBuildTestCurrentDirectoryWorkaroundCollection), DisableParallelization = true)]
+    public class MSBuildTestCurrentDirectoryWorkaroundCollection { }
+
+    [Collection(nameof(MSBuildTestCurrentDirectoryWorkaroundCollection))]
     public class Project
     {
         [Fact]
