@@ -1,5 +1,3 @@
-using System;
-using System.Linq;
 using Microsoft.CodeAnalysis;
 
 namespace LeanCode.ContractsGenerator
@@ -89,10 +87,8 @@ namespace LeanCode.ContractsGenerator
                 { ContainingNamespace: { Name: "System" }, Name: "Guid" } => New(KnownType.Guid),
                 { ContainingNamespace: { Name: "System" }, Name: "Uri" } => New(KnownType.Uri),
                 { ContainingNamespace: { Name: "System" }, Name: "TimeSpan" } => New(KnownType.TimeSpan),
-                {
-                    ContainingNamespace: { Name: "CQRS", ContainingNamespace: { Name: "LeanCode" } }, Name: "CommandResult"
-                }
-                    => New(KnownType.CommandResult),
+                { ContainingNamespace: { Name: "CQRS", ContainingNamespace: { Name: "LeanCode" } }, Name: "CommandResult" } =>
+                    New(KnownType.CommandResult),
 
                 _ when contracts.Types.IsQueryType(ts) =>
                 New(KnownType.Query, From(contracts.Types.ExtractQueryResult(ts))),
