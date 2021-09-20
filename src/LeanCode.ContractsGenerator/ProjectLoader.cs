@@ -1,45 +1,56 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Buildalyzer;
-using Buildalyzer.Workspaces;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.MSBuild;
 
 namespace LeanCode.ContractsGenerator
 {
-    public class ProjectLoader
+    public class ProjectLoader : IDisposable
     {
-        private static readonly IReadOnlySet<string> AllowedPackaged = new HashSet<string>
-        {
-            "LeanCode.CQRS",
-            "LeanCode.Time",
-        };
-
         private readonly CSharpCompilationOptions options;
 
-        private readonly AnalyzerManager manager;
-        private readonly List<IProjectAnalyzer> projects;
+        private readonly MSBuildWorkspace msbuildWorkspace = MSBuildHelper.CreateWorkspace();
+        private readonly List<Project> projects = new();
 
         public ProjectLoader(CSharpCompilationOptions options)
         {
             this.options = options;
-
-            manager = new AnalyzerManager(null);
-            projects = new List<IProjectAnalyzer>();
         }
 
-        public void LoadProjects(IEnumerable<string> projectPaths)
+        public async Task LoadProjectsAsync(IEnumerable<string> projectPaths)
         {
-            var projs = projectPaths.Select(manager.GetProject);
-            projects.AddRange(projs);
-        }
-
-        public void VerifyAll()
-        {
-            foreach (var p in projects)
+            foreach (var projectPath in projectPaths)
             {
-                VerifyProject(p);
+                var projectFullPath = ResolveCanonicalPath(projectPath);
+
+                if (msbuildWorkspace.CurrentSolution.Projects
+                    .Where(p => p.FilePath is not null)
+                    .Any(p => ResolveCanonicalPath(p.FilePath) == projectFullPath))
+                {
+                    continue;
+                }
+
+                var project = await msbuildWorkspace.OpenProjectAsync(projectPath);
+
+                projects.Add(project);
+            }
+
+            static string ResolveCanonicalPath(string path)
+            {
+                var fileInfo = new FileInfo(path) as FileSystemInfo;
+
+                if (!fileInfo.Exists)
+                {
+                    return path;
+                }
+
+                fileInfo = fileInfo.ResolveLinkTarget(true) ?? fileInfo;
+
+                if (!fileInfo.Exists)
+                {
+                    return path;
+                }
+
+                return Path.GetFullPath(fileInfo.FullName);
             }
         }
 
@@ -47,29 +58,16 @@ namespace LeanCode.ContractsGenerator
         {
             var output = new Dictionary<ProjectId, CSharpCompilation>();
 
-            var workspace = GetWorkspace();
-            foreach (var p in projects)
+            foreach (var project in projects)
             {
-                var id = ProjectId.CreateFromSerialized(p.ProjectGuid);
-                await CompileTransitivelyAsync(workspace, id, output);
+                await CompileTransitivelyAsync(msbuildWorkspace, project.Id, output);
             }
 
             return output.Values;
         }
 
-        private static void VerifyProject(IProjectAnalyzer project)
-        {
-            foreach (var package in project.ProjectFile.PackageReferences)
-            {
-                if (!AllowedPackaged.Contains(package.Name))
-                {
-                    throw new InvalidProjectException($"The project {project.ProjectFile.Name} references package {package.Name} that is not allowed.");
-                }
-            }
-        }
-
         private async Task CompileTransitivelyAsync(
-            AdhocWorkspace workspace,
+            Workspace workspace,
             ProjectId id,
             Dictionary<ProjectId, CSharpCompilation> output)
         {
@@ -78,17 +76,20 @@ namespace LeanCode.ContractsGenerator
                 return;
             }
 
-            var proj = workspace.CurrentSolution.GetProject(id);
-            if (proj is not null)
+            var project = workspace.CurrentSolution.GetProject(id);
+
+            if (project is not null)
             {
-                var compilation = await proj
+                var compilation = await project
                     .WithCompilationOptions(options)
+                    .AddUniqueMetadataReferences(ContractsCompiler.DefaultAssemblies)
                     .GetCompilationAsync();
+
                 if (compilation is CSharpCompilation cs)
                 {
                     output.Add(id, cs);
 
-                    foreach (var dependency in proj.AllProjectReferences)
+                    foreach (var dependency in project.AllProjectReferences)
                     {
                         await CompileTransitivelyAsync(workspace, dependency.ProjectId, output);
                     }
@@ -104,27 +105,24 @@ namespace LeanCode.ContractsGenerator
             }
         }
 
-        public AdhocWorkspace GetWorkspace()
+        public void Dispose() => msbuildWorkspace.Dispose();
+    }
+
+    public static class ProjectExtensions
+    {
+        public static Project AddUniqueMetadataReferences(
+            this Project project,
+            IEnumerable<MetadataReference> metadataReferences)
         {
-            var list = manager.Projects.Values.AsParallel()
-                .Select(x => x.Build().FirstOrDefault())
-                .Where(x => x is not null)
-                .Cast<IAnalyzerResult>()
+            var existingMetadataReferences = project.MetadataReferences
+                .Select(mr => Path.GetFileName(mr.Display))
+                .ToHashSet();
+
+            var newMetadataReferences = metadataReferences
+                .Where(mr => !existingMetadataReferences.Contains(Path.GetFileName(mr.Display)))
                 .ToList();
-            var adhocWorkspace = new AdhocWorkspace();
-            var solutionInfo = SolutionInfo.Create(SolutionId.CreateNewId(), VersionStamp.Default, manager.SolutionFilePath);
-            adhocWorkspace.AddSolution(solutionInfo);
 
-            foreach (var item in list)
-            {
-                var projectId = ProjectId.CreateFromSerialized(item.ProjectGuid);
-                if (!adhocWorkspace.CurrentSolution.ContainsProject(projectId))
-                {
-                    item.AddToWorkspace(adhocWorkspace, true);
-                }
-            }
-
-            return adhocWorkspace;
+            return project.AddMetadataReferences(newMetadataReferences);
         }
     }
 }

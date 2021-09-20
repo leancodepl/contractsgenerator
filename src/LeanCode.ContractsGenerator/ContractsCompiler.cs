@@ -1,14 +1,7 @@
-using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.IO;
-using System.Linq;
-using System.Net.Http;
-using System.Threading.Tasks;
-using LeanCode.CQRS;
-using LeanCode.CQRS.Security;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.Extensions.DependencyModel;
 using Microsoft.Extensions.FileSystemGlobbing;
 using Microsoft.Extensions.FileSystemGlobbing.Abstractions;
 
@@ -16,36 +9,54 @@ namespace LeanCode.ContractsGenerator
 {
     public static class ContractsCompiler
     {
-        private static readonly string ObjectAssemblyPath = Path.GetDirectoryName(typeof(object).Assembly.Location) ?? string.Empty;
-
-        private static readonly List<MetadataReference> DefaultAssemblies = new()
+        private static readonly ImmutableList<string> ImplicitGlobalUsings = ImmutableList.CreateRange(new[]
         {
-            MetadataReference.CreateFromFile(typeof(IQuery<>).Assembly.Location),
-            MetadataReference.CreateFromFile(typeof(ICustomAuthorizer<>).Assembly.Location),
-            MetadataReference.CreateFromFile(typeof(List<>).Assembly.Location),
-            MetadataReference.CreateFromFile(typeof(Date).Assembly.Location),
-            MetadataReference.CreateFromFile(typeof(Uri).Assembly.Location),
-            MetadataReference.CreateFromFile(typeof(HttpClient).Assembly.Location),
-            MetadataReference.CreateFromFile(Path.Combine(ObjectAssemblyPath, "mscorlib.dll")),
-            MetadataReference.CreateFromFile(Path.Combine(ObjectAssemblyPath, "System.dll")),
-            MetadataReference.CreateFromFile(Path.Combine(ObjectAssemblyPath, "System.Core.dll")),
-            MetadataReference.CreateFromFile(Path.Combine(ObjectAssemblyPath, "System.Runtime.dll")),
-            MetadataReference.CreateFromFile(Path.Combine(ObjectAssemblyPath, "System.Private.Uri.dll")),
-        };
+            "System",
+            "System.Collections.Generic",
+            "System.IO",
+            "System.Linq",
+            "System.Net.Http",
+            "System.Threading",
+            "System.Threading.Tasks",
+        });
 
-        static ContractsCompiler()
+        public static readonly ImmutableHashSet<string> ReferenceAssemblyNames = ImmutableHashSet.CreateRange(new[]
         {
-            if (string.IsNullOrEmpty(ObjectAssemblyPath))
-            {
-                throw new InvalidProjectException("Cannot locate `System.Runtime.dll`. Please check if the generator is run as a framework-dependent executable.");
-            }
+            "System.Collections.Reference",
+            "System.Linq.Reference",
+            "System.Net.Http.Reference",
+            "System.Runtime.Reference",
+            "System.Runtime.Extensions.Reference",
+        });
+
+        public static readonly ImmutableHashSet<string> LeanCodeAssemblyNames = ImmutableHashSet.CreateRange(new[]
+        {
+            "LeanCode.CQRS",
+            "LeanCode.CQRS.Security",
+            "LeanCode.Time",
+        });
+
+        private static bool IsWantedReferenceAssembly(CompilationLibrary cl)
+        {
+            return cl.Type == "referenceassembly"
+                && ReferenceAssemblyNames.Contains(cl.Name, StringComparer.InvariantCultureIgnoreCase);
         }
+
+        private static bool IsWantedLeanCodeAssembly(CompilationLibrary cl)
+        {
+            return LeanCodeAssemblyNames.Contains(cl.Name, StringComparer.InvariantCultureIgnoreCase);
+        }
+
+        public static readonly ImmutableList<PortableExecutableReference> DefaultAssemblies = DependencyContext.Default.CompileLibraries
+            .Where(cl => IsWantedReferenceAssembly(cl) || IsWantedLeanCodeAssembly(cl))
+            .SelectMany(cl => cl.ResolveReferencePaths())
+            .Select(path => MetadataReference.CreateFromFile(path))
+            .ToImmutableList();
 
         public static async Task<CompiledContracts> CompileProjectsAsync(IEnumerable<string> projectPaths)
         {
-            var loader = new ProjectLoader(PrepareCompilationOptions());
-            loader.LoadProjects(projectPaths);
-            loader.VerifyAll();
+            using var loader = new ProjectLoader(PrepareCompilationOptions());
+            await loader.LoadProjectsAsync(projectPaths);
             var compilations = await loader.CompileAsync();
             return Compile(compilations, compilations.First().AssemblyName ?? string.Empty);
         }
@@ -111,6 +122,7 @@ namespace LeanCode.ContractsGenerator
         private static CSharpCompilationOptions PrepareCompilationOptions()
         {
             return new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary)
+                .WithUsings(ImplicitGlobalUsings)
                 .WithConcurrentBuild(true)
                 .WithAllowUnsafe(false)
                 .WithNullableContextOptions(NullableContextOptions.Annotations)

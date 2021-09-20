@@ -11,8 +11,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Buildalyzer" />
-    <PackageReference Include="Buildalyzer.Workspaces" />
     <PackageReference Include="CommandLineParser" />
     <PackageReference Include="Google.Protobuf" />
     <PackageReference Include="Grpc.Tools">
@@ -23,7 +21,15 @@
     <PackageReference Include="LeanCode.CQRS" />
     <PackageReference Include="LeanCode.CQRS.Security" />
     <PackageReference Include="LeanCode.Time" />
+
+    <PackageReference Include="Microsoft.Build.Locator" />
+
     <PackageReference Include="Microsoft.CodeAnalysis" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" />
+
+    <PackageReference Include="Microsoft.Extensions.DependencyModel" />
     <PackageReference Include="Microsoft.Extensions.FileSystemGlobbing" />
   </ItemGroup>
 
