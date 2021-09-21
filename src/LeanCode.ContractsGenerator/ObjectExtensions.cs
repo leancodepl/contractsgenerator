@@ -1,5 +1,3 @@
-using System;
-
 namespace LeanCode.ContractsGenerator
 {
     public static class ObjectExtensions
@@ -21,7 +19,7 @@ namespace LeanCode.ContractsGenerator
                 double v => new ValueRef { FloatingPoint = new() { Value = v } },
                 string v => new ValueRef { String = new() { Value = v } },
                 bool v => new ValueRef { Bool = new() { Value = v } },
-                _ => throw new NotSupportedException($"Cannot geenrate contracts for constant of type {val.GetType()}."),
+                _ => throw new NotSupportedException($"Cannot generate contracts for constant of type {val.GetType()}."),
             };
         }
     }
