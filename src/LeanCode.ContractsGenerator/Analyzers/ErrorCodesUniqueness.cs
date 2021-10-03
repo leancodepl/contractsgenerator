@@ -2,7 +2,7 @@ namespace LeanCode.ContractsGenerator.Analyzers
 {
     public class ErrorCodesUniqueness : BaseAnalyzer
     {
-        public const string Code = "LNCD003";
+        public const string Code = "CNTR0003";
 
         public override IEnumerable<AnalyzeError> AnalyzeErrorCodes(IEnumerable<ErrorCode> errorCodes)
         {

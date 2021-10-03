@@ -4,7 +4,7 @@ namespace LeanCode.ContractsGenerator.Analyzers
     {
         private static readonly IReadOnlySet<KnownType> ValidKnownTypeValues = Enum.GetValues<KnownType>().ToHashSet();
 
-        public const string Code = "LNCD002";
+        public const string Code = "CNTR0002";
 
         public override IEnumerable<AnalyzeError> AnalyzeKnownType(KnownType knownType)
         {
