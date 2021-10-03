@@ -62,4 +62,31 @@ public class Project
             .WithCommand("A.Command")
             .WithQuery("B.Query");
     }
+
+    [Fact]
+    public void Multiple_projects_compile_correctly_even_if_not_all_reference_CQRS_library()
+    {
+        "project/no-cqrs-reference/Combined/Combined.csproj"
+            .ProjectCompiles()
+            .WithCommand("A.Command")
+            .WithDto("B.Shared");
+    }
+
+    [Fact]
+    public void Multiple_projects_compile_correctly_even_if_not_all_reference_CQRS_library_and_are_compiled_separately()
+    {
+        ProjectsCompile(
+            "project/no-cqrs-reference/A/A.csproj",
+            "project/no-cqrs-reference/B/B.csproj")
+            .WithCommand("A.Command")
+            .WithDto("B.Shared");
+    }
+
+    [Fact]
+    public void External_references_are_supported()
+    {
+        "project/external-ref/external-ref.csproj"
+            .ProjectCompiles()
+            .WithCommand("ExternalRef.Command");
+    }
 }
