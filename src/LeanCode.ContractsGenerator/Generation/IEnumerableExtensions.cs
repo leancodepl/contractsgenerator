@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Google.Protobuf.Collections;
 
 namespace LeanCode.ContractsGenerator.Generation

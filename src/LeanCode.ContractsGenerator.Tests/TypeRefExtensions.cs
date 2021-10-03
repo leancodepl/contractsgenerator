@@ -1,5 +1,3 @@
-using System;
-
 namespace LeanCode.ContractsGenerator.Tests
 {
     public static class TypeRefExtensions

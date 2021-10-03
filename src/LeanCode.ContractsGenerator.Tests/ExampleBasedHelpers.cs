@@ -1,5 +1,3 @@
-using System.IO;
-using System.Linq;
 using LeanCode.ContractsGenerator.Compilation;
 using Microsoft.Extensions.FileSystemGlobbing;
 

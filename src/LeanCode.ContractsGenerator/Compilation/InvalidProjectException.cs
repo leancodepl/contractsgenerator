@@ -1,5 +1,3 @@
-using System;
-
 namespace LeanCode.ContractsGenerator.Compilation
 {
     public class InvalidProjectException : Exception

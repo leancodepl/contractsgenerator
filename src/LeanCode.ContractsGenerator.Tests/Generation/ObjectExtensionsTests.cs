@@ -1,5 +1,3 @@
-using System;
-using System.Diagnostics.CodeAnalysis;
 using LeanCode.ContractsGenerator.Generation;
 using Xunit;
 
