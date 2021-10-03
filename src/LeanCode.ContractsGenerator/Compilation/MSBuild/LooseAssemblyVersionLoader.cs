@@ -6,7 +6,7 @@
 using System.Reflection;
 using System.Runtime.Loader;
 
-namespace LeanCode.ContractsGenerator;
+namespace LeanCode.ContractsGenerator.Compilation.MSBuild;
 
 internal static class LooseVersionAssemblyLoader
 {

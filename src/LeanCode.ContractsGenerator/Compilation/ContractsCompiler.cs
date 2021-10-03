@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyModel;
 using Microsoft.Extensions.FileSystemGlobbing;
 using Microsoft.Extensions.FileSystemGlobbing.Abstractions;
 
-namespace LeanCode.ContractsGenerator
+namespace LeanCode.ContractsGenerator.Compilation
 {
     public static class ContractsCompiler
     {

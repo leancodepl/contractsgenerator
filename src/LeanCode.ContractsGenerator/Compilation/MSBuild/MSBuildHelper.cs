@@ -6,7 +6,7 @@
 using Microsoft.Build.Locator;
 using Microsoft.CodeAnalysis.MSBuild;
 
-namespace LeanCode.ContractsGenerator;
+namespace LeanCode.ContractsGenerator.Compilation.MSBuild;
 
 public static class MSBuildHelper
 {

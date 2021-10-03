@@ -1,6 +1,6 @@
 using System;
 
-namespace LeanCode.ContractsGenerator
+namespace LeanCode.ContractsGenerator.Generation
 {
     public class GenerationFailedException : Exception
     {

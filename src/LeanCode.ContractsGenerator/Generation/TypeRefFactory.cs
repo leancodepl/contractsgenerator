@@ -1,6 +1,7 @@
+using LeanCode.ContractsGenerator.Compilation;
 using Microsoft.CodeAnalysis;
 
-namespace LeanCode.ContractsGenerator
+namespace LeanCode.ContractsGenerator.Generation
 {
     public sealed class TypeRefFactory
     {

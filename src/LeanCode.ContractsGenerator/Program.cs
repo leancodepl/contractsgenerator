@@ -4,6 +4,8 @@ using System.IO;
 using System.Threading.Tasks;
 using CommandLine;
 using Google.Protobuf;
+using LeanCode.ContractsGenerator.Compilation;
+using LeanCode.ContractsGenerator.Generation;
 using Microsoft.CodeAnalysis;
 using Microsoft.Extensions.FileSystemGlobbing;
 
@@ -120,7 +122,7 @@ namespace LeanCode.ContractsGenerator
 
         private static async Task<int> WriteAsync(CompiledContracts contracts, string output)
         {
-            var generated = new ContractsGenerator(contracts).Generate();
+            var generated = new Generation.ContractsGenerator(contracts).Generate();
             if (output == IOptions.StdoutMarker)
             {
                 await WriteToStdoutAsync(generated);

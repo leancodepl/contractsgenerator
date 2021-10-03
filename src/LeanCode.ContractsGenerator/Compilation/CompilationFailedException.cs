@@ -2,7 +2,7 @@ using System;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 
-namespace LeanCode.ContractsGenerator
+namespace LeanCode.ContractsGenerator.Compilation
 {
     public class CompilationFailedException : Exception
     {
@@ -12,6 +12,12 @@ namespace LeanCode.ContractsGenerator
             : base("Contracts compilation failed.")
         {
             Diagnostics = diagnostics;
+        }
+
+        public CompilationFailedException(string message)
+            : base(message)
+        {
+            Diagnostics = ImmutableArray<Diagnostic>.Empty;
         }
     }
 }

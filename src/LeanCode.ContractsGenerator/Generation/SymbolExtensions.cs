@@ -4,7 +4,7 @@ using System.Text;
 using System.Xml;
 using Microsoft.CodeAnalysis;
 
-namespace LeanCode.ContractsGenerator
+namespace LeanCode.ContractsGenerator.Generation
 {
     public static class SymbolExtensions
     {

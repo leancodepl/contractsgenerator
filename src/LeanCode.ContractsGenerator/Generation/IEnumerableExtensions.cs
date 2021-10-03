@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Google.Protobuf.Collections;
 
-namespace LeanCode.ContractsGenerator
+namespace LeanCode.ContractsGenerator.Generation
 {
     internal static class IEnumerableExtensions
     {

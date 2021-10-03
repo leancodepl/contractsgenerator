@@ -1,8 +1,9 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
+using LeanCode.ContractsGenerator.Generation;
 using Xunit;
 
-namespace LeanCode.ContractsGenerator.Tests
+namespace LeanCode.ContractsGenerator.Tests.Generation
 {
     public class ObjectExtensionsTests
     {

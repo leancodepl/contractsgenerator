@@ -1,4 +1,4 @@
-namespace LeanCode.ContractsGenerator
+namespace LeanCode.ContractsGenerator.Generation
 {
     public static class ObjectExtensions
     {

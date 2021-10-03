@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis.CSharp;
 
 #pragma warning disable RS1024
 
-namespace LeanCode.ContractsGenerator
+namespace LeanCode.ContractsGenerator.Compilation
 {
     public sealed class ContractTypes
     {
@@ -48,7 +48,7 @@ namespace LeanCode.ContractsGenerator
                 var type = c.GetTypeByMetadataName(name);
                 if (type is null)
                 {
-                    throw new GenerationFailedException($"Cannot locate type {name} in compilation unit `{c.AssemblyName ?? "UNKNOWN"}`.");
+                    throw new CompilationFailedException($"Cannot locate type {name} in compilation unit `{c.AssemblyName ?? "UNKNOWN"}`.");
                 }
 
                 result.Add(type);
@@ -68,7 +68,7 @@ namespace LeanCode.ContractsGenerator
                 var t = c.GetTypeByMetadataName(name)?.ConstructUnboundGenericType();
                 if (t is null)
                 {
-                    throw new GenerationFailedException($"Cannot locate generic type {name} in compilation unit `{c.AssemblyName ?? "UNKNOWN"}`.");
+                    throw new CompilationFailedException($"Cannot locate generic type {name} in compilation unit `{c.AssemblyName ?? "UNKNOWN"}`.");
                 }
 
                 result.Add(t);

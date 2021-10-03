@@ -1,5 +1,6 @@
 using System.IO;
 using System.Linq;
+using LeanCode.ContractsGenerator.Compilation;
 using Microsoft.Extensions.FileSystemGlobbing;
 
 namespace LeanCode.ContractsGenerator.Tests
@@ -10,7 +11,7 @@ namespace LeanCode.ContractsGenerator.Tests
         {
             var code = File.ReadAllText(Path.Join("examples", path));
             var compiled = ContractsCompiler.CompileCode(code, "test");
-            return new(new ContractsGenerator(compiled).Generate());
+            return new(new ContractsGenerator.Generation.ContractsGenerator(compiled).Generate());
         }
 
         public static AssertedExport ProjectCompiles(this string path)
@@ -23,7 +24,7 @@ namespace LeanCode.ContractsGenerator.Tests
             var projectPaths = paths.Select(p => Path.Join("examples", p));
             // HACK: The sync execution results in much cleaner tests
             var compiled = ContractsCompiler.CompileProjectsAsync(projectPaths).Result;
-            return new(new ContractsGenerator(compiled).Generate());
+            return new(new ContractsGenerator.Generation.ContractsGenerator(compiled).Generate());
         }
 
         public static AssertedExport GlobCompiles(string[] includes, string[] excludes)
@@ -34,7 +35,7 @@ namespace LeanCode.ContractsGenerator.Tests
             var di = new DirectoryInfo("examples");
             // HACK: The sync execution results in much cleaner tests
             var compiled = ContractsCompiler.CompileGlobAsync(matcher, di).Result;
-            return new(new ContractsGenerator(compiled).Generate());
+            return new(new ContractsGenerator.Generation.ContractsGenerator(compiled).Generate());
         }
     }
 }

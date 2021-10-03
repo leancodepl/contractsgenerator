@@ -1,3 +1,5 @@
+using LeanCode.ContractsGenerator.Generation;
+
 namespace LeanCode.ContractsGenerator.Tests
 {
     public static class AttributeArgumentExtensions

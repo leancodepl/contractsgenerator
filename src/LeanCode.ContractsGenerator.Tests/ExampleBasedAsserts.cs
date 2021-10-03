@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using LeanCode.ContractsGenerator.Generation;
 using Xunit;
 
 namespace LeanCode.ContractsGenerator.Tests

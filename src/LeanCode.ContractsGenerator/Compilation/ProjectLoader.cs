@@ -1,8 +1,9 @@
+using LeanCode.ContractsGenerator.Compilation.MSBuild;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.MSBuild;
 
-namespace LeanCode.ContractsGenerator
+namespace LeanCode.ContractsGenerator.Compilation
 {
     public class ProjectLoader : IDisposable
     {

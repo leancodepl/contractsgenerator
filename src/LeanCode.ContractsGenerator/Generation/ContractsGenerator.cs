@@ -2,9 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Google.Protobuf.Collections;
+using LeanCode.ContractsGenerator.Compilation;
 using Microsoft.CodeAnalysis;
 
-namespace LeanCode.ContractsGenerator
+namespace LeanCode.ContractsGenerator.Generation
 {
     public class ContractsGenerator
     {
