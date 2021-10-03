@@ -1,7 +1,7 @@
 <Project>
 
   <PropertyGroup>
-    <CoreLibVersion>6.0.1447</CoreLibVersion>
+    <CoreLibVersion>6.0.1454</CoreLibVersion>
     <RoslynVersion>4.0.0-3.final</RoslynVersion>
   </PropertyGroup>
 
@@ -32,7 +32,7 @@
     <PackageReference Update="xunit.runner.visualstudio" Version="2.4.3" />
     <PackageReference Update="xunit" Version="2.4.1" />
 
-    <PackageReference Update="coverlet.collector" Version="1.3.0" />
+    <PackageReference Update="coverlet.collector" Version="3.1.0" />
   </ItemGroup>
 
   <ItemGroup>
