@@ -19,7 +19,30 @@ jobs:
           include-prerelease: true
       - name: Restore
         run: dotnet restore
+      - name: Install trx2junit
+        run: dotnet tool install --global trx2junit
       - name: Build
         run: dotnet build --no-restore
       - name: Test
-        run: dotnet test --no-build
+        run: dotnet test --collect "XPlat Code Coverage" --settings coverlet.runsettings --logger trx --no-build
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1
+        if: always()
+      - name: Convert Test Results to jUnit
+        run: find -name '*.trx' -exec trx2junit --output TestResults {} +
+        if: always()
+      - name: Publish Unit Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v1.6
+        if: >
+          always() &&
+          github.event.sender.login != 'dependabot[bot]' &&
+          ( github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository )
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          files: TestResults/*.xml
+      - name: Upload Test Results
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: Unit Test Results
+          path: TestResults/*.xml
