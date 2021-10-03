@@ -1,12 +1,11 @@
 using Google.Protobuf.Collections;
 
-namespace LeanCode.ContractsGenerator.Generation
+namespace LeanCode.ContractsGenerator.Generation;
+
+internal static class IEnumerableExtensions
 {
-    internal static class IEnumerableExtensions
+    public static void SaveToRepeatedField<T>(this IEnumerable<T> src, RepeatedField<T> output)
     {
-        public static void SaveToRepeatedField<T>(this IEnumerable<T> src, RepeatedField<T> output)
-        {
-            output.AddRange(src);
-        }
+        output.AddRange(src);
     }
 }

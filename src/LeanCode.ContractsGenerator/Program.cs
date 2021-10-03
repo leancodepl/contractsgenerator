@@ -5,165 +5,164 @@ using LeanCode.ContractsGenerator.Generation;
 using Microsoft.CodeAnalysis;
 using Microsoft.Extensions.FileSystemGlobbing;
 
-namespace LeanCode.ContractsGenerator
+namespace LeanCode.ContractsGenerator;
+
+public interface IOptions
 {
-    public interface IOptions
-    {
-        public const string StdoutMarker = "-";
+    public const string StdoutMarker = "-";
 
-        [Option('o', "output", Required = true, MetaValue = "FILE", HelpText = "The output file path. Use `-` to write the resulting Protobuf file to `stdout`.")]
-        public string OutputFile { get; set; }
+    [Option('o', "output", Required = true, MetaValue = "FILE", HelpText = "The output file path. Use `-` to write the resulting Protobuf file to `stdout`.")]
+    public string OutputFile { get; set; }
+}
+
+[Verb("project", HelpText = "Generate contracts from C# project.")]
+public class ProjectOptions : IOptions
+{
+    public string OutputFile { get; set; } = string.Empty;
+
+    [Option('p', "project", Required = true, MetaValue = "FILE", HelpText = "The project file with contracts. To pass multiple projects, separate the values with space.")]
+    public IEnumerable<string> ProjectFiles { get; set; } = Array.Empty<string>();
+}
+
+[Verb("file", HelpText = "Generate contracts from a single file.")]
+public class FileOptions : IOptions
+{
+    public string OutputFile { get; set; } = string.Empty;
+
+    [Option('i', "input", Required = true, MetaValue = "FILE", HelpText = "Input file.")]
+    public string InputFile { get; set; } = string.Empty;
+}
+
+[Verb("path", HelpText = "Generate contracts based on globbed path.")]
+public class PathOptions : IOptions
+{
+    public string OutputFile { get; set; } = string.Empty;
+
+    [Option('i', "include", Required = true, MetaValue = "PATTERN", HelpText = "Include files from glob pattern. To pass multiple patterns, separate them with space.")]
+    public IEnumerable<string> Include { get; set; } = Array.Empty<string>();
+
+    [Option('e', "exclude", Required = false, MetaValue = "PATTERN", HelpText = "Exclude files from glob pattern. Has higher precedence than includes. To pass multiple patterns, separate them with space.")]
+    public IEnumerable<string> Exclude { get; set; } = Array.Empty<string>();
+
+    [Option('d', "directory", MetaValue = "PATH", HelpText = "The base directory used for globbing. Uses current directory if not specified.")]
+    public string? BaseDirectory { get; set; }
+}
+
+internal class Program
+{
+    private static async Task<int> Main(string[] args)
+    {
+        try
+        {
+            return await Parser.Default.ParseArguments<ProjectOptions, FileOptions, PathOptions>(args)
+                .MapResult(
+                    (ProjectOptions p) => HandleProjectAsync(p),
+                    (FileOptions f) => HandleFileAsync(f),
+                    (PathOptions p) => HandlePathAsync(p),
+                    err => Task.FromResult(1));
+        }
+        catch (InvalidProjectException ex)
+        {
+            Console.Error.WriteLine($"Cannot load one of the projects: {ex.Message}");
+            Console.Error.WriteLine("At");
+            Console.Error.WriteLine(ex.StackTrace);
+            return 2;
+        }
+        catch (CompilationFailedException ex)
+        {
+            Console.Error.WriteLine("Cannot compile contracts. There were errors during project compilation:");
+            foreach (var d in ex.Diagnostics)
+            {
+                Console.Error.WriteLine($"[{d.Severity}] {d.GetMessage()} at {FormatLocation(d.Location)}");
+            }
+
+            return 3;
+        }
+        catch (GenerationFailedException ex)
+        {
+            Console.Error.WriteLine($"Cannot generate contracts: {ex.Message}");
+            Console.Error.WriteLine("At");
+            Console.Error.WriteLine(ex.StackTrace);
+            return 4;
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Cannot compile project or generate contracts: {ex.Message}");
+            Console.Error.WriteLine("At");
+            Console.Error.WriteLine(ex.StackTrace);
+            return 5;
+        }
     }
 
-    [Verb("project", HelpText = "Generate contracts from C# project.")]
-    public class ProjectOptions : IOptions
+    private static async Task<int> HandleProjectAsync(ProjectOptions p)
     {
-        public string OutputFile { get; set; } = string.Empty;
-
-        [Option('p', "project", Required = true, MetaValue = "FILE", HelpText = "The project file with contracts. To pass multiple projects, separate the values with space.")]
-        public IEnumerable<string> ProjectFiles { get; set; } = Array.Empty<string>();
+        var contracts = await ContractsCompiler.CompileProjectsAsync(p.ProjectFiles);
+        return await WriteAsync(contracts, p.OutputFile);
     }
 
-    [Verb("file", HelpText = "Generate contracts from a single file.")]
-    public class FileOptions : IOptions
+    private static async Task<int> HandleFileAsync(FileOptions f)
     {
-        public string OutputFile { get; set; } = string.Empty;
-
-        [Option('i', "input", Required = true, MetaValue = "FILE", HelpText = "Input file.")]
-        public string InputFile { get; set; } = string.Empty;
+        var contracts = await ContractsCompiler.CompileFileAsync(f.InputFile);
+        return await WriteAsync(contracts, f.OutputFile);
     }
 
-    [Verb("path", HelpText = "Generate contracts based on globbed path.")]
-    public class PathOptions : IOptions
+    private static async Task<int> HandlePathAsync(PathOptions p)
     {
-        public string OutputFile { get; set; } = string.Empty;
-
-        [Option('i', "include", Required = true, MetaValue = "PATTERN", HelpText = "Include files from glob pattern. To pass multiple patterns, separate them with space.")]
-        public IEnumerable<string> Include { get; set; } = Array.Empty<string>();
-
-        [Option('e', "exclude", Required = false, MetaValue = "PATTERN", HelpText = "Exclude files from glob pattern. Has higher precedence than includes. To pass multiple patterns, separate them with space.")]
-        public IEnumerable<string> Exclude { get; set; } = Array.Empty<string>();
-
-        [Option('d', "directory", MetaValue = "PATH", HelpText = "The base directory used for globbing. Uses current directory if not specified.")]
-        public string? BaseDirectory { get; set; }
+        var matcher = new Matcher();
+        matcher.AddIncludePatterns(p.Include);
+        matcher.AddExcludePatterns(p.Exclude);
+        var directory = new DirectoryInfo(p.BaseDirectory ?? Directory.GetCurrentDirectory());
+        var contracts = await ContractsCompiler.CompileGlobAsync(matcher, directory);
+        return await WriteAsync(contracts, p.OutputFile);
     }
 
-    internal class Program
+    private static async Task<int> WriteAsync(CompiledContracts contracts, string output)
     {
-        private static async Task<int> Main(string[] args)
+        var generated = new Generation.ContractsGenerator(contracts).Generate();
+        if (output == IOptions.StdoutMarker)
         {
-            try
-            {
-                return await Parser.Default.ParseArguments<ProjectOptions, FileOptions, PathOptions>(args)
-                    .MapResult(
-                        (ProjectOptions p) => HandleProjectAsync(p),
-                        (FileOptions f) => HandleFileAsync(f),
-                        (PathOptions p) => HandlePathAsync(p),
-                        err => Task.FromResult(1));
-            }
-            catch (InvalidProjectException ex)
-            {
-                Console.Error.WriteLine($"Cannot load one of the projects: {ex.Message}");
-                Console.Error.WriteLine("At");
-                Console.Error.WriteLine(ex.StackTrace);
-                return 2;
-            }
-            catch (CompilationFailedException ex)
-            {
-                Console.Error.WriteLine("Cannot compile contracts. There were errors during project compilation:");
-                foreach (var d in ex.Diagnostics)
-                {
-                    Console.Error.WriteLine($"[{d.Severity}] {d.GetMessage()} at {FormatLocation(d.Location)}");
-                }
-
-                return 3;
-            }
-            catch (GenerationFailedException ex)
-            {
-                Console.Error.WriteLine($"Cannot generate contracts: {ex.Message}");
-                Console.Error.WriteLine("At");
-                Console.Error.WriteLine(ex.StackTrace);
-                return 4;
-            }
-            catch (Exception ex)
-            {
-                Console.Error.WriteLine($"Cannot compile project or generate contracts: {ex.Message}");
-                Console.Error.WriteLine("At");
-                Console.Error.WriteLine(ex.StackTrace);
-                return 5;
-            }
+            await WriteToStdoutAsync(generated);
+        }
+        else
+        {
+            await WriteToFileAsync(generated, output);
         }
 
-        private static async Task<int> HandleProjectAsync(ProjectOptions p)
+        return 0;
+    }
+
+    private static async Task WriteToFileAsync(Export generated, string filepath)
+    {
+        await using var outputStream = File.OpenWrite(filepath);
+        using var codedOutput = new CodedOutputStream(outputStream, true);
+        generated.WriteTo(codedOutput);
+    }
+
+    private static async Task WriteToStdoutAsync(Export generated)
+    {
+        await using var outputStream = System.Console.OpenStandardOutput();
+        using var codedOutput = new CodedOutputStream(outputStream, true);
+        generated.WriteTo(codedOutput);
+    }
+
+    private static string FormatLocation(Location location)
+    {
+        var lineSpan = location.GetMappedLineSpan();
+        if (lineSpan.Path is not null)
         {
-            var contracts = await ContractsCompiler.CompileProjectsAsync(p.ProjectFiles);
-            return await WriteAsync(contracts, p.OutputFile);
+            return lineSpan.Path + "@" + (lineSpan.StartLinePosition.Line + 1) + ":" + (lineSpan.StartLinePosition.Character + 1);
         }
-
-        private static async Task<int> HandleFileAsync(FileOptions f)
+        else if (location.IsInSource)
         {
-            var contracts = await ContractsCompiler.CompileFileAsync(f.InputFile);
-            return await WriteAsync(contracts, f.OutputFile);
+            return location.Kind + "(" + location.SourceTree?.FilePath + location.SourceSpan.ToString() + ")";
         }
-
-        private static async Task<int> HandlePathAsync(PathOptions p)
+        else if (location.IsInMetadata && location.MetadataModule is not null)
         {
-            var matcher = new Matcher();
-            matcher.AddIncludePatterns(p.Include);
-            matcher.AddExcludePatterns(p.Exclude);
-            var directory = new DirectoryInfo(p.BaseDirectory ?? Directory.GetCurrentDirectory());
-            var contracts = await ContractsCompiler.CompileGlobAsync(matcher, directory);
-            return await WriteAsync(contracts, p.OutputFile);
+            return location.Kind + "(" + location.MetadataModule.Name + ")";
         }
-
-        private static async Task<int> WriteAsync(CompiledContracts contracts, string output)
+        else
         {
-            var generated = new Generation.ContractsGenerator(contracts).Generate();
-            if (output == IOptions.StdoutMarker)
-            {
-                await WriteToStdoutAsync(generated);
-            }
-            else
-            {
-                await WriteToFileAsync(generated, output);
-            }
-
-            return 0;
-        }
-
-        private static async Task WriteToFileAsync(Export generated, string filepath)
-        {
-            await using var outputStream = File.OpenWrite(filepath);
-            using var codedOutput = new CodedOutputStream(outputStream, true);
-            generated.WriteTo(codedOutput);
-        }
-
-        private static async Task WriteToStdoutAsync(Export generated)
-        {
-            await using var outputStream = System.Console.OpenStandardOutput();
-            using var codedOutput = new CodedOutputStream(outputStream, true);
-            generated.WriteTo(codedOutput);
-        }
-
-        private static string FormatLocation(Location location)
-        {
-            var lineSpan = location.GetMappedLineSpan();
-            if (lineSpan.Path is not null)
-            {
-                return lineSpan.Path + "@" + (lineSpan.StartLinePosition.Line + 1) + ":" + (lineSpan.StartLinePosition.Character + 1);
-            }
-            else if (location.IsInSource)
-            {
-                return location.Kind + "(" + location.SourceTree?.FilePath + location.SourceSpan.ToString() + ")";
-            }
-            else if (location.IsInMetadata && location.MetadataModule is not null)
-            {
-                return location.Kind + "(" + location.MetadataModule.Name + ")";
-            }
-            else
-            {
-                return location.Kind.ToString();
-            }
+            return location.Kind.ToString();
         }
     }
 }

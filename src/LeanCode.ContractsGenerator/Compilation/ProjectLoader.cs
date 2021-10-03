@@ -3,127 +3,126 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.MSBuild;
 
-namespace LeanCode.ContractsGenerator.Compilation
+namespace LeanCode.ContractsGenerator.Compilation;
+
+public class ProjectLoader : IDisposable
 {
-    public class ProjectLoader : IDisposable
+    private readonly CSharpCompilationOptions options;
+
+    private readonly MSBuildWorkspace msbuildWorkspace = MSBuildHelper.CreateWorkspace();
+    private readonly List<Project> projects = new();
+
+    public ProjectLoader(CSharpCompilationOptions options)
     {
-        private readonly CSharpCompilationOptions options;
+        this.options = options;
+    }
 
-        private readonly MSBuildWorkspace msbuildWorkspace = MSBuildHelper.CreateWorkspace();
-        private readonly List<Project> projects = new();
-
-        public ProjectLoader(CSharpCompilationOptions options)
+    public async Task LoadProjectsAsync(IEnumerable<string> projectPaths)
+    {
+        foreach (var projectPath in projectPaths)
         {
-            this.options = options;
+            var projectFullPath = ResolveCanonicalPath(projectPath);
+
+            if (msbuildWorkspace.CurrentSolution.Projects
+                .Where(p => p.FilePath is not null)
+                .Any(p => ResolveCanonicalPath(p.FilePath) == projectFullPath))
+            {
+                continue;
+            }
+
+            var project = await msbuildWorkspace.OpenProjectAsync(projectPath);
+
+            projects.Add(project);
         }
 
-        public async Task LoadProjectsAsync(IEnumerable<string> projectPaths)
+        static string ResolveCanonicalPath(string path)
         {
-            foreach (var projectPath in projectPaths)
+            var fileInfo = new FileInfo(path) as FileSystemInfo;
+
+            if (!fileInfo.Exists)
             {
-                var projectFullPath = ResolveCanonicalPath(projectPath);
-
-                if (msbuildWorkspace.CurrentSolution.Projects
-                    .Where(p => p.FilePath is not null)
-                    .Any(p => ResolveCanonicalPath(p.FilePath) == projectFullPath))
-                {
-                    continue;
-                }
-
-                var project = await msbuildWorkspace.OpenProjectAsync(projectPath);
-
-                projects.Add(project);
+                return path;
             }
 
-            static string ResolveCanonicalPath(string path)
+            fileInfo = fileInfo.ResolveLinkTarget(true) ?? fileInfo;
+
+            if (!fileInfo.Exists)
             {
-                var fileInfo = new FileInfo(path) as FileSystemInfo;
-
-                if (!fileInfo.Exists)
-                {
-                    return path;
-                }
-
-                fileInfo = fileInfo.ResolveLinkTarget(true) ?? fileInfo;
-
-                if (!fileInfo.Exists)
-                {
-                    return path;
-                }
-
-                return Path.GetFullPath(fileInfo.FullName);
+                return path;
             }
+
+            return Path.GetFullPath(fileInfo.FullName);
+        }
+    }
+
+    public async Task<IReadOnlyCollection<CSharpCompilation>> CompileAsync()
+    {
+        var output = new Dictionary<ProjectId, CSharpCompilation>();
+
+        foreach (var project in projects)
+        {
+            await CompileTransitivelyAsync(msbuildWorkspace, project.Id, output);
         }
 
-        public async Task<IReadOnlyCollection<CSharpCompilation>> CompileAsync()
+        return output.Values;
+    }
+
+    private async Task CompileTransitivelyAsync(
+        Workspace workspace,
+        ProjectId id,
+        Dictionary<ProjectId, CSharpCompilation> output)
+    {
+        if (output.ContainsKey(id))
         {
-            var output = new Dictionary<ProjectId, CSharpCompilation>();
-
-            foreach (var project in projects)
-            {
-                await CompileTransitivelyAsync(msbuildWorkspace, project.Id, output);
-            }
-
-            return output.Values;
+            return;
         }
 
-        private async Task CompileTransitivelyAsync(
-            Workspace workspace,
-            ProjectId id,
-            Dictionary<ProjectId, CSharpCompilation> output)
+        var project = workspace.CurrentSolution.GetProject(id);
+
+        if (project is not null)
         {
-            if (output.ContainsKey(id))
+            var compilation = await project
+                .WithCompilationOptions(options)
+                .AddUniqueMetadataReferences(ContractsCompiler.DefaultAssemblies)
+                .GetCompilationAsync();
+
+            if (compilation is CSharpCompilation cs)
             {
-                return;
-            }
+                output.Add(id, cs);
 
-            var project = workspace.CurrentSolution.GetProject(id);
-
-            if (project is not null)
-            {
-                var compilation = await project
-                    .WithCompilationOptions(options)
-                    .AddUniqueMetadataReferences(ContractsCompiler.DefaultAssemblies)
-                    .GetCompilationAsync();
-
-                if (compilation is CSharpCompilation cs)
+                foreach (var dependency in project.AllProjectReferences)
                 {
-                    output.Add(id, cs);
-
-                    foreach (var dependency in project.AllProjectReferences)
-                    {
-                        await CompileTransitivelyAsync(workspace, dependency.ProjectId, output);
-                    }
-                }
-                else
-                {
-                    throw new InvalidProjectException($"Cannot compile project {id}. The project does not support compilation.");
+                    await CompileTransitivelyAsync(workspace, dependency.ProjectId, output);
                 }
             }
             else
             {
-                throw new InvalidProjectException($"Cannot compile project - the project {id} cannot be located.");
+                throw new InvalidProjectException($"Cannot compile project {id}. The project does not support compilation.");
             }
         }
-
-        public void Dispose() => msbuildWorkspace.Dispose();
+        else
+        {
+            throw new InvalidProjectException($"Cannot compile project - the project {id} cannot be located.");
+        }
     }
 
-    public static class ProjectExtensions
+    public void Dispose() => msbuildWorkspace.Dispose();
+}
+
+public static class ProjectExtensions
+{
+    public static Project AddUniqueMetadataReferences(
+        this Project project,
+        IEnumerable<MetadataReference> metadataReferences)
     {
-        public static Project AddUniqueMetadataReferences(
-            this Project project,
-            IEnumerable<MetadataReference> metadataReferences)
-        {
-            var existingMetadataReferences = project.MetadataReferences
-                .Select(mr => Path.GetFileName(mr.Display))
-                .ToHashSet();
+        var existingMetadataReferences = project.MetadataReferences
+            .Select(mr => Path.GetFileName(mr.Display))
+            .ToHashSet();
 
-            var newMetadataReferences = metadataReferences
-                .Where(mr => !existingMetadataReferences.Contains(Path.GetFileName(mr.Display)))
-                .ToList();
+        var newMetadataReferences = metadataReferences
+            .Where(mr => !existingMetadataReferences.Contains(Path.GetFileName(mr.Display)))
+            .ToList();
 
-            return project.AddMetadataReferences(newMetadataReferences);
-        }
+        return project.AddMetadataReferences(newMetadataReferences);
     }
 }

@@ -1,9 +1,8 @@
-namespace LeanCode.ContractsGenerator.Generation
+namespace LeanCode.ContractsGenerator.Generation;
+
+public class GenerationFailedException : Exception
 {
-    public class GenerationFailedException : Exception
-    {
-        public GenerationFailedException(string message)
-            : base(message)
-        { }
-    }
+    public GenerationFailedException(string message)
+        : base(message)
+    { }
 }
