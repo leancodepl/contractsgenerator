@@ -1,29 +1,30 @@
-namespace LeanCode.ContractsGenerator.Tests
-{
-    public static class AttributeArgumentExtensions
-    {
-        public static AttributeArgument Named(string name, object? value)
-        {
-            return new()
-            {
-                Named = new()
-                {
-                    Name = name,
-                    Value = value.ToValueRef(),
-                },
-            };
-        }
+using LeanCode.ContractsGenerator.Generation;
 
-        public static AttributeArgument Positional(int pos, object? value)
+namespace LeanCode.ContractsGenerator.Tests;
+
+public static class AttributeArgumentExtensions
+{
+    public static AttributeArgument Named(string name, object? value)
+    {
+        return new()
         {
-            return new()
+            Named = new()
             {
-                Positional = new()
-                {
-                    Position = pos,
-                    Value = value.ToValueRef(),
-                },
-            };
-        }
+                Name = name,
+                Value = value.ToValueRef(),
+            },
+        };
+    }
+
+    public static AttributeArgument Positional(int pos, object? value)
+    {
+        return new()
+        {
+            Positional = new()
+            {
+                Position = pos,
+                Value = value.ToValueRef(),
+            },
+        };
     }
 }
