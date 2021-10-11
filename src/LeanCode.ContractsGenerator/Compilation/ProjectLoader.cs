@@ -1,7 +1,10 @@
+using System.Xml;
 using LeanCode.ContractsGenerator.Compilation.MSBuild;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.MSBuild;
+
+using MSB = Microsoft.Build;
 
 namespace LeanCode.ContractsGenerator.Compilation;
 
@@ -15,6 +18,8 @@ public class ProjectLoader : IDisposable
     public ProjectLoader(CSharpCompilationOptions options)
     {
         this.options = options;
+
+        msbuildWorkspace.WorkspaceFailed += (_, f) => Console.WriteLine(f.Diagnostic);
     }
 
     public async Task LoadProjectsAsync(IEnumerable<string> projectPaths)
@@ -57,6 +62,7 @@ public class ProjectLoader : IDisposable
 
     public async Task<IReadOnlyCollection<CSharpCompilation>> CompileAsync()
     {
+        // await RestoreProjects();
         var output = new Dictionary<ProjectId, CSharpCompilation>();
 
         foreach (var project in projects)
@@ -65,6 +71,33 @@ public class ProjectLoader : IDisposable
         }
 
         return output.Values;
+    }
+
+    private async Task RestoreProjects()
+    {
+        var batchBuildProjectCollection = new MSB.Evaluation.ProjectCollection(RestoreProperties);
+        var buildParams = new MSB.Execution.BuildParameters(batchBuildProjectCollection);
+
+        foreach (var p in projects)
+        {
+            using var ms = new MemoryStream();
+            await using (var stream = File.OpenRead(p.FilePath!))
+            {
+                await stream.CopyToAsync(ms);
+                ms.Position = 0;
+            }
+
+            using var xmlReader = XmlReader.Create(ms, s_xmlReaderSettings);
+            var xml = MSB.Construction.ProjectRootElement.Create(xmlReader, batchBuildProjectCollection);
+
+            // When constructing a project from an XmlReader, MSBuild cannot determine the project file path.  Setting the
+            // path explicitly is necessary so that the reserved properties like $(MSBuildProjectDirectory) will work.
+            xml.FullPath = p.FilePath!;
+
+            var project = new MSB.Evaluation.Project(xml, globalProperties: null, toolsVersion: null, batchBuildProjectCollection);
+        }
+
+        MSB.Execution.BuildManager.DefaultBuildManager.BeginBuild(buildParams);
     }
 
     private async Task CompileTransitivelyAsync(
@@ -83,7 +116,6 @@ public class ProjectLoader : IDisposable
         {
             var compilation = await project
                 .WithCompilationOptions(options)
-                .AddUniqueMetadataReferences(ContractsCompiler.DefaultAssemblies)
                 .GetCompilationAsync();
 
             if (compilation is CSharpCompilation cs)
@@ -107,22 +139,22 @@ public class ProjectLoader : IDisposable
     }
 
     public void Dispose() => msbuildWorkspace.Dispose();
-}
 
-public static class ProjectExtensions
-{
-    public static Project AddUniqueMetadataReferences(
-        this Project project,
-        IEnumerable<MetadataReference> metadataReferences)
+    private static readonly Dictionary<string, string> RestoreProperties = new()
     {
-        var existingMetadataReferences = project.MetadataReferences
-            .Select(mr => Path.GetFileName(mr.Display))
-            .ToHashSet();
-
-        var newMetadataReferences = metadataReferences
-            .Where(mr => !existingMetadataReferences.Contains(Path.GetFileName(mr.Display)))
-            .ToList();
-
-        return project.AddMetadataReferences(newMetadataReferences);
-    }
+        { "DesignTimeBuild", bool.TrueString },
+        { "NonExistentFile", "__NonExistentSubDir__\\__NonExistentFile__" },
+        { "BuildProjectReferences", bool.FalseString },
+        { "BuildingProject", bool.FalseString },
+        { "ProvideCommandLineArgs", bool.TrueString },
+        { "SkipCompilerExecution", bool.TrueString },
+        { "ContinueOnError", "ErrorAndContinue" },
+        { "ShouldUnsetParentConfigurationAndPlatform", bool.FalseString },
+        { "AlwaysCompileMarkupFilesInSeparateDomain", bool.FalseString },
+    };
+    private static readonly XmlReaderSettings s_xmlReaderSettings = new()
+    {
+        DtdProcessing = DtdProcessing.Prohibit,
+        XmlResolver = null
+    };
 }

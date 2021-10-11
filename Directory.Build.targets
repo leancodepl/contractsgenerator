@@ -3,6 +3,8 @@
   <PropertyGroup>
     <CoreLibVersion>6.0.1454</CoreLibVersion>
     <RoslynVersion>4.0.0-3.final</RoslynVersion>
+    <MSBuildPackagesVersion>16.11.0</MSBuildPackagesVersion>
+    <NuGetVersion>6.0.0-preview.4.243</NuGetVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,12 +20,19 @@
 
     <PackageReference Update="Microsoft.Build.Locator" Version="1.4.1" />
 
+    <PackageReference Update="Microsoft.Build" Version="$(MSBuildPackagesVersion)" />
+    <PackageReference Update="Microsoft.Build.Framework" Version="$(MSBuildPackagesVersion)" />
+    <PackageReference Update="Microsoft.Build.Tasks.Core" Version="$(MSBuildPackagesVersion)" />
+
     <PackageReference Update="Microsoft.CodeAnalysis.CSharp" Version="$(RoslynVersion)" />
     <PackageReference Update="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="$(RoslynVersion)" />
     <PackageReference Update="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="$(RoslynVersion)" />
 
     <PackageReference Update="Microsoft.Extensions.DependencyModel" Version="6.0.0-rc.*" />
     <PackageReference Update="Microsoft.Extensions.FileSystemGlobbing" Version="6.0.0-rc.*" />
+
+    <PackageReference Update="NuGet.Build.Tasks" Version="$(NuGetVersion)" />
+    <PackageReference Update="NuGet.ProjectModel" Version="$(NuGetVersion)" />
   </ItemGroup>
 
   <ItemGroup>

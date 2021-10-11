@@ -34,12 +34,7 @@ public static class MSBuildHelper
                 // rather than a separate one. Any tasks isolated in AppDomains or tasks that create
                 // AppDomains will likely not work due to https://github.com/Microsoft/MSBuildLocator/issues/16.
                 ["AlwaysCompileMarkupFilesInSeparateDomain"] = bool.FalseString,
-
-                // Use the preview language version to force the full set of available analyzers to run on the project.
-                ["LangVersion"] = "preview",
-
-                ["TargetFrameworks"] = "net6.0",
-                ["TargetFramework"] = "net6.0",
+                // ["DesignTimeBuild"] = bool.FalseString,
             });
     }
 }

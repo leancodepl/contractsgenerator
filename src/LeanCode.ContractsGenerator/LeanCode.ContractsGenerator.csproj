@@ -22,14 +22,20 @@
     <PackageReference Include="LeanCode.CQRS.Security" />
     <PackageReference Include="LeanCode.Time" />
 
+    <PackageReference Include="Microsoft.Build" ExcludeAssets="runtime" />
+    <PackageReference Include="Microsoft.Build.Framework" ExcludeAssets="runtime" />
     <PackageReference Include="Microsoft.Build.Locator" />
+    <PackageReference Include="Microsoft.Build.Tasks.Core" ExcludeAssets="runtime" />
 
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" />
     <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" />
 
     <PackageReference Include="Microsoft.Extensions.DependencyModel" />
-    <PackageReference Include="Microsoft.Extensions.FileSystemGlobbing" />
+    <!-- <PackageReference Include="Microsoft.Extensions.FileSystemGlobbing" /> -->
+
+    <PackageReference Include="NuGet.Build.Tasks" />
+    <PackageReference Include="NuGet.ProjectModel" />
   </ItemGroup>
 
 </Project>
