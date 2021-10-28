@@ -55,19 +55,6 @@ public static class SymbolExtensions
             return string.Empty;
         }
 
-        static IEnumerable<XmlNode> FlattenAllNodes(XmlNode n)
-        {
-            if (n.NodeType == XmlNodeType.Text)
-            {
-                yield return n;
-            }
-
-            foreach (var c in n.ChildNodes.Cast<XmlNode>().SelectMany(FlattenAllNodes))
-            {
-                yield return c;
-            }
-        }
-
         static string ExtractFromXml(string xml)
         {
             var doc = new XmlDocument();
@@ -86,6 +73,19 @@ public static class SymbolExtensions
             else
             {
                 return string.Empty;
+            }
+        }
+
+        static IEnumerable<XmlNode> FlattenAllNodes(XmlNode n)
+        {
+            if (n.NodeType == XmlNodeType.Text)
+            {
+                yield return n;
+            }
+
+            foreach (var c in n.ChildNodes.Cast<XmlNode>().SelectMany(FlattenAllNodes))
+            {
+                yield return c;
             }
         }
     }
