@@ -41,6 +41,22 @@ public static class SymbolExtensions
         var xml = symbol.GetDocumentationCommentXml();
         if (!string.IsNullOrEmpty(xml))
         {
+            try
+            {
+                return ExtractFromXml(xml);
+            }
+            catch
+            {
+                return string.Empty;
+            }
+        }
+        else
+        {
+            return string.Empty;
+        }
+
+        static string ExtractFromXml(string xml)
+        {
             var doc = new XmlDocument();
             doc.LoadXml(xml);
 
@@ -52,16 +68,12 @@ public static class SymbolExtensions
                     sb.AppendLine(t.InnerText.Trim());
                 }
 
-                return sb.ToString();
+                return sb.ToString().TrimEnd();
             }
             else
             {
                 return string.Empty;
             }
-        }
-        else
-        {
-            return string.Empty;
         }
 
         static IEnumerable<XmlNode> FlattenAllNodes(XmlNode n)
