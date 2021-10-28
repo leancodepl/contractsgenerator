@@ -27,13 +27,13 @@ public class BaseAnalyzer : IAnalyzer
 
     public virtual IEnumerable<AnalyzeError> AnalyzeInternalTypeRef(AnalyzerContext context, TypeRef typeRef, TypeRef.Types.Internal i)
     {
-        return i.Arguments.SelectMany(a => AnalyzeTypeRef(context.Marked(PathMarker.Argument).Descend(a), a));
+        return i.Arguments.SelectMany((a, i) => AnalyzeTypeRef(context.Argument(i, a), a));
     }
 
     public virtual IEnumerable<AnalyzeError> AnalyzeKnownTypeRef(AnalyzerContext context, TypeRef typeRef, TypeRef.Types.Known k)
     {
         return k.Arguments
-            .SelectMany(r => AnalyzeTypeRef(context.Marked(PathMarker.Argument).Descend(r), r))
+            .SelectMany((a, i) => AnalyzeTypeRef(context.Argument(i, a), a))
             .Concat(AnalyzeKnownType(context, k.Type));
     }
 
@@ -90,13 +90,13 @@ public class BaseAnalyzer : IAnalyzer
 
     public virtual IEnumerable<AnalyzeError> AnalyzeAttributeRef(AnalyzerContext context, AttributeRef attrRef)
     {
-        return attrRef.Argument.SelectMany(a => AnalyzeAttributeArgument(context.Marked(PathMarker.Argument).Descend(a), a));
+        return attrRef.Argument.SelectMany(a => AnalyzeAttributeArgument(context.Argument(a), a));
     }
 
     public virtual IEnumerable<AnalyzeError> AnalyzePropertyRef(AnalyzerContext context, PropertyRef propRef)
     {
         return AnalyzeTypeRef(context, propRef.Type)
-            .Concat(propRef.Attributes.SelectMany(a => AnalyzeAttributeRef(context.Marked(PathMarker.Attribute).Descend(a), a)));
+            .Concat(propRef.Attributes.SelectMany(a => AnalyzeAttributeRef(context.Attribute(a), a)));
     }
 
     public virtual IEnumerable<AnalyzeError> AnalyzeConstantRef(AnalyzerContext context, ConstantRef constant)
@@ -142,8 +142,8 @@ public class BaseAnalyzer : IAnalyzer
 
     public virtual IEnumerable<AnalyzeError> AnalyzeTypeDescriptor(AnalyzerContext context, TypeDescriptor descr)
     {
-        return descr.Extends.SelectMany(t => AnalyzeTypeRef(context.Marked(PathMarker.Extends).Descend(t), t))
-            .Concat(descr.GenericParameters.SelectMany(g => AnalyzeGenericParameter(context.Marked(PathMarker.GenericParameter).Descend(g), g)))
+        return descr.Extends.SelectMany(t => AnalyzeTypeRef(context.Extends(t), t))
+            .Concat(descr.GenericParameters.SelectMany((g, i) => AnalyzeGenericParameter(context.GenericParameter(i, g), g)))
             .Concat(descr.Properties.SelectMany(p => AnalyzePropertyRef(context.Descend(p), p)))
             .Concat(descr.Constants.SelectMany(c => AnalyzeConstantRef(context.Descend(c), c)));
     }
@@ -161,19 +161,19 @@ public class BaseAnalyzer : IAnalyzer
     public virtual IEnumerable<AnalyzeError> AnalyzeQuery(AnalyzerContext context, Statement stmt, Statement.Types.Query query)
     {
         return AnalyzeTypeDescriptor(context, query.TypeDescriptor)
-            .Concat(AnalyzeTypeRef(context.Marked(PathMarker.ReturnType), query.ReturnType));
+            .Concat(AnalyzeTypeRef(context.Returns(query.ReturnType), query.ReturnType));
     }
 
     public virtual IEnumerable<AnalyzeError> AnalyzeCommand(AnalyzerContext context, Statement stmt, Statement.Types.Command command)
     {
         return AnalyzeTypeDescriptor(context, command.TypeDescriptor)
-            .Concat(AnalyzeErrorCodes(context.Marked(PathMarker.ErrorCodes), command.ErrorCodes));
+            .Concat(AnalyzeErrorCodes(context.ErrorCodes(), command.ErrorCodes));
     }
 
     public virtual IEnumerable<AnalyzeError> AnalyzeStatement(AnalyzerContext context, Statement stmt)
     {
         return AnalyzeInner(context, stmt)
-            .Concat(stmt.Attributes.SelectMany(a => AnalyzeAttributeRef(context.Marked(PathMarker.Attribute).Descend(a), a)));
+            .Concat(stmt.Attributes.SelectMany(a => AnalyzeAttributeRef(context.Attribute(a), a)));
 
         IEnumerable<AnalyzeError> AnalyzeInner(AnalyzerContext context, Statement stmt)
         {

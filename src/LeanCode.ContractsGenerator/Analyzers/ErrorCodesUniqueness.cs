@@ -36,7 +36,7 @@ public class ErrorCodesUniqueness : BaseAnalyzer
 
     public override IEnumerable<AnalyzeError> AnalyzeCommand(AnalyzerContext context, Statement stmt, Statement.Types.Command command)
     {
-        return AnalyzeErrorCodes(context.Marked(PathMarker.ErrorCodes), command.ErrorCodes);
+        return AnalyzeErrorCodes(context.ErrorCodes(), command.ErrorCodes);
     }
 
     public override IEnumerable<AnalyzeError> AnalyzeStatement(AnalyzerContext context, Statement stmt)

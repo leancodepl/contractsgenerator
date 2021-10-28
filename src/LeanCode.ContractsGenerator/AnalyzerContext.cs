@@ -2,100 +2,23 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace LeanCode.ContractsGenerator;
 
-public enum PathMarker
-{
-    Argument,
-    Attribute,
-    GenericParameter,
-    Extends,
-    ReturnType,
-    ErrorCodes,
-}
-
 [SuppressMessage("?", "SA1313", Justification = "False positive.")]
 public readonly record struct AnalyzerContext(string Path)
 {
     public static readonly AnalyzerContext Empty = new("");
 
-    public AnalyzerContext Descend(AttributeRef attrRef)
-    {
-        return Descend(attrRef.AttributeName);
-    }
+    public AnalyzerContext Descend(Statement stmt) => Descend(stmt.Name);
+    public AnalyzerContext Descend(EnumValue e) => Descend(e.Name);
+    public AnalyzerContext Descend(PropertyRef propRef) => Descend(propRef.Name);
+    public AnalyzerContext Descend(ConstantRef constRef) => Descend(constRef.Name);
 
-    public AnalyzerContext Descend(Statement stmt)
-    {
-        return Descend(stmt.Name);
-    }
-
-    public AnalyzerContext Descend(EnumValue e)
-    {
-        return Descend(e.Name);
-    }
-
-    public AnalyzerContext Descend(GenericParameter g)
-    {
-        return Descend(g.Name);
-    }
-
-    public AnalyzerContext Descend(PropertyRef propRef)
-    {
-        return Descend(propRef.Name);
-    }
-
-    public AnalyzerContext Descend(ConstantRef constRef)
-    {
-        return Descend(constRef.Name);
-    }
-
-    public AnalyzerContext Marked(PathMarker marker)
-    {
-        return marker switch
-        {
-            PathMarker.Argument => Descend("`Arg`"),
-            PathMarker.Attribute => Descend("`Attr`"),
-            PathMarker.GenericParameter => Descend("`Generic`"),
-            PathMarker.Extends => Descend("`Extends`"),
-            PathMarker.ReturnType => Descend("`Return`"),
-            PathMarker.ErrorCodes => Descend("ErrorCodes"),
-            _ => this,
-        };
-    }
-
-    public AnalyzerContext Descend(TypeRef typeRef)
-    {
-        if (typeRef.Internal is TypeRef.Types.Internal i)
-        {
-            return Descend(i.Name);
-        }
-        else if (typeRef.Known is TypeRef.Types.Known k)
-        {
-            return Descend(k.Type.ToString());
-        }
-        else if (typeRef.Generic is TypeRef.Types.Generic g)
-        {
-            return Descend(g.Name);
-        }
-        else
-        {
-            return this;
-        }
-    }
-
-    public AnalyzerContext Descend(AttributeArgument arg)
-    {
-        if (arg.Positional is AttributeArgument.Types.Positional p)
-        {
-            return Descend(p.Position.ToString());
-        }
-        else if (arg.Named is AttributeArgument.Types.Named n)
-        {
-            return Descend(n.Name);
-        }
-        else
-        {
-            return this;
-        }
-    }
+    public AnalyzerContext Argument(int pos, TypeRef t) => Append($"<{pos}: {NameOf(t)}>");
+    public AnalyzerContext Argument(AttributeArgument t) => Append($"({NameOf(t)})");
+    public AnalyzerContext Attribute(AttributeRef attr) => Append($"[{attr.AttributeName}]");
+    public AnalyzerContext GenericParameter(int pos, GenericParameter p) => Append($"<{pos}: {p.Name}>");
+    public AnalyzerContext Extends(TypeRef t) => Append($":{NameOf(t)}");
+    public AnalyzerContext Returns(TypeRef t) => Append($"->{NameOf(t)}");
+    public AnalyzerContext ErrorCodes() => Descend("ErrorCodes");
 
     public AnalyzerContext Descend(ErrorCode errCode)
     {
@@ -122,6 +45,47 @@ public readonly record struct AnalyzerContext(string Path)
         else
         {
             return new($"{Path}.{nextName}");
+        }
+    }
+
+    private AnalyzerContext Append(string nextName)
+    {
+        return new($"{Path}{nextName}");
+    }
+
+    private static string NameOf(TypeRef typeRef)
+    {
+        if (typeRef.Internal is TypeRef.Types.Internal i)
+        {
+            return i.Name;
+        }
+        else if (typeRef.Known is TypeRef.Types.Known k)
+        {
+            return k.Type.ToString();
+        }
+        else if (typeRef.Generic is TypeRef.Types.Generic g)
+        {
+            return g.Name;
+        }
+        else
+        {
+            return "";
+        }
+    }
+
+    private static string NameOf(AttributeArgument arg)
+    {
+        if (arg.Positional is AttributeArgument.Types.Positional p)
+        {
+            return p.Position.ToString();
+        }
+        else if (arg.Named is AttributeArgument.Types.Named n)
+        {
+            return n.Name;
+        }
+        else
+        {
+            return "";
         }
     }
 }
