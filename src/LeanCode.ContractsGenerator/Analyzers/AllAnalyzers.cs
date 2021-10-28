@@ -4,9 +4,10 @@ public class AllAnalyzers : IAnalyzer
 {
     private static readonly IReadOnlyList<IAnalyzer> Analyzers = new IAnalyzer[]
     {
-            new InternalStructureCheck(),
-            new KnownTypeCheck(),
-            new ErrorCodesUniqueness(),
+        new InternalStructureCheck(),
+        new KnownTypeCheck(),
+        new ErrorCodesUniqueness(),
+        new ExternalTypeCheck(),
     };
 
     public IEnumerable<AnalyzeError> Analyze(Export export)
