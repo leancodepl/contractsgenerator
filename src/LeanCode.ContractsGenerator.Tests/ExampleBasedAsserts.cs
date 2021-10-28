@@ -88,6 +88,12 @@ public static class ExampleBasedAsserts
         return errors;
     }
 
+    public static AssertedErrors WithErrorNumber(this AssertedErrors errors, int count)
+    {
+        Assert.Equal(count, errors.Errors.Count);
+        return errors;
+    }
+
     public static AssertedQuery WithReturnType(this AssertedQuery stmt, TypeRef typeRef)
     {
         Assert.Equal(typeRef, stmt.Statement.Query.ReturnType);

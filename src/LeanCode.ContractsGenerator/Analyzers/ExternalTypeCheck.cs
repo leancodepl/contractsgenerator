@@ -22,8 +22,7 @@ public class ExternalTypeCheck : BaseAnalyzer
         }
         else
         {
-            return base.AnalyzeInternalTypeRef(context, typeRef, i)
-                .Append(new(Code, $"Internal type `{i.Name}` is not known.", context));
+            return new[] { new AnalyzeError(Code, $"Internal type `{i.Name}` is not known.", context) };
         }
     }
 

@@ -148,6 +148,16 @@ public class BaseAnalyzer : IAnalyzer
             .Concat(descr.Constants.SelectMany(c => AnalyzeConstantRef(context.Descend(c), c)));
     }
 
+    public virtual IEnumerable<AnalyzeError> AnalyzeTypeDescriptorForQuery(AnalyzerContext context, TypeDescriptor descr)
+    {
+        return descr.Extends
+            .Where(e => e.Known is null || e.Known.Type != KnownType.Query) // Exclude `Query` type, as it will be checked by the `Return` check
+            .SelectMany(t => AnalyzeTypeRef(context.Extends(t), t))
+            .Concat(descr.GenericParameters.SelectMany((g, i) => AnalyzeGenericParameter(context.GenericParameter(i, g), g)))
+            .Concat(descr.Properties.SelectMany(p => AnalyzePropertyRef(context.Descend(p), p)))
+            .Concat(descr.Constants.SelectMany(c => AnalyzeConstantRef(context.Descend(c), c)));
+    }
+
     public virtual IEnumerable<AnalyzeError> AnalyzeDTO(AnalyzerContext context, Statement stmt, Statement.Types.DTO dto)
     {
         return AnalyzeTypeDescriptor(context, dto.TypeDescriptor);
@@ -160,7 +170,7 @@ public class BaseAnalyzer : IAnalyzer
 
     public virtual IEnumerable<AnalyzeError> AnalyzeQuery(AnalyzerContext context, Statement stmt, Statement.Types.Query query)
     {
-        return AnalyzeTypeDescriptor(context, query.TypeDescriptor)
+        return AnalyzeTypeDescriptorForQuery(context, query.TypeDescriptor)
             .Concat(AnalyzeTypeRef(context.Returns(query.ReturnType), query.ReturnType));
     }
 
