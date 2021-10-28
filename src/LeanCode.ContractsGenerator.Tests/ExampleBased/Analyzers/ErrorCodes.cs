@@ -9,8 +9,8 @@ namespace LeanCode.ContractsGenerator.Tests.ExampleBased.Analyzers
         {
             "analyzers/error_codes.cs"
                 .AnalyzeFails()
-                    .WithError("LNCD003", "Cmd1")
-                    .WithError("LNCD003", "Cmd2");
+                    .WithError("CNTR0003", "Cmd1.ErrorCodes")
+                    .WithError("CNTR0003", "Cmd2.ErrorCodes");
         }
     }
 }

@@ -82,9 +82,9 @@ public static class ExampleBasedAsserts
         return errors;
     }
 
-    public static AssertedErrors WithError(this AssertedErrors errors, string code, string name)
+    public static AssertedErrors WithError(this AssertedErrors errors, string code, string path)
     {
-        Assert.Contains(errors.Errors, e => e.Code == code && e.Name == name);
+        Assert.Contains(errors.Errors, e => e.Code == code && e.Context.Path == path);
         return errors;
     }
 

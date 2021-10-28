@@ -4,17 +4,17 @@ public class InternalStructureCheck : BaseAnalyzer
 {
     public const string Code = "CNTR0001";
 
-    public override IEnumerable<AnalyzeError> AnalyzeTypeRef(TypeRef typeRef)
+    public override IEnumerable<AnalyzeError> AnalyzeTypeRef(AnalyzerContext context, TypeRef typeRef)
     {
         if (typeRef.Generic is null &&
             typeRef.Internal is null &&
             typeRef.Known is null)
         {
-            yield return new(Code, $"`{nameof(TypeRef)}` type is unknown: {typeRef}.", nameof(TypeRef), "");
+            yield return new(Code, $"`{nameof(TypeRef)}` type is unknown: {typeRef}.", context);
         }
     }
 
-    public override IEnumerable<AnalyzeError> AnalyzeValueRef(ValueRef vr)
+    public override IEnumerable<AnalyzeError> AnalyzeValueRef(AnalyzerContext context, ValueRef vr)
     {
         if (vr.Null is null &&
             vr.Number is null &&
@@ -22,34 +22,34 @@ public class InternalStructureCheck : BaseAnalyzer
             vr.String is null &&
             vr.Bool is null)
         {
-            yield return new(Code, $"`{nameof(ValueRef)}` type is unknown: {vr}.", nameof(ValueRef), "");
+            yield return new(Code, $"`{nameof(ValueRef)}` type is unknown: {vr}.", context);
         }
     }
 
-    public override IEnumerable<AnalyzeError> AnalyzeAttributeArgument(AttributeArgument arg)
+    public override IEnumerable<AnalyzeError> AnalyzeAttributeArgument(AnalyzerContext context, AttributeArgument arg)
     {
         if (arg.Positional is null && arg.Named is null)
         {
-            yield return new(Code, $"`{nameof(AttributeArgument)}` type is unknown: {arg}.", nameof(AttributeArgument), "");
+            yield return new(Code, $"`{nameof(AttributeArgument)}` type is unknown: {arg}.", context);
         }
     }
 
-    public override IEnumerable<AnalyzeError> AnalyzeErrorCode(ErrorCode errCode)
+    public override IEnumerable<AnalyzeError> AnalyzeErrorCode(AnalyzerContext context, ErrorCode errCode)
     {
         if (errCode.Single is null && errCode.Group is null)
         {
-            yield return new(Code, $"`{nameof(ErrorCode)}` type is unknown: {errCode}.", nameof(ErrorCode), "");
+            yield return new(Code, $"`{nameof(ErrorCode)}` type is unknown: {errCode}.", context);
         }
     }
 
-    public override IEnumerable<AnalyzeError> AnalyzeStatement(Statement stmt)
+    public override IEnumerable<AnalyzeError> AnalyzeStatement(AnalyzerContext context, Statement stmt)
     {
         if (stmt.Dto is null &&
             stmt.Enum is null &&
             stmt.Query is null &&
             stmt.Command is null)
         {
-            yield return new(Code, $"`{nameof(Statement)}` type is unknown: {stmt}.", nameof(Statement), stmt.Name);
+            yield return new(Code, $"`{nameof(Statement)}` type is unknown: {stmt}.", context);
         }
     }
 }

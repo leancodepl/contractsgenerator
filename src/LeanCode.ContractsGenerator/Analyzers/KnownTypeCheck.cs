@@ -6,11 +6,11 @@ public class KnownTypeCheck : BaseAnalyzer
 
     public const string Code = "CNTR0002";
 
-    public override IEnumerable<AnalyzeError> AnalyzeKnownType(KnownType knownType)
+    public override IEnumerable<AnalyzeError> AnalyzeKnownType(AnalyzerContext context, KnownType knownType)
     {
         if (!ValidKnownTypeValues.Contains(knownType))
         {
-            yield return new(Code, $"`KnownType` value {knownType} is unsupported.", knownType.ToString(), knownType.ToString());
+            yield return new(Code, $"`KnownType` value {knownType} is unsupported.", context);
         }
     }
 }
