@@ -41,20 +41,11 @@ public static class SymbolExtensions
         var xml = symbol.GetDocumentationCommentXml();
         if (!string.IsNullOrEmpty(xml))
         {
-            var doc = new XmlDocument();
-            doc.LoadXml(xml);
-
-            if (doc.DocumentElement is not null)
+            try
             {
-                var sb = new StringBuilder();
-                foreach (var t in FlattenAllNodes(doc.DocumentElement))
-                {
-                    sb.AppendLine(t.InnerText.Trim());
-                }
-
-                return sb.ToString();
+                return ExtractFromXml(xml);
             }
-            else
+            catch
             {
                 return string.Empty;
             }
@@ -74,6 +65,27 @@ public static class SymbolExtensions
             foreach (var c in n.ChildNodes.Cast<XmlNode>().SelectMany(FlattenAllNodes))
             {
                 yield return c;
+            }
+        }
+
+        static string ExtractFromXml(string xml)
+        {
+            var doc = new XmlDocument();
+            doc.LoadXml(xml);
+
+            if (doc.DocumentElement is not null)
+            {
+                var sb = new StringBuilder();
+                foreach (var t in FlattenAllNodes(doc.DocumentElement))
+                {
+                    sb.AppendLine(t.InnerText.Trim());
+                }
+
+                return sb.ToString().TrimEnd();
+            }
+            else
+            {
+                return string.Empty;
             }
         }
     }

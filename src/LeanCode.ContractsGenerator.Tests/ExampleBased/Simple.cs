@@ -63,4 +63,15 @@ public class Simple
                 .WithoutProperty("PropA")
                 .WithoutProperty("PropB");
     }
+
+    [Fact]
+    public void Comments()
+    {
+        "simple/comments.cs"
+            .Compiles()
+            .WithQuery("Query1")
+                .Commented("Test comment.")
+            .WithQuery("Query2")
+                .Commented("");
+    }
 }
