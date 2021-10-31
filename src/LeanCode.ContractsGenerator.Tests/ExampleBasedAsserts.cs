@@ -76,6 +76,24 @@ public static class ExampleBasedAsserts
         return stmt;
     }
 
+    public static AssertedErrors WithError(this AssertedErrors errors, string code)
+    {
+        Assert.Contains(errors.Errors, e => e.Code == code);
+        return errors;
+    }
+
+    public static AssertedErrors WithError(this AssertedErrors errors, string code, string path)
+    {
+        Assert.Contains(errors.Errors, e => e.Code == code && e.Context.Path == path);
+        return errors;
+    }
+
+    public static AssertedErrors WithErrorNumber(this AssertedErrors errors, int count)
+    {
+        Assert.Equal(count, errors.Errors.Count);
+        return errors;
+    }
+
     public static AssertedQuery WithReturnType(this AssertedQuery stmt, TypeRef typeRef)
     {
         Assert.Equal(typeRef, stmt.Statement.Query.ReturnType);
@@ -200,3 +218,5 @@ public record AssertedDto(Export Export, Statement Statement, TypeDescriptor Des
 public record AssertedEnum(Export Export, Statement Statement) : AssertedStatement(Export, Statement);
 
 public record AssertedProperty(PropertyRef Property);
+
+public record AssertedErrors(IReadOnlyList<AnalyzeError> Errors);

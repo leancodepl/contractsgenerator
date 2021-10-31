@@ -12,6 +12,14 @@ public static class ExampleBasedHelpers
         return new(new ContractsGenerator.Generation.ContractsGenerator(compiled).Generate());
     }
 
+    public static AssertedErrors AnalyzeFails(this string path)
+    {
+        var code = File.ReadAllText(Path.Join("examples", path));
+        var compiled = ContractsCompiler.CompileCode(code, "test");
+        var ex = Xunit.Assert.Throws<AnalyzeFailedException>(() => new ContractsGenerator.Generation.ContractsGenerator(compiled).Generate());
+        return new(ex.Errors);
+    }
+
     public static AssertedExport ProjectCompiles(this string path)
     {
         return ProjectsCompile(path);
