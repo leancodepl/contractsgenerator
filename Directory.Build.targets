@@ -1,7 +1,7 @@
 <Project>
 
   <PropertyGroup>
-    <CoreLibVersion>6.0.1454</CoreLibVersion>
+    <CoreLibVersion>6.0.1507</CoreLibVersion>
     <RoslynVersion>4.0.0-3.final</RoslynVersion>
   </PropertyGroup>
 
