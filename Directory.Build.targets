@@ -22,7 +22,7 @@
     <PackageReference Update="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="$(RoslynVersion)" />
     <PackageReference Update="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="$(RoslynVersion)" />
 
-    <PackageReference Update="Microsoft.Extensions.DependencyModel" Version="6.0.0-rc.*" />
+    <PackageReference Update="Microsoft.Extensions.DependencyModel" Version="6.0.0.*" />
     <PackageReference Update="Microsoft.Extensions.FileSystemGlobbing" Version="6.0.0-rc.*" />
   </ItemGroup>
 
