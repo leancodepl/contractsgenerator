@@ -5,3 +5,4 @@
 ## Known working language-specific implementations
 
 1. [Dart](https://github.com/leancodepl/contractsgenerator-dart)
+2. [TypeScript](https://github.com/leancodepl/contractsgenerator-typescript)
