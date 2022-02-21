@@ -7,7 +7,7 @@
 
   <ItemGroup>
     <PackageReference Update="Google.Protobuf" Version="3.19.1" />
-    <PackageReference Update="Grpc.Tools" Version="2.41.1" />
+    <PackageReference Update="Grpc.Tools" Version="2.44.0" />
 
     <PackageReference Update="CommandLineParser" Version="2.9.0-preview1" />
 
