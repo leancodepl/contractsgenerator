@@ -1,13 +1,13 @@
 <Project>
 
   <PropertyGroup>
-    <CoreLibVersion>6.0.1507</CoreLibVersion>
-    <RoslynVersion>4.0.0-3.final</RoslynVersion>
+    <CoreLibVersion>6.0.1558</CoreLibVersion>
+    <RoslynVersion>4.2.0-1.final</RoslynVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Update="Google.Protobuf" Version="3.19.1" />
-    <PackageReference Update="Grpc.Tools" Version="2.41.1" />
+    <PackageReference Update="Google.Protobuf" Version="3.19.4" />
+    <PackageReference Update="Grpc.Tools" Version="2.45.0" />
 
     <PackageReference Update="CommandLineParser" Version="2.9.0-preview1" />
 
