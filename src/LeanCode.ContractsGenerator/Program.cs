@@ -85,12 +85,23 @@ internal class Program
             Console.Error.WriteLine(ex.StackTrace);
             return 4;
         }
+        catch (AnalyzeFailedException ex)
+        {
+            Console.Error.WriteLine($"Cannot generate contracts. The analyze phase failed with following errors:");
+            foreach (var d in ex.Errors)
+            {
+                Console.Error.WriteLine($"[{d.Code}] {d.Message}");
+                Console.Error.WriteLine($"    at {d.Context.Path}");
+            }
+
+            return 5;
+        }
         catch (Exception ex)
         {
             Console.Error.WriteLine($"Cannot compile project or generate contracts: {ex.Message}");
             Console.Error.WriteLine("At");
             Console.Error.WriteLine(ex.StackTrace);
-            return 5;
+            return 6;
         }
     }
 
