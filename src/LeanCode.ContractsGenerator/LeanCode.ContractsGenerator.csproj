@@ -40,4 +40,19 @@
     </Content>
   </ItemGroup>
 
+  <Target Name="PackTaskDependencies" BeforeTargets="GenerateNuspec">
+    <!--
+    The include needs to happen after output has been copied to build output folder
+    but before NuGet generates a nuspec. See https://github.com/NuGet/Home/issues/4704.
+    -->
+    <ItemGroup>
+      <_PackageFiles Include="$(OutputPath)/**/*.dll;$(OutputPath)/**/*.so;$(OutputPath)/**/*.config;$(OutputPath)/**/*.json">
+        <PackagePath>tools/%(RecursiveDir)</PackagePath>
+        <Visible>false</Visible>
+        <BuildAction>Content</BuildAction>
+      </_PackageFiles>
+      <_PackageFiles Remove="$(OutputPath)/publish/**" />
+    </ItemGroup>
+  </Target>
+
 </Project>
