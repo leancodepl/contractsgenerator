@@ -107,8 +107,8 @@ internal class Program
 
     private static async Task<int> HandleProjectAsync(ProjectOptions p)
     {
-        var contracts = await ContractsCompiler.CompileProjectsAsync(p.ProjectFiles);
-        return await WriteAsync(contracts, p.OutputFile);
+        var (compiled, external) = await ContractsCompiler.CompileProjectsAsync(p.ProjectFiles);
+        return await WriteAsync(compiled, external, p.OutputFile);
     }
 
     private static async Task<int> HandleFileAsync(FileOptions f)
@@ -130,6 +130,21 @@ internal class Program
     private static async Task<int> WriteAsync(CompiledContracts contracts, string output)
     {
         var generated = new Generation.ContractsGenerator(contracts).Generate();
+        if (output == IOptions.StdoutMarker)
+        {
+            await WriteToStdoutAsync(generated);
+        }
+        else
+        {
+            await WriteToFileAsync(generated, output);
+        }
+
+        return 0;
+    }
+
+    private static async Task<int> WriteAsync(CompiledContracts contracts, List<Export> externalContracts, string output)
+    {
+        var generated = new Generation.ContractsGenerator(contracts).Generate(externalContracts);
         if (output == IOptions.StdoutMarker)
         {
             await WriteToStdoutAsync(generated);

@@ -29,7 +29,7 @@ public static class ExampleBasedHelpers
     {
         var projectPaths = paths.Select(p => Path.Join("examples", p));
         // HACK: The sync execution results in much cleaner tests
-        var compiled = ContractsCompiler.CompileProjectsAsync(projectPaths).Result;
+        var compiled = ContractsCompiler.CompileProjectsAsync(projectPaths).GetAwaiter().GetResult().Compiled;
         return new(new ContractsGenerator.Generation.ContractsGenerator(compiled).Generate());
     }
 
@@ -40,7 +40,7 @@ public static class ExampleBasedHelpers
         matcher.AddExcludePatterns(excludes);
         var di = new DirectoryInfo("examples");
         // HACK: The sync execution results in much cleaner tests
-        var compiled = ContractsCompiler.CompileGlobAsync(matcher, di).Result;
+        var compiled = ContractsCompiler.CompileGlobAsync(matcher, di).GetAwaiter().GetResult();
         return new(new ContractsGenerator.Generation.ContractsGenerator(compiled).Generate());
     }
 }
