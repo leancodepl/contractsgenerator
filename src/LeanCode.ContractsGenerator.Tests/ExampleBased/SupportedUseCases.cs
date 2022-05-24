@@ -26,7 +26,7 @@ public class SupportedUseCases
             .Compiles()
             .WithDto("DTO")
             .WithCommand("Command")
-                .WithProperty("NeededDTO", Internal("DTO"))
+                .WithProperty("NeededDTO", TypeRefExtensions.Internal("DTO"))
                 .WithErrorCode(Single("CommandSpecificError", 1))
                 .WithErrorCode(
                     Group(
