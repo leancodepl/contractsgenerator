@@ -86,6 +86,15 @@ public static class ContractsCompiler
         return CompileCode(content, filename);
     }
 
+    public static CompiledContracts CompileFiles(string projectName, params string[] filenames)
+    {
+        var trees = filenames
+            .Select(fn => CSharpSyntaxTree.ParseText(File.ReadAllText(fn), new(LanguageVersion.Preview), fn))
+            .ToList();
+
+        return CompileTrees(trees, projectName);
+    }
+
     public static async Task<CompiledContracts> CompileGlobAsync(
         Matcher matcher,
         DirectoryInfo directory)
