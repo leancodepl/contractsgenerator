@@ -1,4 +1,5 @@
 using System.Collections.Immutable;
+using System.Reflection;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.Extensions.DependencyModel;
@@ -47,11 +48,22 @@ public static class ContractsCompiler
         return LeanCodeAssemblyNames.Contains(cl.Name, StringComparer.InvariantCultureIgnoreCase);
     }
 
-    public static readonly ImmutableList<PortableExecutableReference> DefaultAssemblies = DependencyContext.Default.CompileLibraries
-        .Where(cl => IsWantedReferenceAssembly(cl) || IsWantedLeanCodeAssembly(cl))
-        .SelectMany(cl => cl.ResolveReferencePaths())
-        .Select(path => MetadataReference.CreateFromFile(path))
-        .ToImmutableList();
+    public static readonly ImmutableList<PortableExecutableReference> DefaultAssemblies;
+
+    static ContractsCompiler()
+    {
+        var executingAssembly = Assembly.GetExecutingAssembly();
+        var basePath = Path.GetDirectoryName(executingAssembly.Location);
+        var resolver = new Microsoft.Extensions.DependencyModel.Resolution.AppBaseCompilationAssemblyResolver(basePath);
+
+        DefaultAssemblies = DependencyContext
+            .Load(executingAssembly)
+            .CompileLibraries
+            .Where(cl => IsWantedReferenceAssembly(cl) || IsWantedLeanCodeAssembly(cl))
+            .SelectMany(cl => cl.ResolveReferencePaths(resolver))
+            .Select(path => MetadataReference.CreateFromFile(path))
+            .ToImmutableList();
+    }
 
     public static async Task<CompiledContracts> CompileProjectsAsync(IEnumerable<string> projectPaths)
     {
