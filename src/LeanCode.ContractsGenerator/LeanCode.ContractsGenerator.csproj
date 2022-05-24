@@ -34,4 +34,10 @@
     <PackageReference Include="Microsoft.Extensions.FileSystemGlobbing" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Include="build/*" PackagePath="build/">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>

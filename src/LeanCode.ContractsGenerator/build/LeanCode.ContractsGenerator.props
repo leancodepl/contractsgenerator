@@ -1,0 +1,8 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup>
+    <ContractsGeneratorTasksAssembly Condition="'$(ContractsGeneratorTasksAssembly)' == '' And Exists('$(MSBuildThisFileDirectory)../LeanCode.ContractsGenerator.dll')">$(MSBuildThisFileDirectory)../LeanCode.ContractsGenerator.dll</ContractsGeneratorTasksAssembly>
+    <ContractsGeneratorTasksAssembly Condition="'$(ContractsGeneratorTasksAssembly)' == '' And Exists('$(MSBuildThisFileDirectory)../tools/LeanCode.ContractsGenerator.dll')">$(MSBuildThisFileDirectory)../tools/LeanCode.ContractsGenerator.dll</ContractsGeneratorTasksAssembly>
+  </PropertyGroup>
+
+</Project>

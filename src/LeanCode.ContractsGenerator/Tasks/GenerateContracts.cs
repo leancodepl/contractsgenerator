@@ -18,6 +18,7 @@ public class GenerateContracts : Microsoft.Build.Utilities.Task
 
     public override bool Execute()
     {
+        // TODO: fix, because this will always be "LeanCode.ContractsGenerator" when executed from our .targets file
         var projectName = Path.GetFileNameWithoutExtension(BuildEngine.ProjectFileOfTaskNode);
 
         try
