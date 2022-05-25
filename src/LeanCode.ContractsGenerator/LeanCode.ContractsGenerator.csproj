@@ -23,8 +23,6 @@
     <PackageReference Include="LeanCode.Time" />
 
     <PackageReference Include="Microsoft.Build.Locator" />
-    <PackageReference Include="Microsoft.Build.Framework" ExcludeAssets="runtime" />
-    <PackageReference Include="Microsoft.Build.Utilities.Core" ExcludeAssets="runtime" />
 
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" />
@@ -35,26 +33,5 @@
 
     <PackageReference Include="System.Reflection.MetadataLoadContext" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="build/*" PackagePath="build/">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-
-  <Target Name="PackTaskDependencies" BeforeTargets="GenerateNuspec">
-    <!--
-    The include needs to happen after output has been copied to build output folder
-    but before NuGet generates a nuspec. See https://github.com/NuGet/Home/issues/4704.
-    -->
-    <ItemGroup>
-      <_PackageFiles Include="$(OutputPath)/**/*.dll;$(OutputPath)/**/*.so;$(OutputPath)/**/*.config;$(OutputPath)/**/*.json">
-        <PackagePath>tools/%(RecursiveDir)</PackagePath>
-        <Visible>false</Visible>
-        <BuildAction>Content</BuildAction>
-      </_PackageFiles>
-      <_PackageFiles Remove="$(OutputPath)/publish/**" />
-    </ItemGroup>
-  </Target>
 
 </Project>
