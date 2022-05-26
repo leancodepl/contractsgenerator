@@ -1,4 +1,5 @@
 using LeanCode.ContractsGenerator.Compilation.MSBuild;
+using LeanCode.ContractsGenerator.Compilation.NuGet;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.MSBuild;
@@ -19,13 +20,18 @@ public class ProjectLoader : IDisposable
 
     public async Task LoadProjectsAsync(IEnumerable<string> projectPaths)
     {
-        foreach (var projectPath in projectPaths)
-        {
-            var projectFullPath = ResolveCanonicalPath(projectPath);
+        var projectPathsList = projectPaths.Select(ResolveCanonicalPath).ToList();
 
+        if (!await RestoreHelper.RestoreProjectsAsync(projectPathsList))
+        {
+            Console.Error.WriteLine("Failed to restore some of the projects, restore them manually or expect problems.");
+        }
+
+        foreach (var projectPath in projectPathsList)
+        {
             if (msbuildWorkspace.CurrentSolution.Projects
                 .Where(p => p.FilePath is not null)
-                .Any(p => ResolveCanonicalPath(p.FilePath) == projectFullPath))
+                .Any(p => ResolveCanonicalPath(p.FilePath) == projectPath))
             {
                 continue;
             }

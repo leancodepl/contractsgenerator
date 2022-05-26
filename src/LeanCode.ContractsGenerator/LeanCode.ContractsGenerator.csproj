@@ -22,6 +22,8 @@
     <PackageReference Include="LeanCode.CQRS.Security" />
     <PackageReference Include="LeanCode.Time" />
 
+    <PackageReference Include="Microsoft.Build" ExcludeAssets="runtime" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.Build.Framework" ExcludeAssets="runtime" PrivateAssets="all" />
     <PackageReference Include="Microsoft.Build.Locator" />
 
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
@@ -30,6 +32,9 @@
 
     <PackageReference Include="Microsoft.Extensions.DependencyModel" />
     <PackageReference Include="Microsoft.Extensions.FileSystemGlobbing" />
+
+    <PackageReference Include="NuGet.Build.Tasks.Console" ExcludeAssets="runtime" PrivateAssets="all" />
+    <PackageReference Include="NuGet.Commands" Aliases="NuGetCommands" ExcludeAssets="runtime" PrivateAssets="all" />
 
     <PackageReference Include="System.Reflection.MetadataLoadContext" />
   </ItemGroup>
