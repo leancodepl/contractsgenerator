@@ -22,7 +22,10 @@ public static class MSBuildHelper
         // equal or higher version numbers than requested.
         LooseVersionAssemblyLoader.Register(msBuildInstance.MSBuildPath);
 
-        MSBuildLocator.RegisterInstance(msBuildInstance);
+        if (MSBuildLocator.CanRegister)
+        {
+            MSBuildLocator.RegisterInstance(msBuildInstance);
+        }
     }
 
     public static MSBuildWorkspace CreateWorkspace()
