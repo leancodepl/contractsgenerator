@@ -32,6 +32,7 @@
 
     <PackageReference Update="NuGet.Build.Tasks.Console" Version="$(NuGetVersion)" />
     <PackageReference Update="NuGet.Commands" Version="$(NuGetVersion)" />
+    <PackageReference Update="NuGet.Frameworks" Version="$(NuGetVersion)" />
 
     <PackageReference Update="System.Reflection.MetadataLoadContext" Version="$(ExtensionsVersion)" />
   </ItemGroup>
