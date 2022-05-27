@@ -33,9 +33,6 @@
     <PackageReference Include="Microsoft.Extensions.DependencyModel" />
     <PackageReference Include="Microsoft.Extensions.FileSystemGlobbing" />
 
-    <PackageReference Include="NuGet.Build.Tasks.Console" ExcludeAssets="runtime" PrivateAssets="all" />
-    <PackageReference Include="NuGet.Commands" Aliases="NuGetCommands" ExcludeAssets="runtime" PrivateAssets="all" />
-
     <PackageReference Include="System.Reflection.MetadataLoadContext" />
   </ItemGroup>
 

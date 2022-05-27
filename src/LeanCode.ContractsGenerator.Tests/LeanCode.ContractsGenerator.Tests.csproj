@@ -25,6 +25,8 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+
+    <!-- workaround for MSBuild trying to load multiple versions of this package into the process -->
     <PackageReference Include="NuGet.Frameworks" PrivateAssets="all" />
   </ItemGroup>
 

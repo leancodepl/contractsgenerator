@@ -1,5 +1,4 @@
 using LeanCode.ContractsGenerator.Compilation.MSBuild;
-using LeanCode.ContractsGenerator.Compilation.NuGet;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.MSBuild;
@@ -22,7 +21,7 @@ public class ProjectLoader : IDisposable
     {
         var projectPathsList = projectPaths.Select(ResolveCanonicalPath).ToList();
 
-        if (!await RestoreHelper.RestoreProjectsAsync(projectPathsList))
+        if (MSBuildHelper.RestoreProjects(projectPathsList) > 0)
         {
             Console.Error.WriteLine("Failed to restore some of the projects, restore them manually or expect problems.");
         }
