@@ -91,4 +91,13 @@ public class Project
             .WithDto("PackageReference.OrderDTO")
                 .WithProperty("Id", Known(KnownType.Int64));
     }
+
+    [Fact]
+    public void Project_with_reference_to_assembly_with_embedded_contracts_has_them_in_the_output()
+    {
+        "project/referencetoembedded/referencetoembedded.csproj"
+            .ProjectCompiles()
+            .WithDto("Embedded.DTO")
+                .WithProperty("Id", Known(KnownType.Int32));
+    }
 }

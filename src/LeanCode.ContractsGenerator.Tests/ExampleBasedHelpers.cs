@@ -29,8 +29,8 @@ public static class ExampleBasedHelpers
     {
         var projectPaths = paths.Select(p => Path.Join("examples", p));
         // HACK: The sync execution results in much cleaner tests
-        var compiled = ContractsCompiler.CompileProjectsAsync(projectPaths).GetAwaiter().GetResult().Compiled;
-        return new(new ContractsGenerator.Generation.ContractsGenerator(compiled).Generate());
+        var (compiled, external) = ContractsCompiler.CompileProjectsAsync(projectPaths).GetAwaiter().GetResult();
+        return new(new ContractsGenerator.Generation.ContractsGenerator(compiled).Generate(external, false));
     }
 
     public static AssertedExport GlobCompiles(string[] includes, string[] excludes)

@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+  </PropertyGroup>
+
+  <Target Name="BuildDependencies" BeforeTargets="Restore" Condition="'$(IsInnerBuild)' != 'true'">
+    <MSBuild Projects="../embedded/embedded.csproj" Properties="Configuration=Debug" Targets="Restore" />
+    <MSBuild Projects="../embedded/embedded.csproj" Properties="Configuration=Debug" Targets="Build;Pack" />
+  </Target>
+
+  <ItemGroup>
+    <PackageReference Include="embedded" Version="0.0.1" />
+  </ItemGroup>
+
+</Project>
