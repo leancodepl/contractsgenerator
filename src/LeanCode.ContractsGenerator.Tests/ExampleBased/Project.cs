@@ -1,5 +1,6 @@
 using Xunit;
 using static LeanCode.ContractsGenerator.Tests.ExampleBasedHelpers;
+using static LeanCode.ContractsGenerator.Tests.TypeRefExtensions;
 
 namespace LeanCode.ContractsGenerator.Tests.ExampleBased;
 
@@ -61,5 +62,42 @@ public class Project
             "project/aggregated/B/B.csproj")
             .WithCommand("A.Command")
             .WithQuery("B.Query");
+    }
+
+    [Fact]
+    public void Project_with_implicit_usings_compiles()
+    {
+        "project/implicitusings/implicitusings.csproj"
+            .ProjectCompiles()
+            .WithDto("ImplicitUsings.DTO")
+                .WithProperty("Id", Known(KnownType.Guid));
+    }
+
+    [Fact]
+    public void External_package_references_are_restored_before_compilation()
+    {
+        foreach (var outputDir in new[] { "bin", "obj" })
+        {
+            var outputPath = "examples/project/packagereference/" + outputDir;
+
+            if (Directory.Exists(outputPath))
+            {
+                Directory.Delete(outputPath, recursive: true);
+            }
+        }
+
+        "project/packagereference/packagereference.csproj"
+            .ProjectCompiles()
+            .WithDto("PackageReference.OrderDTO")
+                .WithProperty("Id", Known(KnownType.Int64));
+    }
+
+    [Fact]
+    public void Project_with_reference_to_assembly_with_embedded_contracts_has_them_in_the_output()
+    {
+        "project/referencetoembedded/referencetoembedded.csproj"
+            .ProjectCompiles()
+            .WithDto("Embedded.DTO")
+                .WithProperty("Id", Known(KnownType.Int32));
     }
 }

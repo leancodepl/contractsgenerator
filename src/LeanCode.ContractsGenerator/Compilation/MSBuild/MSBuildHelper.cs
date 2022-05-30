@@ -3,13 +3,19 @@
 
 #nullable disable
 
+using System.Collections.Immutable;
+using Microsoft.Build.Evaluation;
+using Microsoft.Build.Execution;
 using Microsoft.Build.Locator;
 using Microsoft.CodeAnalysis.MSBuild;
+using static Microsoft.Build.Execution.BuildRequestDataFlags;
 
 namespace LeanCode.ContractsGenerator.Compilation.MSBuild;
 
 public static class MSBuildHelper
 {
+    private static readonly string[] RestoreTarget = new string[] { "Restore" };
+
     static MSBuildHelper()
     {
         // QueryVisualStudioInstances returns Visual Studio installations on .NET Framework, and .NET Core SDK
@@ -22,7 +28,10 @@ public static class MSBuildHelper
         // equal or higher version numbers than requested.
         LooseVersionAssemblyLoader.Register(msBuildInstance.MSBuildPath);
 
-        MSBuildLocator.RegisterInstance(msBuildInstance);
+        if (MSBuildLocator.CanRegister)
+        {
+            MSBuildLocator.RegisterInstance(msBuildInstance);
+        }
     }
 
     public static MSBuildWorkspace CreateWorkspace()
@@ -41,5 +50,77 @@ public static class MSBuildHelper
                 ["TargetFrameworks"] = "net6.0",
                 ["TargetFramework"] = "net6.0",
             });
+    }
+
+    public static int RestoreProjects(
+        IReadOnlyCollection<string> projectPaths,
+        IDictionary<string, string> globalProperties = null)
+    {
+        if (projectPaths.Count == 0)
+        {
+            return 0;
+        }
+
+        globalProperties ??= ImmutableDictionary<string, string>.Empty;
+
+        using var projectCollection = new ProjectCollection(globalProperties);
+        var projects = new List<Project>(projectPaths.Count);
+
+        foreach (var p in projectPaths)
+        {
+            projects.Add(projectCollection.LoadProject(p));
+        }
+
+        // use a separate instance of BuildManager to avoid confusing Roslyn's MSBuildWorkspace
+        using var buildManager = new BuildManager();
+
+        buildManager.BeginBuild(
+            new BuildParameters(projectCollection)
+            {
+                // together with explicit PackageReference prevents tests from breaking
+                // by attempting to load multiple versions of NuGet.Frameworks into one process
+                DisableInProcNode = true,
+                // don't ask the user for anything
+                Interactive = false,
+            });
+
+        var failed = 0;
+
+        try
+        {
+            foreach (var project in projects)
+            {
+                var projectInstance = project.CreateProjectInstance();
+
+                if (!projectInstance.Targets.ContainsKey("_IsProjectRestoreSupported"))
+                {
+                    continue;
+                }
+
+                var buildRequestData = new BuildRequestData(
+                    projectInstance,
+                    RestoreTarget,
+                    hostServices: null,
+                    ClearCachesAfterBuild | SkipNonexistentTargets | IgnoreMissingEmptyAndInvalidImports);
+
+                buildManager
+                    .PendBuildRequest(buildRequestData)
+                    .ExecuteAsync(
+                        bs =>
+                        {
+                            if (bs.BuildResult.OverallResult != BuildResultCode.Success)
+                            {
+                                Interlocked.Increment(ref failed);
+                            }
+                        },
+                        context: null);
+            }
+        }
+        finally
+        {
+            buildManager.EndBuild();
+        }
+
+        return failed;
     }
 }
