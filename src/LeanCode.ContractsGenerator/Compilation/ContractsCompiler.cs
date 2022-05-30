@@ -1,4 +1,5 @@
 using System.Collections.Immutable;
+using System.Reflection;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.Extensions.DependencyModel;
@@ -47,18 +48,32 @@ public static class ContractsCompiler
         return LeanCodeAssemblyNames.Contains(cl.Name, StringComparer.InvariantCultureIgnoreCase);
     }
 
-    public static readonly ImmutableList<PortableExecutableReference> DefaultAssemblies = DependencyContext.Default.CompileLibraries
-        .Where(cl => IsWantedReferenceAssembly(cl) || IsWantedLeanCodeAssembly(cl))
-        .SelectMany(cl => cl.ResolveReferencePaths())
-        .Select(path => MetadataReference.CreateFromFile(path))
-        .ToImmutableList();
+    public static readonly ImmutableList<PortableExecutableReference> DefaultAssemblies;
 
-    public static async Task<CompiledContracts> CompileProjectsAsync(IEnumerable<string> projectPaths)
+    static ContractsCompiler()
+    {
+        var executingAssembly = Assembly.GetExecutingAssembly();
+        var basePath = Path.GetDirectoryName(executingAssembly.Location);
+        var resolver = new Microsoft.Extensions.DependencyModel.Resolution.AppBaseCompilationAssemblyResolver(basePath);
+
+        DefaultAssemblies = DependencyContext
+            .Load(executingAssembly)
+            .CompileLibraries
+            .Where(cl => IsWantedReferenceAssembly(cl) || IsWantedLeanCodeAssembly(cl))
+            .SelectMany(cl => cl.ResolveReferencePaths(resolver))
+            .Select(path => MetadataReference.CreateFromFile(path))
+            .ToImmutableList();
+    }
+
+    public static async Task<(CompiledContracts Compiled, List<Export> External)> CompileProjectsAsync(
+        IEnumerable<string> projectPaths)
     {
         using var loader = new ProjectLoader(PrepareCompilationOptions());
         await loader.LoadProjectsAsync(projectPaths);
         var compilations = await loader.CompileAsync();
-        return Compile(compilations, compilations.First().AssemblyName ?? string.Empty);
+        var compiledContracts = Compile(compilations, compilations.First().AssemblyName ?? string.Empty);
+        var externalContracts = TryLoadEmbeddedContracts(compilations);
+        return (compiledContracts, externalContracts);
     }
 
     public static async Task<CompiledContracts> CompilePathAsync(string rootPath)
@@ -127,6 +142,43 @@ public static class ContractsCompiler
             .WithAllowUnsafe(false)
             .WithNullableContextOptions(NullableContextOptions.Annotations)
             .WithPlatform(Platform.AnyCpu);
+    }
+
+    private static List<Export> TryLoadEmbeddedContracts(IReadOnlyCollection<CSharpCompilation> compilations)
+    {
+        var externalReferences = compilations
+            .SelectMany(c => c.ExternalReferences)
+            .OfType<PortableExecutableReference>()
+            .Where(per => !string.IsNullOrEmpty(per.FilePath) && File.Exists(per.FilePath))
+            .Select(per => per.FilePath!)
+            .Distinct()
+            .ToList();
+
+        using var context = new MetadataLoadContext(new PathAssemblyResolver(externalReferences));
+        var exports = new List<Export>();
+
+        foreach (var assemblyPath in externalReferences)
+        {
+            try
+            {
+                var assembly = context.LoadFromAssemblyPath(assemblyPath);
+                using var stream = assembly.GetManifestResourceStream("LeanCode.Contracts.pb");
+
+                if (stream is null)
+                {
+                    continue;
+                }
+
+                exports.Add(Export.Parser.ParseFrom(stream));
+            }
+            catch (Exception e)
+            {
+                Console.Error.WriteLine($"Failed to search assembly at {assemblyPath} for embedded contracts.");
+                Console.Error.WriteLine(e.ToString());
+            }
+        }
+
+        return exports;
     }
 
     private static CompiledContracts Compile(CSharpCompilation compilation, string name)

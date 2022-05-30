@@ -23,6 +23,27 @@ public class ContractsGenerator
         return Analyze(export);
     }
 
+    public Export Generate(List<Export> externalContracts, bool excludeExternalContractsFromOutput)
+    {
+        var export = GenerateCore();
+
+        var merged = externalContracts.Count > 0
+            ? new(export)
+            : export;
+
+        foreach (var e in externalContracts)
+        {
+            merged.MergeFrom(e);
+        }
+
+        merged.ProjectName = export.ProjectName;
+        Analyze(merged);
+
+        return excludeExternalContractsFromOutput
+            ? export
+            : merged;
+    }
+
     private Export GenerateCore()
     {
         var export = new Export() { ProjectName = contracts.ProjectName };

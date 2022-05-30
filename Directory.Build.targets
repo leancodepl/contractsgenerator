@@ -2,14 +2,14 @@
 
   <PropertyGroup>
     <CoreLibVersion>6.0.1558</CoreLibVersion>
-    <RoslynVersion>4.2.0-1.final</RoslynVersion>
+    <RoslynVersion>4.2.0</RoslynVersion>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Update="Google.Protobuf" Version="3.19.4" />
     <PackageReference Update="Grpc.Tools" Version="2.45.0" />
 
-    <PackageReference Update="CommandLineParser" Version="2.9.0-preview1" />
+    <PackageReference Update="CommandLineParser" Version="2.9.1" />
 
     <PackageReference Update="LeanCode.CQRS" Version="$(CoreLibVersion)" />
     <PackageReference Update="LeanCode.CQRS.Security" Version="$(CoreLibVersion)" />
@@ -22,8 +22,10 @@
     <PackageReference Update="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="$(RoslynVersion)" />
     <PackageReference Update="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="$(RoslynVersion)" />
 
-    <PackageReference Update="Microsoft.Extensions.DependencyModel" Version="6.0.0-rc.*" />
-    <PackageReference Update="Microsoft.Extensions.FileSystemGlobbing" Version="6.0.0-rc.*" />
+    <PackageReference Update="Microsoft.Extensions.DependencyModel" Version="6.0.0" />
+    <PackageReference Update="Microsoft.Extensions.FileSystemGlobbing" Version="6.0.0" />
+
+    <PackageReference Update="System.Reflection.MetadataLoadContext" Version="6.0.0" />
   </ItemGroup>
 
   <ItemGroup>

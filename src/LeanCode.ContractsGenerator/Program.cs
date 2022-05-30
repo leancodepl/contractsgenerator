@@ -20,6 +20,9 @@ public class ProjectOptions : IOptions
 {
     public string OutputFile { get; set; } = string.Empty;
 
+    [Option("exclude-external-contracts-from-output", Required = false, HelpText = "Do not include contracts from referenced assemblies in the output. Analyzers will still run on the merged result.")]
+    public bool ExcludeExternalContractsFromOutput { get; set; } = false;
+
     [Option('p', "project", Required = true, MetaValue = "FILE", HelpText = "The project file with contracts. To pass multiple projects, separate the values with space.")]
     public IEnumerable<string> ProjectFiles { get; set; } = Array.Empty<string>();
 }
@@ -107,8 +110,8 @@ internal class Program
 
     private static async Task<int> HandleProjectAsync(ProjectOptions p)
     {
-        var contracts = await ContractsCompiler.CompileProjectsAsync(p.ProjectFiles);
-        return await WriteAsync(contracts, p.OutputFile);
+        var (compiled, external) = await ContractsCompiler.CompileProjectsAsync(p.ProjectFiles);
+        return await WriteAsync(compiled, external, p.ExcludeExternalContractsFromOutput, p.OutputFile);
     }
 
     private static async Task<int> HandleFileAsync(FileOptions f)
@@ -130,6 +133,27 @@ internal class Program
     private static async Task<int> WriteAsync(CompiledContracts contracts, string output)
     {
         var generated = new Generation.ContractsGenerator(contracts).Generate();
+        if (output == IOptions.StdoutMarker)
+        {
+            await WriteToStdoutAsync(generated);
+        }
+        else
+        {
+            await WriteToFileAsync(generated, output);
+        }
+
+        return 0;
+    }
+
+    private static async Task<int> WriteAsync(
+        CompiledContracts contracts,
+        List<Export> externalContracts,
+        bool excludeExternalContractsFromOutput,
+        string output)
+    {
+        var generated = new Generation.ContractsGenerator(contracts)
+            .Generate(externalContracts, excludeExternalContractsFromOutput);
+
         if (output == IOptions.StdoutMarker)
         {
             await WriteToStdoutAsync(generated);
