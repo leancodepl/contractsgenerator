@@ -88,7 +88,7 @@ public sealed class TypeRefFactory
             { ContainingNamespace: { Name: "System" }, Name: "Guid" } => New(KnownType.Guid),
             { ContainingNamespace: { Name: "System" }, Name: "Uri" } => New(KnownType.Uri),
             { ContainingNamespace: { Name: "System" }, Name: "TimeSpan" } => New(KnownType.TimeSpan),
-            { ContainingNamespace: { Name: "CQRS", ContainingNamespace: { Name: "LeanCode" } }, Name: "CommandResult" } =>
+            { ContainingNamespace: { Name: "Contracts", ContainingNamespace: { Name: "LeanCode" } }, Name: "CommandResult" } =>
                 New(KnownType.CommandResult),
 
             _ when contracts.Types.IsQueryType(ts) =>

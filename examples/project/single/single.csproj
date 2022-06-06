@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="LeanCode.CQRS" Version="6.0.1447" />
+    <PackageReference Include="LeanCode.Contracts" Version="1.0.0" />
   </ItemGroup>
 
 </Project>

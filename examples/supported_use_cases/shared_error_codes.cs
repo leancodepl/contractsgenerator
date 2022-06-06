@@ -1,4 +1,4 @@
-using LeanCode.CQRS;
+using LeanCode.Contracts;
 
 public class DTO
 {
@@ -8,7 +8,7 @@ public class DTO
     }
 }
 
-public class Command : IRemoteCommand
+public class Command : ICommand
 {
     public DTO NeededDTO { get; set; } = default!;
 

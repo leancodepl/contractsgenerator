@@ -1,7 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using LeanCode.CQRS;
+using LeanCode.Contracts;
+
 public class Dto
 {
     public IReadOnlyList<int> A { get; set; }

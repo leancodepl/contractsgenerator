@@ -1,19 +1,19 @@
-using LeanCode.CQRS;
+using LeanCode.Contracts;
 
 namespace First
 {
     public class DTO { }
 
-    public class Command : IRemoteCommand { }
+    public class Command : ICommand { }
 
-    public class Query : IRemoteQuery<int> { }
+    public class Query : IQuery<int> { }
 }
 
 namespace Second
 {
     public class DTO { }
 
-    public class Command : IRemoteCommand { }
+    public class Command : ICommand { }
 
-    public class Query : IRemoteQuery<int> { }
+    public class Query : IQuery<int> { }
 }

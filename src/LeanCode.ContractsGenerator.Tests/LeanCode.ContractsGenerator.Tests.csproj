@@ -6,9 +6,18 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
+  <Target Name="PackDependencies" BeforeTargets="Build" Condition="'$(IsInnerBuild)' != 'true'">
+    <MSBuild Projects="../LeanCode.Contracts/LeanCode.Contracts.csproj" Properties="Configuration=Debug" Targets="Restore" />
+    <MSBuild Projects="../LeanCode.Contracts/LeanCode.Contracts.csproj" Properties="Configuration=Debug" Targets="Build;Pack" />
+  </Target>
+
   <ItemGroup>
     <Content Include="../../examples/**/*">
       <Link>examples/%(RecursiveDir)%(Filename)%(Extension)</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="../LeanCode.Contracts/bin/Debug/LeanCode.Contracts.*.nupkg">
+      <Link>examples/%(Filename)%(Extension)</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

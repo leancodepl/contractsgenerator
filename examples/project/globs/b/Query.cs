@@ -1,9 +1,9 @@
-﻿using LeanCode.CQRS;
-using LeanCode.CQRS.Security;
+﻿using LeanCode.Contracts;
+using LeanCode.Contracts.Security;
 
 namespace B
 {
     [AllowUnauthorized]
-    public class Query : IRemoteQuery<int>
+    public class Query : IQuery<int>
     { }
 }

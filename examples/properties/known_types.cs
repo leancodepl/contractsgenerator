@@ -1,5 +1,5 @@
 using System;
-using LeanCode.CQRS;
+using LeanCode.Contracts;
 
 public class Dto
 {

@@ -12,6 +12,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="../LeanCode.Contracts/LeanCode.Contracts.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="CommandLineParser" />
     <PackageReference Include="Google.Protobuf" />
     <PackageReference Include="Grpc.Tools">
@@ -19,7 +23,6 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
 
-    <PackageReference Include="LeanCode.CQRS" />
     <PackageReference Include="LeanCode.Time" />
 
     <PackageReference Include="Microsoft.Build" ExcludeAssets="runtime" PrivateAssets="all" />

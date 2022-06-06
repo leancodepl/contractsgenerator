@@ -1,9 +1,9 @@
-﻿using LeanCode.CQRS;
-using LeanCode.CQRS.Security;
+﻿using LeanCode.Contracts;
+using LeanCode.Contracts.Security;
 
 namespace A
 {
     [AllowUnauthorized]
-    public class Command : IRemoteCommand
+    public class Command : ICommand
     { }
 }

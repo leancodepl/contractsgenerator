@@ -1,5 +1,5 @@
-using LeanCode.CQRS;
-using LeanCode.CQRS.Security;
+using LeanCode.Contracts;
+using LeanCode.Contracts.Security;
 
 [AllowUnauthorized]
-public class A : IRemoteCommand { }
+public class A : ICommand { }

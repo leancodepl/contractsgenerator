@@ -1,5 +1,5 @@
-using LeanCode.CQRS;
-using LeanCode.CQRS.Security;
+using LeanCode.Contracts;
+using LeanCode.Contracts.Security;
 
 public class Dto
 {
@@ -11,7 +11,7 @@ public class Dto
 }
 
 [AllowUnauthorized]
-public class Cmd1 : IRemoteCommand
+public class Cmd1 : ICommand
 {
     public static class ErrorCodes
     {
@@ -21,7 +21,7 @@ public class Cmd1 : IRemoteCommand
 }
 
 [AllowUnauthorized]
-public class Cmd2 : IRemoteCommand
+public class Cmd2 : ICommand
 {
     public static class ErrorCodes
     {

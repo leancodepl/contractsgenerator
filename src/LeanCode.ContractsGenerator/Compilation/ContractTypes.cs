@@ -1,5 +1,5 @@
-using LeanCode.CQRS;
-using LeanCode.CQRS.Security;
+using LeanCode.Contracts;
+using LeanCode.Contracts.Security;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
@@ -25,8 +25,8 @@ public sealed class ContractTypes
 
     public ContractTypes(IReadOnlyCollection<CSharpCompilation> compilations)
     {
-        QueryType = GetUnboundTypeSymbols(compilations, typeof(IRemoteQuery<>));
-        CommandType = GetTypeSymbols<IRemoteCommand>(compilations);
+        QueryType = GetUnboundTypeSymbols(compilations, typeof(IQuery<>));
+        CommandType = GetTypeSymbols<ICommand>(compilations);
 
         AuthorizeWhenAttribute = GetTypeSymbols<AuthorizeWhenAttribute>(compilations);
         AuthorizeWhenHasAnyOfAttribute = GetTypeSymbols<AuthorizeWhenHasAnyOfAttribute>(compilations);
