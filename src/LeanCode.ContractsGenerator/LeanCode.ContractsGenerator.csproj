@@ -19,7 +19,6 @@
     </PackageReference>
 
     <PackageReference Include="LeanCode.CQRS" />
-    <PackageReference Include="LeanCode.CQRS.Security" />
     <PackageReference Include="LeanCode.Time" />
 
     <PackageReference Include="Microsoft.Build" ExcludeAssets="runtime" PrivateAssets="all" />
