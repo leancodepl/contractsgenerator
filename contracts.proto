@@ -32,6 +32,7 @@ enum KnownType {
   Query = 1000;
   Command = 1001;
   CommandResult = 1002;
+  Operation = 1003;
   Attribute = 1100;
   AuthorizeWhenAttribute = 1101;
   AuthorizeWhenHasAnyOfAttribute = 1102;
@@ -149,6 +150,10 @@ message Statement {
     TypeDescriptor typeDescriptor = 1;
     repeated ErrorCode errorCodes = 2;
   }
+  message Operation {
+    TypeDescriptor typeDescriptor = 1;
+    TypeRef returnType = 2;
+  }
   string name = 1;
   string comment = 2;
   repeated AttributeRef attributes = 3;
@@ -157,6 +162,7 @@ message Statement {
     Enum enum = 11;
     Query query = 12;
     Command command = 13;
+    Operation operation = 14;
   }
 }
 

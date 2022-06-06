@@ -11,6 +11,7 @@ public sealed class ContractTypes
 {
     private HashSet<INamedTypeSymbol> QueryType { get; }
     private HashSet<INamedTypeSymbol> CommandType { get; }
+    private HashSet<INamedTypeSymbol> OperationType { get; }
 
     private HashSet<INamedTypeSymbol> AuthorizeWhenAttribute { get; }
     private HashSet<INamedTypeSymbol> AuthorizeWhenHasAnyOfAttribute { get; }
@@ -27,6 +28,7 @@ public sealed class ContractTypes
     {
         QueryType = GetUnboundTypeSymbols(compilations, typeof(IQuery<>));
         CommandType = GetTypeSymbols<ICommand>(compilations);
+        OperationType = GetUnboundTypeSymbols(compilations, typeof(IOperation<>));
 
         AuthorizeWhenAttribute = GetTypeSymbols<AuthorizeWhenAttribute>(compilations);
         AuthorizeWhenHasAnyOfAttribute = GetTypeSymbols<AuthorizeWhenHasAnyOfAttribute>(compilations);
@@ -95,6 +97,15 @@ public sealed class ContractTypes
             ns.AllInterfaces.Any(IsCommandType);
     }
 
+    public bool IsOperation(ITypeSymbol symbol)
+    {
+        return
+            symbol is INamedTypeSymbol ns &&
+            !ns.IsUnboundGenericType &&
+            !ns.IsAbstract &&
+            ns.AllInterfaces.Any(IsOperationType);
+    }
+
     public ITypeSymbol ExtractQueryResult(ITypeSymbol symbol)
     {
         if (IsQuery(symbol))
@@ -112,11 +123,31 @@ public sealed class ContractTypes
         }
     }
 
+    public ITypeSymbol ExtractOperationResult(ITypeSymbol symbol)
+    {
+        if (IsOperation(symbol))
+        {
+            var operationType = symbol.AllInterfaces.First(IsOperationType);
+            return operationType.TypeArguments[0];
+        }
+        else if (IsOperationType(symbol))
+        {
+            return ((INamedTypeSymbol)symbol).TypeArguments[0];
+        }
+        else
+        {
+            throw new ArgumentException($"The symbol `{symbol}` is not an operation type.");
+        }
+    }
+
     public bool IsQueryType(ITypeSymbol i) =>
         i is INamedTypeSymbol ns && ns.IsGenericType && QueryType.Contains(ns.ConstructUnboundGenericType());
 
     public bool IsCommandType(ITypeSymbol i) =>
         CommandType.Contains(i);
+
+    public bool IsOperationType(ITypeSymbol i) =>
+        i is INamedTypeSymbol ns && ns.IsGenericType && OperationType.Contains(ns.ConstructUnboundGenericType());
 
     public bool IsAuthorizeWhenType(ITypeSymbol i) =>
         AuthorizeWhenAttribute.Contains(i);

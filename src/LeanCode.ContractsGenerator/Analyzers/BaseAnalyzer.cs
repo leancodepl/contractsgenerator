@@ -158,6 +158,16 @@ public class BaseAnalyzer : IAnalyzer
             .Concat(descr.Constants.SelectMany(c => AnalyzeConstantRef(context.Descend(c), c)));
     }
 
+    public virtual IEnumerable<AnalyzeError> AnalyzeTypeDescriptorForOperation(AnalyzerContext context, TypeDescriptor descr)
+    {
+        return descr.Extends
+            .Where(e => e.Known is null || e.Known.Type != KnownType.Operation) // Exclude `Operation` type, as it will be checked by the `Return` check
+            .SelectMany(t => AnalyzeTypeRef(context.Extends(t), t))
+            .Concat(descr.GenericParameters.SelectMany((g, i) => AnalyzeGenericParameter(context.GenericParameter(i, g), g)))
+            .Concat(descr.Properties.SelectMany(p => AnalyzePropertyRef(context.Descend(p), p)))
+            .Concat(descr.Constants.SelectMany(c => AnalyzeConstantRef(context.Descend(c), c)));
+    }
+
     public virtual IEnumerable<AnalyzeError> AnalyzeDTO(AnalyzerContext context, Statement stmt, Statement.Types.DTO dto)
     {
         return AnalyzeTypeDescriptor(context, dto.TypeDescriptor);
@@ -178,6 +188,12 @@ public class BaseAnalyzer : IAnalyzer
     {
         return AnalyzeTypeDescriptor(context, command.TypeDescriptor)
             .Concat(AnalyzeErrorCodes(context.ErrorCodes(), command.ErrorCodes));
+    }
+
+    public virtual IEnumerable<AnalyzeError> AnalyzeOperation(AnalyzerContext context, Statement stmt, Statement.Types.Operation operation)
+    {
+        return AnalyzeTypeDescriptorForOperation(context, operation.TypeDescriptor)
+            .Concat(AnalyzeTypeRef(context.Returns(operation.ReturnType), operation.ReturnType));
     }
 
     public virtual IEnumerable<AnalyzeError> AnalyzeStatement(AnalyzerContext context, Statement stmt)
@@ -202,6 +218,10 @@ public class BaseAnalyzer : IAnalyzer
             else if (stmt.Command is Statement.Types.Command cmd)
             {
                 return AnalyzeCommand(context, stmt, cmd);
+            }
+            else if (stmt.Operation is Statement.Types.Operation op)
+            {
+                return AnalyzeOperation(context, stmt, op);
             }
             else
             {

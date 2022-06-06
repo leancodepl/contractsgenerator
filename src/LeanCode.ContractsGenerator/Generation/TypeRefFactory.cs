@@ -92,9 +92,11 @@ public sealed class TypeRefFactory
                 New(KnownType.CommandResult),
 
             _ when contracts.Types.IsQueryType(ts) =>
-            New(KnownType.Query, From(contracts.Types.ExtractQueryResult(ts))),
+                New(KnownType.Query, From(contracts.Types.ExtractQueryResult(ts))),
             _ when ts is INamedTypeSymbol ns && contracts.Types.IsCommandType(ns) =>
                 New(KnownType.Command),
+            _ when contracts.Types.IsOperationType(ts) =>
+                New(KnownType.Operation, From(contracts.Types.ExtractOperationResult(ts))),
             _ when contracts.Types.IsAuthorizeWhenType(ts) =>
                 New(KnownType.AuthorizeWhenAttribute),
             _ when contracts.Types.IsAuthorizeWhenHasAnyOfType(ts) =>

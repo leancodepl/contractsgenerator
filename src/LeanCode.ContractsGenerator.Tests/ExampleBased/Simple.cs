@@ -29,6 +29,19 @@ public class Simple
     }
 
     [Fact]
+    public void Simple_operation()
+    {
+        "simple/operation.cs"
+            .Compiles()
+            .WithSingle()
+            .Operation("Operation")
+                .WithReturnType(Known(KnownType.Int32))
+                .ThatExtends(
+                    Known(KnownType.Operation)
+                        .WithArgument(Known(KnownType.Int32)));
+    }
+
+    [Fact]
     public void Simple_Dto()
     {
         "simple/dto.cs"
