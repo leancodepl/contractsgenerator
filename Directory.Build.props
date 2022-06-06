@@ -9,8 +9,8 @@
     <RepositoryUrl>https://github.com/leancodepl/contractsgenerator</RepositoryUrl>
     <RepositoryCommit Condition="'$(GITHUB_SHA)' != ''">$(GITHUB_SHA)</RepositoryCommit>
 
-    <Version Condition="'$(BUILD_VERSION)' != ''">$(BUILD_VERSION)</Version>
-    <Version Condition="'$(BUILD_VERSION)' == ''">0.0.1</Version>
+    <Version Condition="$(Version) == '' And '$(BUILD_VERSION)' != ''">$(BUILD_VERSION)</Version>
+    <Version Condition="$(Version) == '' And '$(BUILD_VERSION)' == ''">0.0.1</Version>
 
     <InformationalVersion Condition="'$(RepositoryCommit)' != ''">$(Version)+$(RepositoryCommit)</InformationalVersion>
     <InformationalVersion Condition="'$(RepositoryCommit)' == ''">$(Version)+local</InformationalVersion>

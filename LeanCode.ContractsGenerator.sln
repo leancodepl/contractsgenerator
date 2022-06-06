@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeanCode.ContractsGenerator
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeanCode.ContractsGenerator.Tests", "src\LeanCode.ContractsGenerator.Tests\LeanCode.ContractsGenerator.Tests.csproj", "{DF27F83D-757C-4263-9812-3EF7892E902C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeanCode.Contracts", "src\LeanCode.Contracts\LeanCode.Contracts.csproj", "{20D06BBE-CEF3-429B-A7F6-F1A8DD1381EE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -46,9 +48,22 @@ Global
 		{DF27F83D-757C-4263-9812-3EF7892E902C}.Release|x64.Build.0 = Release|Any CPU
 		{DF27F83D-757C-4263-9812-3EF7892E902C}.Release|x86.ActiveCfg = Release|Any CPU
 		{DF27F83D-757C-4263-9812-3EF7892E902C}.Release|x86.Build.0 = Release|Any CPU
+		{20D06BBE-CEF3-429B-A7F6-F1A8DD1381EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{20D06BBE-CEF3-429B-A7F6-F1A8DD1381EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{20D06BBE-CEF3-429B-A7F6-F1A8DD1381EE}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{20D06BBE-CEF3-429B-A7F6-F1A8DD1381EE}.Debug|x64.Build.0 = Debug|Any CPU
+		{20D06BBE-CEF3-429B-A7F6-F1A8DD1381EE}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{20D06BBE-CEF3-429B-A7F6-F1A8DD1381EE}.Debug|x86.Build.0 = Debug|Any CPU
+		{20D06BBE-CEF3-429B-A7F6-F1A8DD1381EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{20D06BBE-CEF3-429B-A7F6-F1A8DD1381EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{20D06BBE-CEF3-429B-A7F6-F1A8DD1381EE}.Release|x64.ActiveCfg = Release|Any CPU
+		{20D06BBE-CEF3-429B-A7F6-F1A8DD1381EE}.Release|x64.Build.0 = Release|Any CPU
+		{20D06BBE-CEF3-429B-A7F6-F1A8DD1381EE}.Release|x86.ActiveCfg = Release|Any CPU
+		{20D06BBE-CEF3-429B-A7F6-F1A8DD1381EE}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{2D4A9E96-9B06-43D9-B5C7-B65C908A02D2} = {F935BAD1-C810-4FEC-9F80-530714CAA5AE}
 		{DF27F83D-757C-4263-9812-3EF7892E902C} = {F935BAD1-C810-4FEC-9F80-530714CAA5AE}
+		{20D06BBE-CEF3-429B-A7F6-F1A8DD1381EE} = {F935BAD1-C810-4FEC-9F80-530714CAA5AE}
 	EndGlobalSection
 EndGlobal
