@@ -32,6 +32,11 @@ public static class ExampleBasedAsserts
         return export.With(name).Query(name);
     }
 
+    public static AssertedOperation WithOperation(this AssertedExport export, string name)
+    {
+        return export.With(name).Operation(name);
+    }
+
     public static AssertedDto WithDto(this AssertedExport export, string name)
     {
         return export.With(name).Dto(name);
@@ -54,6 +59,13 @@ public static class ExampleBasedAsserts
         Assert.NotNull(stmt.Statement.Query);
         Assert.Equal(name, stmt.Statement.Name);
         return new(stmt.Export, stmt.Statement, stmt.Statement.Query.TypeDescriptor);
+    }
+
+    public static AssertedOperation Operation(this AssertedStatement stmt, string name)
+    {
+        Assert.NotNull(stmt.Statement.Operation);
+        Assert.Equal(name, stmt.Statement.Name);
+        return new(stmt.Export, stmt.Statement, stmt.Statement.Operation.TypeDescriptor);
     }
 
     public static AssertedDto Dto(this AssertedStatement stmt, string name)
@@ -97,6 +109,12 @@ public static class ExampleBasedAsserts
     public static AssertedQuery WithReturnType(this AssertedQuery stmt, TypeRef typeRef)
     {
         Assert.Equal(typeRef, stmt.Statement.Query.ReturnType);
+        return stmt;
+    }
+
+    public static AssertedOperation WithReturnType(this AssertedOperation stmt, TypeRef typeRef)
+    {
+        Assert.Equal(typeRef, stmt.Statement.Operation.ReturnType);
         return stmt;
     }
 
@@ -214,6 +232,7 @@ public record AssertedStatement(Export Export, Statement Statement) : AssertedEx
 public record AssertedType(Export Export, Statement Statement, TypeDescriptor Descriptor) : AssertedStatement(Export, Statement);
 public record AssertedCommand(Export Export, Statement Statement, TypeDescriptor Descriptor) : AssertedType(Export, Statement, Descriptor);
 public record AssertedQuery(Export Export, Statement Statement, TypeDescriptor Descriptor) : AssertedType(Export, Statement, Descriptor);
+public record AssertedOperation(Export Export, Statement Statement, TypeDescriptor Descriptor) : AssertedType(Export, Statement, Descriptor);
 public record AssertedDto(Export Export, Statement Statement, TypeDescriptor Descriptor) : AssertedType(Export, Statement, Descriptor);
 public record AssertedEnum(Export Export, Statement Statement) : AssertedStatement(Export, Statement);
 

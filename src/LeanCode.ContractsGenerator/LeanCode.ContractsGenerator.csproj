@@ -3,11 +3,16 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net6.0</TargetFramework>
+    <PreserveCompilationContext>true</PreserveCompilationContext>
     <RootNamespace>LeanCode.ContractsGenerator</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
-    <Protobuf Include="../../contracts.proto" />
+    <Protobuf Include="../../contracts.proto" GrpcServices="None" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../LeanCode.Contracts/LeanCode.Contracts.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -18,8 +23,6 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
 
-    <PackageReference Include="LeanCode.CQRS" />
-    <PackageReference Include="LeanCode.CQRS.Security" />
     <PackageReference Include="LeanCode.Time" />
 
     <PackageReference Include="Microsoft.Build" ExcludeAssets="runtime" PrivateAssets="all" />

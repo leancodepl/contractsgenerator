@@ -14,9 +14,6 @@
 
     <PackageReference Update="CommandLineParser" Version="2.9.1" />
 
-    <PackageReference Update="LeanCode.CQRS" Version="$(CoreLibVersion)" />
-    <PackageReference Update="LeanCode.CQRS.Security" Version="$(CoreLibVersion)" />
-
     <PackageReference Update="LeanCode.Time" Version="6.0.1327" />
 
     <PackageReference Update="Microsoft.Build" Version="$(MicrosoftBuildVersion)" />

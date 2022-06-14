@@ -101,7 +101,7 @@ public static class MSBuildHelper
                     projectInstance,
                     RestoreTarget,
                     hostServices: null,
-                    ClearCachesAfterBuild | SkipNonexistentTargets | IgnoreMissingEmptyAndInvalidImports);
+                    flags: ClearCachesAfterBuild | SkipNonexistentTargets | IgnoreMissingEmptyAndInvalidImports);
 
                 buildManager
                     .PendBuildRequest(buildRequestData)

@@ -1,4 +1,4 @@
-using LeanCode.CQRS;
+using LeanCode.Contracts;
 using LeanCode.DomainModels.Model;
 
 namespace PackageReference;

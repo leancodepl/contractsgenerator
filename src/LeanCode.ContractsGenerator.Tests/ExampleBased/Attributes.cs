@@ -44,6 +44,6 @@ public class Attributes
         "attributes/unauthorized.cs"
             .Compiles()
             .WithCommand("A")
-                .WithAttribute("LeanCode.CQRS.Security.AllowUnauthorizedAttribute");
+                .WithAttribute("LeanCode.Contracts.Security.AllowUnauthorizedAttribute");
     }
 }

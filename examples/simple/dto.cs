@@ -1,2 +1,3 @@
-using LeanCode.CQRS;
+using LeanCode.Contracts;
+
 public class DTO {}

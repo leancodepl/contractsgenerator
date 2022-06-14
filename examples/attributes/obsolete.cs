@@ -1,4 +1,4 @@
-using LeanCode.CQRS;
+using LeanCode.Contracts;
 
 [System.Obsolete("Msg")]
-public class A : IRemoteCommand { }
+public class A : ICommand { }

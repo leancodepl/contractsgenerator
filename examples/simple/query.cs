@@ -1,2 +1,3 @@
-using LeanCode.CQRS;
-public class Query : IRemoteQuery<int> {}
+using LeanCode.Contracts;
+
+public class Query : IQuery<int> {}

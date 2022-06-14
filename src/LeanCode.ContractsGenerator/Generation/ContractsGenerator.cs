@@ -106,6 +106,14 @@ public class ContractsGenerator
                 };
                 ErrorCodes.Extract(symbol).SaveToRepeatedField(result.Command.ErrorCodes);
             }
+            else if (contracts.Types.IsOperation(symbol))
+            {
+                result.Operation = new()
+                {
+                    TypeDescriptor = MapTypeDescriptor(symbol),
+                    ReturnType = typeRef.From(contracts.Types.ExtractOperationResult(symbol)),
+                };
+            }
             else if (symbol.TypeKind == TypeKind.Enum)
             {
                 result.Enum = new();

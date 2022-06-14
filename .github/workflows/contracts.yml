@@ -1,0 +1,47 @@
+name: Build & Push Contracts
+
+on:
+  push:
+    tags: ["contracts-v*.*.*"]
+
+jobs:
+  release:
+    name: Build & Push Contracts
+    runs-on: ubuntu-latest
+    env:
+      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+      DOTNET_CLI_TELEMETRY_OPTOUT: 1
+    steps:
+      - name: Version
+        id: version
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/contracts-v}
+          if ! [[ ${VERSION} =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]
+          then
+            echo 1>&2 "Invalid version: ${VERSION}"
+            exit 1
+          fi
+          echo ::set-output name=version::${VERSION}
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v2.1.0
+      - name: Restore
+        working-directory: src/LeanCode.Contracts
+        run: dotnet restore
+      - name: Build
+        env:
+          BUILD_VERSION: ${{ steps.version.outputs.version }}
+        working-directory: src/LeanCode.Contracts
+        run: dotnet build --no-restore -c Release
+      - name: Pack
+        env:
+          BUILD_VERSION: ${{ steps.version.outputs.version }}
+        working-directory: src/LeanCode.Contracts
+        run: dotnet pack --no-build -c Release
+      - name: Push
+        env:
+          BUILD_VERSION: ${{ steps.version.outputs.version }}
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+        working-directory: src/LeanCode.Contracts
+        run: dotnet nuget push "bin/Release/LeanCode.Contracts.${BUILD_VERSION}.nupkg" -k "${NUGET_API_KEY}" -s 'https://api.nuget.org/v3/index.json' -n

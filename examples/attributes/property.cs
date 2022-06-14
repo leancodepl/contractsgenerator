@@ -1,6 +1,6 @@
-using LeanCode.CQRS;
+using LeanCode.Contracts;
 
-public class A : IRemoteCommand
+public class A : ICommand
 {
     [System.Obsolete("Msg")]
     public string Prop { get; set; }
