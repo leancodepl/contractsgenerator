@@ -66,44 +66,44 @@ internal class Program
         }
         catch (InvalidProjectException ex)
         {
-            Console.Error.WriteLine($"Cannot load one of the projects: {ex.Message}");
-            Console.Error.WriteLine("At");
-            Console.Error.WriteLine(ex.StackTrace);
+            await Console.Error.WriteLineAsync($"Cannot load one of the projects: {ex.Message}");
+            await Console.Error.WriteLineAsync("At");
+            await Console.Error.WriteLineAsync(ex.StackTrace);
             return 2;
         }
         catch (CompilationFailedException ex)
         {
-            Console.Error.WriteLine("Cannot compile contracts. There were errors during project compilation:");
+            await Console.Error.WriteLineAsync("Cannot compile contracts. There were errors during project compilation:");
             foreach (var d in ex.Diagnostics)
             {
-                Console.Error.WriteLine($"[{d.Severity}] {d.GetMessage()} at {FormatLocation(d.Location)}");
+                await Console.Error.WriteLineAsync($"[{d.Severity}] {d.GetMessage()} at {FormatLocation(d.Location)}");
             }
 
             return 3;
         }
         catch (GenerationFailedException ex)
         {
-            Console.Error.WriteLine($"Cannot generate contracts: {ex.Message}");
-            Console.Error.WriteLine("At");
-            Console.Error.WriteLine(ex.StackTrace);
+            await Console.Error.WriteLineAsync($"Cannot generate contracts: {ex.Message}");
+            await Console.Error.WriteLineAsync("At");
+            await Console.Error.WriteLineAsync(ex.StackTrace);
             return 4;
         }
         catch (AnalyzeFailedException ex)
         {
-            Console.Error.WriteLine($"Cannot generate contracts. The analyze phase failed with following errors:");
+            await Console.Error.WriteLineAsync($"Cannot generate contracts. The analyze phase failed with following errors:");
             foreach (var d in ex.Errors)
             {
-                Console.Error.WriteLine($"[{d.Code}] {d.Message}");
-                Console.Error.WriteLine($"    at {d.Context.Path}");
+                await Console.Error.WriteLineAsync($"[{d.Code}] {d.Message}");
+                await Console.Error.WriteLineAsync($"    at {d.Context.Path}");
             }
 
             return 5;
         }
         catch (Exception ex)
         {
-            Console.Error.WriteLine($"Cannot compile project or generate contracts: {ex.Message}");
-            Console.Error.WriteLine("At");
-            Console.Error.WriteLine(ex.StackTrace);
+            await Console.Error.WriteLineAsync($"Cannot compile project or generate contracts: {ex.Message}");
+            await Console.Error.WriteLineAsync("At");
+            await Console.Error.WriteLineAsync(ex.StackTrace);
             return 6;
         }
     }

@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
 namespace LeanCode.Contracts.Security;
@@ -14,6 +15,8 @@ public abstract class AuthorizeWhenAttribute : Attribute
         this.customData = customData;
     }
 
+    public static List<AuthorizerDefinition> GetCustomAuthorizers<T>() => GetCustomAuthorizers(typeof(T));
+
     public static List<AuthorizerDefinition> GetCustomAuthorizers(Type type)
     {
         return type
@@ -22,7 +25,7 @@ public abstract class AuthorizeWhenAttribute : Attribute
             .ToList();
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1034", Justification = "Deliberate nesting.")]
+    [SuppressMessage("?", "CA1034", Justification = "Deliberate nesting.")]
     public sealed class AuthorizerDefinition
     {
         public Type Authorizer { get; }
@@ -46,6 +49,7 @@ public abstract class AuthorizeWhenAttribute<T> : AuthorizeWhenAttribute
         : base(typeof(T), customData)
     { }
 
+    [SuppressMessage("?", "CA1000", Justification = "Alternative method also exists.")]
     public static List<AuthorizerDefinition> GetCustomAuthorizers() =>
         GetCustomAuthorizers(typeof(T));
 }

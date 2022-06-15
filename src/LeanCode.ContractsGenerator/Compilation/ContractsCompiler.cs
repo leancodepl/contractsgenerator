@@ -3,6 +3,7 @@ using System.Reflection;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.Extensions.DependencyModel;
+using Microsoft.Extensions.DependencyModel.Resolution;
 using Microsoft.Extensions.FileSystemGlobbing;
 using Microsoft.Extensions.FileSystemGlobbing.Abstractions;
 
@@ -47,22 +48,18 @@ public static class ContractsCompiler
         return LeanCodeAssemblyNames.Contains(cl.Name, StringComparer.InvariantCultureIgnoreCase);
     }
 
-    public static readonly ImmutableList<PortableExecutableReference> DefaultAssemblies;
+    private static readonly Assembly ExecutingAssembly = Assembly.GetExecutingAssembly();
 
-    static ContractsCompiler()
-    {
-        var executingAssembly = Assembly.GetExecutingAssembly();
-        var basePath = Path.GetDirectoryName(executingAssembly.Location);
-        var resolver = new Microsoft.Extensions.DependencyModel.Resolution.AppBaseCompilationAssemblyResolver(basePath);
+    private static readonly AppBaseCompilationAssemblyResolver Resolver = new(
+        Path.GetDirectoryName(ExecutingAssembly.Location));
 
-        DefaultAssemblies = DependencyContext
-            .Load(executingAssembly)
-            .CompileLibraries
-            .Where(cl => IsWantedReferenceAssembly(cl) || IsWantedLeanCodeAssembly(cl))
-            .SelectMany(cl => cl.ResolveReferencePaths(resolver))
-            .Select(path => MetadataReference.CreateFromFile(path))
-            .ToImmutableList();
-    }
+    public static readonly ImmutableList<PortableExecutableReference> DefaultAssemblies = DependencyContext
+        .Load(ExecutingAssembly)
+        .CompileLibraries
+        .Where(cl => IsWantedReferenceAssembly(cl) || IsWantedLeanCodeAssembly(cl))
+        .SelectMany(cl => cl.ResolveReferencePaths(Resolver))
+        .Select(path => MetadataReference.CreateFromFile(path))
+        .ToImmutableList();
 
     public static async Task<(CompiledContracts Compiled, List<Export> External)> CompileProjectsAsync(
         IEnumerable<string> projectPaths)
