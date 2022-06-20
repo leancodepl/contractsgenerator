@@ -53,6 +53,7 @@ public class PathOptions : IOptions
 
 internal class Program
 {
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1031", Justification = "Exception boundary.")]
     private static async Task<int> Main(string[] args)
     {
         try

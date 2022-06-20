@@ -234,6 +234,7 @@ public record AssertedCommand(Export Export, Statement Statement, TypeDescriptor
 public record AssertedQuery(Export Export, Statement Statement, TypeDescriptor Descriptor) : AssertedType(Export, Statement, Descriptor);
 public record AssertedOperation(Export Export, Statement Statement, TypeDescriptor Descriptor) : AssertedType(Export, Statement, Descriptor);
 public record AssertedDto(Export Export, Statement Statement, TypeDescriptor Descriptor) : AssertedType(Export, Statement, Descriptor);
+[System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1711", Justification = "We don't care.")]
 public record AssertedEnum(Export Export, Statement Statement) : AssertedStatement(Export, Statement);
 
 public record AssertedProperty(PropertyRef Property);

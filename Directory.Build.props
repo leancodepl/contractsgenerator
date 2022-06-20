@@ -5,9 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
-    <AnalysisLevel>latest</AnalysisLevel>
-    <AnalysisMode>AllEnabledByDefault</AnalysisMode>
-    <NoWarn>CA1031;CA1711</NoWarn>
+    <AnalysisLevel>preview-All</AnalysisLevel>
 
     <Company>LeanCode</Company>
     <RepositoryUrl>https://github.com/leancodepl/contractsgenerator</RepositoryUrl>

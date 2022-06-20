@@ -4,6 +4,7 @@ using static LeanCode.ContractsGenerator.Tests.TypeRefExtensions;
 
 namespace LeanCode.ContractsGenerator.Tests.ExampleBased;
 
+[System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1711", Justification = "We don't care.")]
 [CollectionDefinition(nameof(MSBuildTestCurrentDirectoryWorkaroundCollection), DisableParallelization = true)]
 public class MSBuildTestCurrentDirectoryWorkaroundCollection { }
 

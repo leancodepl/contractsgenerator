@@ -140,6 +140,7 @@ public static class ContractsCompiler
             .WithPlatform(Platform.AnyCpu);
     }
 
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1031", Justification = "Failure to extract embedded contracts from some assemblies should not interrupt the operation.")]
     private static List<Export> TryLoadEmbeddedContracts(IReadOnlyCollection<CSharpCompilation> compilations)
     {
         var externalReferences = compilations
