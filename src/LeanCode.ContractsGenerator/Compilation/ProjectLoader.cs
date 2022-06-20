@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis.MSBuild;
 
 namespace LeanCode.ContractsGenerator.Compilation;
 
-public class ProjectLoader : IDisposable
+public sealed class ProjectLoader : IDisposable
 {
     private readonly CSharpCompilationOptions options;
 
@@ -23,7 +23,8 @@ public class ProjectLoader : IDisposable
 
         if (MSBuildHelper.RestoreProjects(projectPathsList) > 0)
         {
-            Console.Error.WriteLine("Failed to restore some of the projects, restore them manually or expect problems.");
+            await Console.Error.WriteLineAsync(
+                "Failed to restore some of the projects, restore them manually or expect problems.");
         }
 
         foreach (var projectPath in projectPathsList)

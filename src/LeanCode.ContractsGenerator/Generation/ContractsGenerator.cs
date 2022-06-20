@@ -1,3 +1,4 @@
+using System.Globalization;
 using Google.Protobuf.Collections;
 using LeanCode.ContractsGenerator.Compilation;
 using Microsoft.CodeAnalysis;
@@ -230,7 +231,7 @@ public class ContractsGenerator
         return new EnumValue()
         {
             Name = f.Name,
-            Value = Convert.ToInt64(f.ConstantValue),
+            Value = Convert.ToInt64(f.ConstantValue, CultureInfo.InvariantCulture),
             Comment = f.GetComments(),
         };
     }

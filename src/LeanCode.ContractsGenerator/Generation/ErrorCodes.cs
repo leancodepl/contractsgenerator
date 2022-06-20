@@ -1,3 +1,4 @@
+using System.Globalization;
 using Microsoft.CodeAnalysis;
 
 namespace LeanCode.ContractsGenerator.Generation;
@@ -53,7 +54,7 @@ public static class ErrorCodes
                 Single = new()
                 {
                     Name = f.Name,
-                    Code = Convert.ToInt32(f.ConstantValue),
+                    Code = Convert.ToInt32(f.ConstantValue, CultureInfo.InvariantCulture),
                 },
             };
         }

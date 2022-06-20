@@ -15,7 +15,7 @@ public class BaseAnalyzer : IAnalyzer
         return Enumerable.Empty<AnalyzeError>();
     }
 
-    public virtual IEnumerable<AnalyzeError> AnalyzeValueRef(AnalyzerContext context, ValueRef knownType)
+    public virtual IEnumerable<AnalyzeError> AnalyzeValueRef(AnalyzerContext context, ValueRef valueRef)
     {
         return Enumerable.Empty<AnalyzeError>();
     }

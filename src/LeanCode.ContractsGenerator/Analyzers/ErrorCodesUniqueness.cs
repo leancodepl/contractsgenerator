@@ -4,9 +4,9 @@ public class ErrorCodesUniqueness : BaseAnalyzer
 {
     public const string Code = "CNTR0003";
 
-    public override IEnumerable<AnalyzeError> AnalyzeErrorCodes(AnalyzerContext context, IEnumerable<ErrorCode> errorCodes)
+    public override IEnumerable<AnalyzeError> AnalyzeErrorCodes(AnalyzerContext context, IEnumerable<ErrorCode> errCodes)
     {
-        return errorCodes
+        return errCodes
             .SelectMany(Flatten)
             .GroupBy(e => e.Code)
             .Where(g => g.Count() > 1)

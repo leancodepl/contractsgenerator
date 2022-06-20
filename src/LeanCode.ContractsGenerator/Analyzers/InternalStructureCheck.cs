@@ -14,15 +14,15 @@ public class InternalStructureCheck : BaseAnalyzer
         }
     }
 
-    public override IEnumerable<AnalyzeError> AnalyzeValueRef(AnalyzerContext context, ValueRef vr)
+    public override IEnumerable<AnalyzeError> AnalyzeValueRef(AnalyzerContext context, ValueRef valueRef)
     {
-        if (vr.Null is null &&
-            vr.Number is null &&
-            vr.FloatingPoint is null &&
-            vr.String is null &&
-            vr.Bool is null)
+        if (valueRef.Null is null &&
+            valueRef.Number is null &&
+            valueRef.FloatingPoint is null &&
+            valueRef.String is null &&
+            valueRef.Bool is null)
         {
-            yield return new(Code, $"`{nameof(ValueRef)}` type is unknown: {vr}.", context);
+            yield return new(Code, $"`{nameof(ValueRef)}` type is unknown: {valueRef}.", context);
         }
     }
 

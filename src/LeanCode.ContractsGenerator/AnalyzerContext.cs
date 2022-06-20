@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 
 namespace LeanCode.ContractsGenerator;
 
@@ -77,7 +78,7 @@ public readonly record struct AnalyzerContext(string Path)
     {
         if (arg.Positional is AttributeArgument.Types.Positional p)
         {
-            return p.Position.ToString();
+            return p.Position.ToString(CultureInfo.InvariantCulture);
         }
         else if (arg.Named is AttributeArgument.Types.Named n)
         {
