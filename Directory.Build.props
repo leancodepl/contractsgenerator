@@ -4,10 +4,16 @@
     <LangVersion>preview</LangVersion>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <Deterministic>true</Deterministic>
+    <EmbedAllSources>true</EmbedAllSources>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <AnalysisLevel>preview-All</AnalysisLevel>
 
+    <Authors>LeanCode</Authors>
     <Company>LeanCode</Company>
+    <Copyright>Copyright 2021-2022 LeanCode Sp. z o.o.</Copyright>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/leancodepl/contractsgenerator</PackageProjectUrl>
     <RepositoryUrl>https://github.com/leancodepl/contractsgenerator</RepositoryUrl>
     <RepositoryCommit Condition="'$(GITHUB_SHA)' != ''">$(GITHUB_SHA)</RepositoryCommit>
 
