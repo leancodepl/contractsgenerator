@@ -43,4 +43,16 @@ public class Properties
                 .WithProperty("F", Map(Known(KnownType.Int32), Known(KnownType.String)))
                 .WithProperty("G", Map(Known(KnownType.Int32), Known(KnownType.String)));
     }
+
+    [Fact]
+    public void Properties_with_binary_types()
+    {
+        "properties/binary.cs"
+            .Compiles()
+            .WithDto("Dto")
+                .WithProperty("A", Known(KnownType.Binary))
+                .WithProperty("B", Known(KnownType.Binary).Nullable())
+                .WithProperty("C", Array(Known(KnownType.Binary)))
+                .WithProperty("D", Map(Known(KnownType.Binary), Known(KnownType.Binary)));
+    }
 }
