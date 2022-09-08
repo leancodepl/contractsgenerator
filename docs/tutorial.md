@@ -16,7 +16,7 @@ Contracts are based on 5 basic types:
 4. Commands, and
 5. Operations.
 
-The first two (DTOs & Enums) represent plain data. Latter three (Queries, Commands & Operations) represent API endpoints
+The first two (DTOs & Enums) represent plain data. The last three (Queries, Commands & Operations) represent API endpoints
 that you can call. DTOs & enums don't have any particular semantic apart from being data, but queries, commands and
 operations carry a semantic meaning that will be described later.
 
@@ -168,10 +168,10 @@ public class RateOrder : ICommand
 
 Operations are an exception to the CQRS rule. Sometimes there are cases (esp. when integrating with external services)
 where you can't split _reading_ the data from _changing_ it. You can think of operations as of commands that return
-a result. Operations are not validated, contrary to commands (you need to model validation yourself).
+results. Operations are not validated, contrary to commands (you need to model validation yourself).
 
-A common example for operation is payment - most of the payment processors have "pay" action that both does the payment
-and return some metadata about the payment.
+A common example of an operation is payment - most of the payment processors have "pay" action that both does the payment
+and returns some metadata about the payment.
 
 ```csharp
 public class PaymentResultDTO
