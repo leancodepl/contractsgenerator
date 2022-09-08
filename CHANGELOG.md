@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `LeanCode.Contracts` package with basic contracts definition,
 - `Binary` type,
 - `Operation` type,
+- Basic docs
 
 ### Breaking changes
 
