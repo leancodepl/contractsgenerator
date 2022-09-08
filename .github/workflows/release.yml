@@ -17,6 +17,8 @@ jobs:
         run: echo ::set-output name=version::$(echo $GITHUB_REF | cut -d / -f 3 | cut -c2-)
       - name: Checkout
         uses: actions/checkout@v2
+        with:
+          lfs: true
       - name: Setup .NET Core SDK 6.0
         uses: actions/setup-dotnet@v1.8.1
         with:
