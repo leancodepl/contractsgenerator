@@ -8,13 +8,13 @@ Contracts are written in C#. You can use any C# feature, provided that the featu
 non-structural code in contracts will be either rejected or ignored. You can find more about guidelines what features
 can be used [here](./guidelines.md).
 
-Contracts are based on 5 basic types:
+Data structures used in contracts can be divided into 5 categories:
 
-1. DTOs (Data Transfer Objects),
-2. Enums (also a form of Data Transfer Objects),
-3. Queries,
-4. Commands, and
-5. Operations.
+1. DTOs (known as Data Transfer Objects),
+2. Enums (also a form of DTO),
+3. Queries (C# classes implementing `IQuery`),
+4. Commands (C# classes implementing `ICommand`), and
+5. Operations (C# classes implementing `IOperation`).
 
 The first two (DTOs & Enums) represent plain data. The last three (Queries, Commands & Operations) represent API endpoints
 that you can call. DTOs & enums don't have any particular semantic apart from being data, but queries, commands and
@@ -41,8 +41,8 @@ A common use case for attributes is:
 
 ## DTOs
 
-DTOs are plain C# classes that might extend other classes or implement interfaces. Although C# has interfaces, classes,
-structs and records, contracts have only one type: DTO.
+DTOs are described using plain C# classes (that might extend other classes or implement interfaces), interfaces, structs
+or records. Although C# differentiates between these, in contracts they all represent DTO.
 
 DTO is used to pass data to or return data from the backend. It carries no other meaning. You can use almost all
 [known types](./types.md) (with exceptions) or types that are defined by your project or referenced project (provided
