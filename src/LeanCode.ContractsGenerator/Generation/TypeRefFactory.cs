@@ -80,16 +80,14 @@ public sealed class TypeRefFactory
             { SpecialType: SpecialType.System_Double } => New(KnownType.Float64),
             { SpecialType: SpecialType.System_Boolean } => New(KnownType.Boolean),
             { SpecialType: SpecialType.System_DateTime } => New(KnownType.DateTime),
-            { ContainingNamespace: { Name: "System" }, Name: "DateTimeOffset" } => New(KnownType.DateTimeOffset),
-            { ContainingNamespace: { Name: "System" }, Name: "DateOnly" } => New(KnownType.DateOnly),
-            { ContainingNamespace: { Name: "System" }, Name: "TimeOnly" } => New(KnownType.TimeOnly),
-            { ContainingNamespace: { Name: "System" }, Name: "Date" } => New(KnownType.Date),
-            { ContainingNamespace: { Name: "System" }, Name: "Time" } => New(KnownType.Time),
-            { ContainingNamespace: { Name: "System" }, Name: "Guid" } => New(KnownType.Guid),
-            { ContainingNamespace: { Name: "System" }, Name: "Uri" } => New(KnownType.Uri),
-            { ContainingNamespace: { Name: "System" }, Name: "TimeSpan" } => New(KnownType.TimeSpan),
-            { ContainingNamespace: { Name: "Contracts", ContainingNamespace: { Name: "LeanCode" } }, Name: "Binary" } => New(KnownType.Binary),
-            { ContainingNamespace: { Name: "Contracts", ContainingNamespace: { Name: "LeanCode" } }, Name: "CommandResult" } =>
+            { ContainingNamespace.Name: "System", Name: "DateTimeOffset" } => New(KnownType.DateTimeOffset),
+            { ContainingNamespace.Name: "System", Name: "DateOnly" } => New(KnownType.DateOnly),
+            { ContainingNamespace.Name: "System", Name: "TimeOnly" } => New(KnownType.TimeOnly),
+            { ContainingNamespace.Name: "System", Name: "Guid" } => New(KnownType.Guid),
+            { ContainingNamespace.Name: "System", Name: "Uri" } => New(KnownType.Uri),
+            { ContainingNamespace.Name: "System", Name: "TimeSpan" } => New(KnownType.TimeSpan),
+            { ContainingNamespace: { Name: "Contracts", ContainingNamespace.Name: "LeanCode" }, Name: "Binary" } => New(KnownType.Binary),
+            { ContainingNamespace: { Name: "Contracts", ContainingNamespace.Name: "LeanCode" }, Name: "CommandResult" } =>
                 New(KnownType.CommandResult),
 
             _ when contracts.Types.IsQueryType(ts) =>

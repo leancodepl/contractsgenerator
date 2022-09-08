@@ -18,15 +18,13 @@ public class Properties
                 .WithProperty("E", Known(KnownType.Uri))
                 .WithProperty("F", Known(KnownType.DateOnly))
                 .WithProperty("G", Known(KnownType.TimeOnly))
-                .WithProperty("H", Known(KnownType.Date))
-                .WithProperty("I", Known(KnownType.Time))
-                .WithProperty("J", Known(KnownType.DateTime))
-                .WithProperty("K", Known(KnownType.DateTimeOffset))
-                .WithProperty("L", Known(KnownType.Guid))
-                .WithProperty("M", Known(KnownType.Float32))
-                .WithProperty("N", Known(KnownType.Float64))
-                .WithProperty("O", Known(KnownType.TimeSpan))
-                .WithProperty("P", Known(KnownType.CommandResult));
+                .WithProperty("H", Known(KnownType.DateTime))
+                .WithProperty("I", Known(KnownType.DateTimeOffset))
+                .WithProperty("J", Known(KnownType.Guid))
+                .WithProperty("K", Known(KnownType.Float32))
+                .WithProperty("L", Known(KnownType.Float64))
+                .WithProperty("M", Known(KnownType.TimeSpan))
+                .WithProperty("N", Known(KnownType.CommandResult));
     }
 
     [Fact]
