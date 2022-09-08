@@ -1,0 +1,37 @@
+# Guidelines
+
+## General
+
+### Properties should have public getters and setters
+
+The properties are generated as-is, even if they don't have getter/setter or if getter/setter is not public. Using
+anything else results in C#/contracts mismatch because client types _will_ have public getters and setters.
+
+### Do not use records
+
+Records introduce logic (structural equality) to your code, which cannot be translated. This might lead to broken
+contracts usage.
+
+### Prefer `List` over array
+
+### Prefer concrete types instead of interfaces
+
+For example use `List` instead of `IList` or `IReadOnlyList`. Contracts need to be concrete and interfaces introduce
+ambiguity. This causes problems not only in understanding, but also in (de-)serialization.
+
+### Explicit interface implementation is discouraged
+
+Explicit interface implementation allows to have a property name clash which will result in badly formed contracts.
+This is currently not blocked, but might be in the future.
+
+### Prefer Command + Query over Operation
+
+## DTOs & Enums
+
+### Postfix DTOs & enums with `DTO`
+
+Makes distinguishing the purpose easier.
+
+### Always explicitly specify enum value
+
+Makes maintaining compatibility easier and results in predictable contracts.
