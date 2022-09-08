@@ -11,10 +11,10 @@ can be used [here](./guidelines.md).
 Contracts are based on 5 basic types:
 
 1. DTOs (Data Transfer Objects),
-1. Enums (also a form of Data Transfer Objects),
-1. Queries,
-1. Commands, and
-1. Operations.
+2. Enums (also a form of Data Transfer Objects),
+3. Queries,
+4. Commands, and
+5. Operations.
 
 The first two (DTOs & Enums) represent plain data. Latter three (Queries, Commands & Operations) represent API endpoints
 that you can call. DTOs & enums don't have any particular semantic apart from being data, but queries, commands and
