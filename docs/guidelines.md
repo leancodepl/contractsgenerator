@@ -26,6 +26,8 @@ This is currently not blocked, but might be in the future.
 
 ### Prefer Command + Query over Operation
 
+Unless it is impossible to model as a two separate actions or the resulting API would be awkward.
+
 ## DTOs & Enums
 
 ### Postfix DTOs & enums with `DTO`
@@ -35,3 +37,9 @@ Makes distinguishing the purpose easier.
 ### Always explicitly specify enum value
 
 Makes maintaining compatibility easier and results in predictable contracts.
+
+## Queries
+
+### Prefer DTOs as a query results
+
+DTO is named and has named properties, which makes understanding of the API easier. Primitive types lack that.
