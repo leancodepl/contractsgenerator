@@ -4,8 +4,8 @@ The contracts provide 4 date/datetime-like known types:
 
 1. `DateOnly` - represents a _date_ **without** time, e.g. 2022-09-08,
 2. `TimeOnly` - represents a time of day, e.g. 16:02:20. It is limited to 23:59:59.999,
-3. `DateTimeOffset` - represents date with time and offset (e.g. event in a time and space), e.g. `2022-09-08 16:02:20 +02:00`,
-4. `TimeSpan` - represents a duration of time, e.g. `2.10:50:30.222` (2 days, 10 hours, 50 min, 30 sec and 222 ms).
+3. `DateTimeOffset` - represents date with time and offset (e.g. event in a time and space), e.g. 2022-09-08 16:02:20 +02:00,
+4. `TimeSpan` - represents a duration of time, e.g. 2 days, 10 hours, 50 min, 30 sec and 222 ms.
 
 Previously, there was also a `DateTime` type but it got removed in v2.0 and is prohibited in contracts.
 
