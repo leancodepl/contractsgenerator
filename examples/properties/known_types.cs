@@ -10,11 +10,10 @@ public class Dto
     public Uri E { get; set; }
     public DateOnly F { get; set; }
     public TimeOnly G { get; set; }
-    public DateTime H { get; set; }
-    public DateTimeOffset I { get; set; }
-    public Guid J { get; set; }
-    public float K { get; set; }
-    public double L { get; set; }
-    public TimeSpan M { get; set; }
-    public CommandResult N { get; set; }
+    public DateTimeOffset H { get; set; }
+    public Guid I { get; set; }
+    public float J { get; set; }
+    public double K { get; set; }
+    public TimeSpan L { get; set; }
+    public CommandResult M { get; set; }
 }

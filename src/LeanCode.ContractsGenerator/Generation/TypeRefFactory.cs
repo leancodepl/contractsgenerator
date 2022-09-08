@@ -79,7 +79,6 @@ public sealed class TypeRefFactory
             { SpecialType: SpecialType.System_Single } => New(KnownType.Float32),
             { SpecialType: SpecialType.System_Double } => New(KnownType.Float64),
             { SpecialType: SpecialType.System_Boolean } => New(KnownType.Boolean),
-            { SpecialType: SpecialType.System_DateTime } => New(KnownType.DateTime),
             { ContainingNamespace.Name: "System", Name: "DateTimeOffset" } => New(KnownType.DateTimeOffset),
             { ContainingNamespace.Name: "System", Name: "DateOnly" } => New(KnownType.DateOnly),
             { ContainingNamespace.Name: "System", Name: "TimeOnly" } => New(KnownType.TimeOnly),
