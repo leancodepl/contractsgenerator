@@ -16,7 +16,7 @@ public class ExternalTypeCheck : BaseAnalyzer
 
     public override IEnumerable<AnalyzeError> AnalyzeInternalTypeRef(AnalyzerContext context, TypeRef typeRef, TypeRef.Types.Internal i)
     {
-        if (knownTypes.Contains(i.Name))
+        if (knownTypes.Contains(i.Name) || InvalidTypeCheck.InvalidTypes.ContainsKey(i.Name))
         {
             return base.AnalyzeInternalTypeRef(context, typeRef, i);
         }
