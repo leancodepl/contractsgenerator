@@ -14,11 +14,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Operation` type,
 - Basic docs,
 - Add `dotnet contracts-generate` global tool,
-- Allow running the generator in check-only mode.
+- Allow running the generator in check-only mode,
+- _Invalid type_ analyzer.
 
 ### Breaking changes
 
 - The generator depends on `LeanCode.Contracts` instead of `LeanCode.CQRS` package,
+- `Date`, `Time` and `DateTime` known-types are gone.
 
 ## [1.0.0]
 
