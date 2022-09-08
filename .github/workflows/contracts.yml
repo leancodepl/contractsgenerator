@@ -24,6 +24,8 @@ jobs:
           echo ::set-output name=version::${VERSION}
       - name: Checkout
         uses: actions/checkout@v2
+        with:
+          lfs: true
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v2.1.0
       - name: Restore
