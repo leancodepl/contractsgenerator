@@ -11,14 +11,18 @@ public interface IOptions
 {
     public const string StdoutMarker = "-";
 
-    [Option('o', "output", Required = true, MetaValue = "FILE", HelpText = "The output file path. Use `-` to write the resulting Protobuf file to `stdout`.")]
+    [Option('o', "output", MetaValue = "FILE", HelpText = "The output file path. Use `-` to write the resulting Protobuf file to `stdout`.", Group = "output")]
     public string OutputFile { get; set; }
+
+    [Option("check-only", HelpText = "Check the contracts only. Do not generate output.", Group = "output")]
+    public bool CheckOnly { get; set; }
 }
 
 [Verb("project", HelpText = "Generate contracts from C# project.")]
 public class ProjectOptions : IOptions
 {
     public string OutputFile { get; set; } = string.Empty;
+    public bool CheckOnly { get; set; }
 
     [Option("exclude-external-contracts-from-output", Required = false, HelpText = "Do not include contracts from referenced assemblies in the output. Analyzers will still run on the merged result.")]
     public bool ExcludeExternalContractsFromOutput { get; set; } = false;
@@ -31,6 +35,7 @@ public class ProjectOptions : IOptions
 public class FileOptions : IOptions
 {
     public string OutputFile { get; set; } = string.Empty;
+    public bool CheckOnly { get; set; }
 
     [Option('i', "input", Required = true, MetaValue = "FILE", HelpText = "Input file.")]
     public string InputFile { get; set; } = string.Empty;
@@ -40,6 +45,7 @@ public class FileOptions : IOptions
 public class PathOptions : IOptions
 {
     public string OutputFile { get; set; } = string.Empty;
+    public bool CheckOnly { get; set; }
 
     [Option('i', "include", Required = true, MetaValue = "PATTERN", HelpText = "Include files from glob pattern. To pass multiple patterns, separate them with space.")]
     public IEnumerable<string> Include { get; set; } = Array.Empty<string>();
@@ -112,13 +118,13 @@ internal class Program
     private static async Task<int> HandleProjectAsync(ProjectOptions p)
     {
         var (compiled, external) = await ContractsCompiler.CompileProjectsAsync(p.ProjectFiles);
-        return await WriteAsync(compiled, external, p.ExcludeExternalContractsFromOutput, p.OutputFile);
+        return await WriteAsync(p, compiled, external, p.ExcludeExternalContractsFromOutput, p.OutputFile);
     }
 
     private static async Task<int> HandleFileAsync(FileOptions f)
     {
         var contracts = await ContractsCompiler.CompileFileAsync(f.InputFile);
-        return await WriteAsync(contracts, f.OutputFile);
+        return await WriteAsync(f, contracts, f.OutputFile);
     }
 
     private static async Task<int> HandlePathAsync(PathOptions p)
@@ -128,25 +134,29 @@ internal class Program
         matcher.AddExcludePatterns(p.Exclude);
         var directory = new DirectoryInfo(p.BaseDirectory ?? Directory.GetCurrentDirectory());
         var contracts = await ContractsCompiler.CompileGlobAsync(matcher, directory);
-        return await WriteAsync(contracts, p.OutputFile);
+        return await WriteAsync(p, contracts, p.OutputFile);
     }
 
-    private static async Task<int> WriteAsync(CompiledContracts contracts, string output)
+    private static async Task<int> WriteAsync(IOptions opts, CompiledContracts contracts, string output)
     {
         var generated = new Generation.ContractsGenerator(contracts).Generate();
-        if (output == IOptions.StdoutMarker)
+        if (!opts.CheckOnly)
         {
-            await WriteToStdoutAsync(generated);
-        }
-        else
-        {
-            await WriteToFileAsync(generated, output);
+            if (output == IOptions.StdoutMarker)
+            {
+                await WriteToStdoutAsync(generated);
+            }
+            else
+            {
+                await WriteToFileAsync(generated, output);
+            }
         }
 
         return 0;
     }
 
     private static async Task<int> WriteAsync(
+        IOptions opts,
         CompiledContracts contracts,
         List<Export> externalContracts,
         bool excludeExternalContractsFromOutput,
@@ -155,13 +165,16 @@ internal class Program
         var generated = new Generation.ContractsGenerator(contracts)
             .Generate(externalContracts, excludeExternalContractsFromOutput);
 
-        if (output == IOptions.StdoutMarker)
+        if (!opts.CheckOnly)
         {
-            await WriteToStdoutAsync(generated);
-        }
-        else
-        {
-            await WriteToFileAsync(generated, output);
+            if (output == IOptions.StdoutMarker)
+            {
+                await WriteToStdoutAsync(generated);
+            }
+            else
+            {
+                await WriteToFileAsync(generated, output);
+            }
         }
 
         return 0;
