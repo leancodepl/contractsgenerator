@@ -7,6 +7,12 @@
     <RootNamespace>LeanCode.ContractsGenerator</RootNamespace>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <PackageID Condition="'$(PackAsGlobalTool)' == 'true'">dotnet-contracts-generate</PackageID>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>dotnet-contracts-generate</ToolCommandName>
+  </PropertyGroup>
+
   <ItemGroup>
     <Protobuf Include="../../contracts.proto" GrpcServices="None" />
   </ItemGroup>
