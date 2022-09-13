@@ -8,6 +8,7 @@ strongly-typed contracts & clients in a number of languages based on plain old C
 1. [Tutorial](./tutorial.md),
 2. [Types](./types.md),
 3. [Serialization](./serialization.md),
-4. [Guidelines](./guidelines.md).
+4. [Guidelines](./guidelines.md),
+5. [Dates in contracts](./dates.md).
 
 [CQRS-like API]: https://github.com/leancodepl/corelibrary/blob/v6.1/docs/basics/02_cqrs.md

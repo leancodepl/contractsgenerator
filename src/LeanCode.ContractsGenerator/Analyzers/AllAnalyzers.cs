@@ -8,6 +8,7 @@ public class AllAnalyzers : IAnalyzer
         new KnownTypeCheck(),
         new ErrorCodesUniqueness(),
         new ExternalTypeCheck(),
+        new InvalidTypeCheck(),
     };
 
     public IEnumerable<AnalyzeError> Analyze(Export export)

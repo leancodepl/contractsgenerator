@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using LeanCode.ContractsGenerator.Generation;
 using Xunit;
 
@@ -97,6 +98,13 @@ public static class ExampleBasedAsserts
     public static AssertedErrors WithError(this AssertedErrors errors, string code, string path)
     {
         Assert.Contains(errors.Errors, e => e.Code == code && e.Context.Path == path);
+        return errors;
+    }
+
+    public static AssertedErrors WithError(this AssertedErrors errors, string code, string path, string messagePattern)
+    {
+        var regex = new Regex(messagePattern);
+        Assert.Contains(errors.Errors, e => e.Code == code && e.Context.Path == path && regex.IsMatch(e.Message));
         return errors;
     }
 
