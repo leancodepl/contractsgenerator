@@ -111,6 +111,7 @@ message EnumValue {
   string name = 1;
   int64 value = 2;
   string comment = 3;
+  repeated AttributeRef attributes = 4;
 }
 
 message ErrorCode {
