@@ -101,6 +101,6 @@ Serialized to a JSON object with the following fields:
 
 Serialized to a JSON string as base64 encoded bytes.
 
-### `KnownType::Attribute`, `KnownType::AuthorizeWhenAttribute`, `KnownType::AuthorizeWhenHasAnyOfAttribute`, `KnownType::QueryCacheAttribute`
+### `KnownType::Attribute`, `KnownType::AuthorizeWhenAttribute`, `KnownType::AuthorizeWhenHasAnyOfAttribute`
 
 Not serializable. It is assumed that attributes do not end up in payloads.

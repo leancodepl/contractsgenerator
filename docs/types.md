@@ -42,4 +42,3 @@ The generator supports a number of .NET types that can be freely used in the con
 5. [`Binary`](../src/LeanCode.Contracts/Binary.cs),
 6. [`AuthorizeWhenAttribute`](../src/LeanCode.Contracts/Security/AuthorizeWhenAttribute.cs)
 7. [`AuthorizeWhenHasAnyOfAttribute`](../src/LeanCode.Contracts/Security/AuthorizeWhenHasAnyOfAttribute.cs)
-8. [`QueryCacheAttribute`](../src/LeanCode.Contracts/QueryCacheAttribute.cs)

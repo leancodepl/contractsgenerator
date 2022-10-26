@@ -15,7 +15,6 @@ public sealed class ContractTypes
 
     private HashSet<INamedTypeSymbol> AuthorizeWhenAttribute { get; }
     private HashSet<INamedTypeSymbol> AuthorizeWhenHasAnyOfAttribute { get; }
-    private HashSet<INamedTypeSymbol> QueryCacheAttribute { get; }
 
     private HashSet<INamedTypeSymbol> ExcludeFromContractsGenerationAttribute { get; }
 
@@ -32,7 +31,6 @@ public sealed class ContractTypes
 
         AuthorizeWhenAttribute = GetTypeSymbols<AuthorizeWhenAttribute>(compilations);
         AuthorizeWhenHasAnyOfAttribute = GetTypeSymbols<AuthorizeWhenHasAnyOfAttribute>(compilations);
-        QueryCacheAttribute = GetTypeSymbols<QueryCacheAttribute>(compilations);
         ExcludeFromContractsGenerationAttribute = GetTypeSymbols<ExcludeFromContractsGenerationAttribute>(compilations);
         Attribute = GetTypeSymbols<Attribute>(compilations);
         AttributeUsageAttribute = GetTypeSymbols<AttributeUsageAttribute>(compilations);
@@ -154,9 +152,6 @@ public sealed class ContractTypes
 
     public bool IsAuthorizeWhenHasAnyOfType(ITypeSymbol i) =>
         AuthorizeWhenHasAnyOfAttribute.Contains(i);
-
-    public bool IsQueryCacheType(ITypeSymbol i) =>
-        QueryCacheAttribute.Contains(i);
 
     public bool IsExcludeFromContractsGenerationType(ITypeSymbol? i) =>
         ExcludeFromContractsGenerationAttribute.Contains(i);
