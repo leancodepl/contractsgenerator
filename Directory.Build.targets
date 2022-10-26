@@ -2,13 +2,13 @@
 
   <PropertyGroup>
     <ExtensionsVersion>6.0.0</ExtensionsVersion>
-    <MicrosoftBuildVersion>17.3.1</MicrosoftBuildVersion>
+    <MicrosoftBuildVersion>17.3.2</MicrosoftBuildVersion>
     <RoslynVersion>4.2.0</RoslynVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Update="Google.Protobuf" Version="3.21.5" />
-    <PackageReference Update="Grpc.Tools" Version="2.48.1" />
+    <PackageReference Update="Google.Protobuf" Version="3.21.8" />
+    <PackageReference Update="Grpc.Tools" Version="2.50.0" />
 
     <PackageReference Update="CommandLineParser" Version="2.9.1" />
 
@@ -35,7 +35,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="17.3.1" />
+    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="17.3.2" />
     <PackageReference Update="xunit.analyzers" Version="1.0.0" />
     <PackageReference Update="xunit.runner.visualstudio" Version="2.4.5" />
     <PackageReference Update="xunit" Version="2.4.2" />
