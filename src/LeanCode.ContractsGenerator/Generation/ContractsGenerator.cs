@@ -226,14 +226,16 @@ public class ContractsGenerator
         return res;
     }
 
-    private static EnumValue ToEnumValue(IFieldSymbol f)
+    private EnumValue ToEnumValue(IFieldSymbol f)
     {
-        return new EnumValue()
+        var res = new EnumValue
         {
             Name = f.Name,
             Value = Convert.ToInt64(f.ConstantValue, CultureInfo.InvariantCulture),
             Comment = f.GetComments(),
         };
+        GetAttributes(f, res.Attributes);
+        return res;
     }
 
     private void GetAttributes(ISymbol symbol, RepeatedField<AttributeRef> output)
