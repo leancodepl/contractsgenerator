@@ -44,7 +44,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="LeanCode.CodeAnalysis" Version="6.1.1614" PrivateAssets="all" />
+    <PackageReference Include="LeanCode.CodeAnalysis" Version="6.1.1621" PrivateAssets="all" />
   </ItemGroup>
 
 </Project>
