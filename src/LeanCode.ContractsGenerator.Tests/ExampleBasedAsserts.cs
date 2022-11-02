@@ -132,12 +132,12 @@ public static class ExampleBasedAsserts
         return stmt;
     }
 
-    public static AssertedEnum WithMember(this AssertedEnum stmt, string name, long value, string comment = "")
+    public static AssertedEnumMember WithMember(this AssertedEnum stmt, string name, long value, string comment = "")
     {
         var c = Assert.Single(stmt.Statement.Enum.Members, c => c.Name == name);
         Assert.Equal(value, c.Value);
         Assert.Equal(comment, c.Comment);
-        return stmt;
+        return new(stmt.Export, stmt.Statement, c);
     }
 
     public static T ThatExtends<T>(this T stmt, TypeRef typeRef)
@@ -207,6 +207,14 @@ public static class ExampleBasedAsserts
         return prop;
     }
 
+    public static AssertedEnumMember WithAttribute(this AssertedEnumMember member, string name, params AttributeArgument[] args)
+    {
+        var attr = Assert.Single(member.Value.Attributes, a => a.AttributeName == name);
+        Assert.Equal(Positional(args), Positional(attr.Argument));
+        Assert.Equal(Named(args), Named(attr.Argument));
+        return member;
+    }
+
     public static T WithAttribute<T>(this T stmt, string name, params AttributeArgument[] args)
         where T : AssertedStatement
     {
@@ -244,7 +252,7 @@ public record AssertedOperation(Export Export, Statement Statement, TypeDescript
 public record AssertedDto(Export Export, Statement Statement, TypeDescriptor Descriptor) : AssertedType(Export, Statement, Descriptor);
 [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1711", Justification = "We don't care.")]
 public record AssertedEnum(Export Export, Statement Statement) : AssertedStatement(Export, Statement);
-
+public record AssertedEnumMember(Export Export, Statement Statement, EnumValue Value) : AssertedEnum(Export, Statement);
 public record AssertedProperty(PropertyRef Property);
 
 public record AssertedErrors(IReadOnlyList<AnalyzeError> Errors);

@@ -28,6 +28,18 @@ public class Attributes
     }
 
     [Fact]
+    public void Attributes_on_enums_is_preserved()
+    {
+        "attributes/enum.cs"
+            .Compiles()
+            .WithEnum("EnumDTO")
+                .WithAttribute("System.ObsoleteAttribute", Positional(0, "OnEnum"))
+                .WithMember("A", 0)
+                .WithMember("B", 1)
+                    .WithAttribute("System.ObsoleteAttribute", Positional(0, "OnMember"));
+    }
+
+    [Fact]
     public void Named_arguments_are_preserved_along_custom_attributes()
     {
         "attributes/custom.cs"
