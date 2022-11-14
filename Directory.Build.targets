@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <ExtensionsVersion>6.0.0</ExtensionsVersion>
-    <MicrosoftBuildVersion>17.3.2</MicrosoftBuildVersion>
+    <MicrosoftBuildVersion>17.4.0</MicrosoftBuildVersion>
     <RoslynVersion>4.2.0</RoslynVersion>
   </PropertyGroup>
 
