@@ -1,7 +1,7 @@
 <Project>
 
   <PropertyGroup>
-    <ExtensionsVersion>6.0.0</ExtensionsVersion>
+    <ExtensionsVersion>7.0.0</ExtensionsVersion>
     <MicrosoftBuildVersion>17.3.2</MicrosoftBuildVersion>
     <RoslynVersion>4.2.0</RoslynVersion>
   </PropertyGroup>
