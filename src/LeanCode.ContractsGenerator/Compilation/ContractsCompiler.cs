@@ -31,11 +31,9 @@ public static class ContractsCompiler
         "System.Runtime.Reference",
         "System.Runtime.Extensions.Reference",
     });
-#else
+    public static readonly ImmutableHashSet<string> DefaultAssemblyNames = ImmutableHashSet<string>.Empty;
+#elif NET7_0
     public static readonly ImmutableHashSet<string> ReferenceAssemblyNames = ImmutableHashSet<string>.Empty;
-#endif
-
-#if NET7_0
     public static readonly ImmutableHashSet<string> DefaultAssemblyNames = ImmutableHashSet.CreateRange(new string[]
     {
         "System.Collections",
@@ -45,7 +43,7 @@ public static class ContractsCompiler
         "System.Runtime.Extensions",
     });
 #else
-    public static readonly ImmutableHashSet<string> DefaultAssemblyNames = ImmutableHashSet<string>.Empty;
+#error TargetFramework property mismatch between project and code.
 #endif
 
     public static readonly ImmutableHashSet<string> LeanCodeAssemblyNames = ImmutableHashSet.CreateRange(new[]
