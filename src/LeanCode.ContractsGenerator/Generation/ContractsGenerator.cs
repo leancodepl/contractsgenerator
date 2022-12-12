@@ -173,6 +173,7 @@ public class ContractsGenerator
     {
         return symbol is null ||
             symbol.SpecialType == SpecialType.System_Object ||
+            symbol.SpecialType == SpecialType.System_ValueType ||
             symbol.SpecialType == SpecialType.System_Enum ||
             ErrorCodes.IsErrorCode(symbol) ||
             contracts.Types.IsAttributeUsageType(symbol);
