@@ -27,7 +27,7 @@ jobs:
         with:
           lfs: true
       - name: Setup .NET SDK
-        uses: actions/setup-dotnet@v2.1.0
+        uses: actions/setup-dotnet@v3
       - name: Restore
         working-directory: src/LeanCode.Contracts
         run: dotnet restore
