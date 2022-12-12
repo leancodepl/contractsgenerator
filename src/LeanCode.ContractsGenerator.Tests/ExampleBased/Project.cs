@@ -90,7 +90,7 @@ public class Project
         "project/packagereference/packagereference.csproj"
             .ProjectCompiles()
             .WithDto("PackageReference.OrderDTO")
-                .WithProperty("Id", Known(KnownType.Int64));
+                .WithProperty("Id", Known(KnownType.String));
     }
 
     [Fact]

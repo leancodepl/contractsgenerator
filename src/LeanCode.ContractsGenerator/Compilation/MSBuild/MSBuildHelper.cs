@@ -16,6 +16,27 @@ public static class MSBuildHelper
 {
     private static readonly string[] RestoreTarget = new string[] { "Restore" };
 
+    private static readonly ImmutableDictionary<string, string> GlobalProperties = ImmutableDictionary.CreateRange(new Dictionary<string, string>
+    {
+        // This property ensures that XAML files will be compiled in the current AppDomain
+        // rather than a separate one. Any tasks isolated in AppDomains or tasks that create
+        // AppDomains will likely not work due to https://github.com/Microsoft/MSBuildLocator/issues/16.
+        ["AlwaysCompileMarkupFilesInSeparateDomain"] = bool.FalseString,
+
+        // Use the preview language version to force the full set of available analyzers to run on the project.
+        ["LangVersion"] = "preview",
+
+#if NET6_0
+        ["TargetFrameworks"] = "net6.0",
+        ["TargetFramework"] = "net6.0",
+#elif NET7_0
+        ["TargetFrameworks"] = "net7.0",
+        ["TargetFramework"] = "net7.0",
+#else
+#error Unsupported .NET version
+#endif
+    });
+
     static MSBuildHelper()
     {
         // QueryVisualStudioInstances returns Visual Studio installations on .NET Framework, and .NET Core SDK
@@ -36,34 +57,18 @@ public static class MSBuildHelper
 
     public static MSBuildWorkspace CreateWorkspace()
     {
-        return MSBuildWorkspace
-            .Create(new Dictionary<string, string>
-            {
-                // This property ensures that XAML files will be compiled in the current AppDomain
-                // rather than a separate one. Any tasks isolated in AppDomains or tasks that create
-                // AppDomains will likely not work due to https://github.com/Microsoft/MSBuildLocator/issues/16.
-                ["AlwaysCompileMarkupFilesInSeparateDomain"] = bool.FalseString,
-
-                // Use the preview language version to force the full set of available analyzers to run on the project.
-                ["LangVersion"] = "preview",
-
-                ["TargetFrameworks"] = "net6.0",
-                ["TargetFramework"] = "net6.0",
-            });
+        return MSBuildWorkspace.Create(GlobalProperties);
     }
 
     public static int RestoreProjects(
-        IReadOnlyCollection<string> projectPaths,
-        IDictionary<string, string> globalProperties = null)
+        IReadOnlyCollection<string> projectPaths)
     {
         if (projectPaths.Count == 0)
         {
             return 0;
         }
 
-        globalProperties ??= ImmutableDictionary<string, string>.Empty;
-
-        using var projectCollection = new ProjectCollection(globalProperties);
+        using var projectCollection = new ProjectCollection(GlobalProperties);
         var projects = new List<Project>(projectPaths.Count);
 
         foreach (var p in projectPaths)
@@ -94,6 +99,7 @@ public static class MSBuildHelper
 
                 if (!projectInstance.Targets.ContainsKey("_IsProjectRestoreSupported"))
                 {
+                    System.Console.WriteLine("No _IsProjectRestoreSupported");
                     continue;
                 }
 
