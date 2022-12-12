@@ -33,8 +33,7 @@ public static class ContractsCompiler
 
     public static readonly ImmutableHashSet<string> LeanCodeAssemblyNames = ImmutableHashSet.CreateRange(new[]
     {
-        "LeanCode.Contracts",
-        "LeanCode.Time",
+        "LeanCode.Contracts"
     });
 
     private static bool IsWantedReferenceAssembly(CompilationLibrary cl)

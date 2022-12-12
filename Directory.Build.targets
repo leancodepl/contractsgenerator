@@ -12,8 +12,6 @@
 
     <PackageReference Update="CommandLineParser" Version="2.9.1" />
 
-    <PackageReference Update="LeanCode.Time" Version="6.0.1327" />
-
     <PackageReference Update="Microsoft.Build" Version="$(MicrosoftBuildVersion)" />
     <PackageReference Update="Microsoft.Build.Framework" Version="$(MicrosoftBuildVersion)" />
     <PackageReference Update="Microsoft.Build.Locator" Version="1.5.5" />
