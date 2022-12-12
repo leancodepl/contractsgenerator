@@ -1,35 +1,44 @@
 <Project>
 
-  <PropertyGroup>
-    <ExtensionsVersion>6.0.0</ExtensionsVersion>
-    <MicrosoftBuildVersion>17.3.2</MicrosoftBuildVersion>
-    <RoslynVersion>4.2.0</RoslynVersion>
-  </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Update="Google.Protobuf" Version="3.21.11" />
     <PackageReference Update="Grpc.Tools" Version="2.51.0" />
-
     <PackageReference Update="CommandLineParser" Version="2.9.1" />
+    <PackageReference Update="Microsoft.SourceLink.GitHub" Version="1.1.1" />
+  </ItemGroup>
 
-    <PackageReference Update="Microsoft.Build" Version="$(MicrosoftBuildVersion)" />
-    <PackageReference Update="Microsoft.Build.Framework" Version="$(MicrosoftBuildVersion)" />
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
+    <PackageReference Update="Microsoft.Build" Version="17.3.2" />
+    <PackageReference Update="Microsoft.Build.Framework" Version="17.3.2" />
     <PackageReference Update="Microsoft.Build.Locator" Version="1.5.5" />
 
-    <PackageReference Update="Microsoft.CodeAnalysis.CSharp" Version="$(RoslynVersion)" />
-    <PackageReference Update="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="$(RoslynVersion)" />
-    <PackageReference Update="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="$(RoslynVersion)" />
+    <PackageReference Update="Microsoft.CodeAnalysis.CSharp" Version="4.2.0" />
+    <PackageReference Update="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.2.0" />
+    <PackageReference Update="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="4.2.0" />
 
-    <PackageReference Update="Microsoft.Extensions.DependencyModel" Version="$(ExtensionsVersion)" />
-    <PackageReference Update="Microsoft.Extensions.FileSystemGlobbing" Version="$(ExtensionsVersion)" />
+    <PackageReference Update="Microsoft.Extensions.DependencyModel" Version="6.0.0" />
+    <PackageReference Update="Microsoft.Extensions.FileSystemGlobbing" Version="6.0.0" />
+    <PackageReference Update="System.Reflection.MetadataLoadContext" Version="6.0.0" />
+  </ItemGroup>
 
-    <PackageReference Update="Microsoft.SourceLink.GitHub" Version="1.1.1" />
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net7.0' ">
+    <PackageReference Update="Microsoft.Build" Version="17.4.0" />
+    <PackageReference Update="Microsoft.Build.Framework" Version="17.4.0" />
+    <PackageReference Update="Microsoft.Build.Locator" Version="1.5.5" />
 
+    <PackageReference Update="Microsoft.CodeAnalysis.CSharp" Version="4.4.0" />
+    <PackageReference Update="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.4.0" />
+    <PackageReference Update="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="4.4.0" />
+
+    <PackageReference Update="Microsoft.Extensions.DependencyModel" Version="7.0.0" />
+    <PackageReference Update="Microsoft.Extensions.FileSystemGlobbing" Version="7.0.0" />
+    <PackageReference Update="System.Reflection.MetadataLoadContext" Version="7.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <!-- Use latest NuGet.Frameworks available at build time for tests
          to make sure we don't reference anything older than what current MSBuild uses -->
     <PackageReference Update="NuGet.Frameworks" Version="*" />
-
-    <PackageReference Update="System.Reflection.MetadataLoadContext" Version="$(ExtensionsVersion)" />
   </ItemGroup>
 
   <ItemGroup>
@@ -41,8 +50,12 @@
     <PackageReference Update="coverlet.collector" Version="3.2.0" />
   </ItemGroup>
 
-  <ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
     <PackageReference Include="LeanCode.CodeAnalysis" Version="6.1.1614" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net7.0' ">
+    <PackageReference Include="LeanCode.CodeAnalysis" Version="7.0.1659" PrivateAssets="all" />
   </ItemGroup>
 
 </Project>
