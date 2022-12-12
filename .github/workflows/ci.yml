@@ -61,7 +61,7 @@ jobs:
         run: |
           for file in artifacts/*.zip; do
             if [[ -f "$file" ]]; then
-              dir="${file/%.zip/}"
+              dir="${file%.zip}"
               mkdir -p "$dir"
               unzip -d "$dir" "$file"
             fi
