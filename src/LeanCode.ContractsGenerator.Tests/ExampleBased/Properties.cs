@@ -54,12 +54,21 @@ public class Properties
     }
 
     [Fact]
-    public void Properties_with_struct_types()
+    public void Properties_inside_struct_types()
     {
         "properties/struct.cs"
             .Compiles()
             .WithDto("DTO")
-                .WithProperty("A", TypeRefExtensions.Internal("Struct"))
-                .WithProperty("B", TypeRefExtensions.Internal("Struct").Nullable());
+                .WithProperty("A", Known(KnownType.Int32));
+    }
+
+    [Fact]
+    public void Properties_with_struct_types()
+    {
+        "properties/inner_struct.cs"
+            .Compiles()
+            .WithDto("DTO")
+                .WithProperty("A", TypeRefExtensions.Internal("InnerDTO"))
+                .WithProperty("B", TypeRefExtensions.Internal("InnerDTO").Nullable());
     }
 }

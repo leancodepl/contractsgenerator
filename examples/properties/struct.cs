@@ -1,7 +1,4 @@
-public class DTO
+public struct DTO
 {
-    Struct A { get; set; }
-    Struct? B { get; set; }
+    int A { get; set; }
 }
-
-public struct Struct {}

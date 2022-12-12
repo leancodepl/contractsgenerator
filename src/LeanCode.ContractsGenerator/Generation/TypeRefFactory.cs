@@ -85,7 +85,6 @@ public sealed class TypeRefFactory
             { ContainingNamespace.Name: "System", Name: "Guid" } => New(KnownType.Guid),
             { ContainingNamespace.Name: "System", Name: "Uri" } => New(KnownType.Uri),
             { ContainingNamespace.Name: "System", Name: "TimeSpan" } => New(KnownType.TimeSpan),
-            { ContainingNamespace.Name: "System", Name: "ValueType" } => New(KnownType.ValueType),
             { ContainingNamespace: { Name: "Contracts", ContainingNamespace.Name: "LeanCode" }, Name: "Binary" } => New(KnownType.Binary),
             { ContainingNamespace: { Name: "Contracts", ContainingNamespace.Name: "LeanCode" }, Name: "CommandResult" } =>
                 New(KnownType.CommandResult),

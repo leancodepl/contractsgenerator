@@ -56,7 +56,7 @@ public class Simple
         "simple/struct.cs"
             .Compiles()
             .WithSingle()
-            .Dto("Struct");
+            .Dto("DTO");
     }
 
     [Fact]

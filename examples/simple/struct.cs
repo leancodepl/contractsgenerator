@@ -1,1 +1,1 @@
-public struct Struct {}
+public struct DTO {}
