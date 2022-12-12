@@ -4,7 +4,7 @@
     <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
   </PropertyGroup>
 
-  <Target Name="BuildDependencies" BeforeTargets="Restore" Condition="'$(IsInnerBuild)' != 'true'">
+  <Target Name="BuildDependencies" BeforeTargets="Restore">
     <MSBuild Projects="../embedded/embedded.csproj" Properties="Configuration=Debug" Targets="Restore" />
     <MSBuild Projects="../embedded/embedded.csproj" Properties="Configuration=Debug" Targets="Build;Pack" />
   </Target>
