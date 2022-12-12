@@ -22,6 +22,7 @@ public static class ContractsCompiler
         "System.Threading.Tasks",
     });
 
+#if NET6_0
     public static readonly ImmutableHashSet<string> ReferenceAssemblyNames = ImmutableHashSet.CreateRange(new[]
     {
         "System.Collections.Reference",
@@ -30,11 +31,24 @@ public static class ContractsCompiler
         "System.Runtime.Reference",
         "System.Runtime.Extensions.Reference",
     });
+    public static readonly ImmutableHashSet<string> DefaultAssemblyNames = ImmutableHashSet<string>.Empty;
+#elif NET7_0
+    public static readonly ImmutableHashSet<string> ReferenceAssemblyNames = ImmutableHashSet<string>.Empty;
+    public static readonly ImmutableHashSet<string> DefaultAssemblyNames = ImmutableHashSet.CreateRange(new string[]
+    {
+        "System.Collections",
+        "System.Linq",
+        "System.Net.Http",
+        "System.Runtime",
+        "System.Runtime.Extensions",
+    });
+#else
+#error TargetFramework property mismatch between project and code.
+#endif
 
     public static readonly ImmutableHashSet<string> LeanCodeAssemblyNames = ImmutableHashSet.CreateRange(new[]
     {
         "LeanCode.Contracts",
-        "LeanCode.Time",
     });
 
     private static bool IsWantedReferenceAssembly(CompilationLibrary cl)
@@ -48,15 +62,20 @@ public static class ContractsCompiler
         return LeanCodeAssemblyNames.Contains(cl.Name, StringComparer.InvariantCultureIgnoreCase);
     }
 
+    private static bool IsWantedDefaultAssembly(CompilationLibrary cl)
+    {
+        return DefaultAssemblyNames.Contains(cl.Name, StringComparer.InvariantCultureIgnoreCase);
+    }
+
     private static readonly Assembly ExecutingAssembly = Assembly.GetExecutingAssembly();
 
     private static readonly AppBaseCompilationAssemblyResolver Resolver = new(
-        Path.GetDirectoryName(ExecutingAssembly.Location));
+        Path.GetDirectoryName(ExecutingAssembly.Location)!);
 
     public static readonly ImmutableList<PortableExecutableReference> DefaultAssemblies = DependencyContext
-        .Load(ExecutingAssembly)
+        .Load(ExecutingAssembly)!
         .CompileLibraries
-        .Where(cl => IsWantedReferenceAssembly(cl) || IsWantedLeanCodeAssembly(cl))
+        .Where(cl => IsWantedReferenceAssembly(cl) || IsWantedLeanCodeAssembly(cl) || IsWantedDefaultAssembly(cl))
         .SelectMany(cl => cl.ResolveReferencePaths(Resolver))
         .Select(path => MetadataReference.CreateFromFile(path))
         .ToImmutableList();

@@ -21,7 +21,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Breaking changes
 
 - The generator depends on `LeanCode.Contracts` instead of `LeanCode.CQRS` package,
-- `Date`, `Time` and `DateTime` known-types are gone.
+- `Date`, `Time` and `DateTime` known-types are gone,
+- The tool targets both .NET 6 and .NET 7 now.
 
 ## [1.0.0]
 
