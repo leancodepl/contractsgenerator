@@ -14,14 +14,6 @@ namespace LeanCode.ContractsGenerator.Compilation.MSBuild;
 
 public static class MSBuildHelper
 {
-    private const string FrameworkMoniker =
-#if NET6_0
-    "net6.0";
-#elif NET7_0
-    "net7.0";
-#else
-#error TargetFramework property mismatch between project and code.
-#endif
     private static readonly string[] RestoreTarget = new string[] { "Restore" };
 
     private static readonly ImmutableDictionary<string, string> GlobalProperties = ImmutableDictionary.CreateRange(new Dictionary<string, string>
@@ -33,9 +25,6 @@ public static class MSBuildHelper
 
         // Use the preview language version to force the full set of available analyzers to run on the project.
         ["LangVersion"] = "preview",
-
-        ["TargetFrameworks"] = FrameworkMoniker,
-        ["TargetFramework"] = FrameworkMoniker,
     });
 
     static MSBuildHelper()
@@ -100,7 +89,6 @@ public static class MSBuildHelper
 
                 if (!projectInstance.Targets.ContainsKey("_IsProjectRestoreSupported"))
                 {
-                    System.Console.WriteLine("No _IsProjectRestoreSupported");
                     continue;
                 }
 
