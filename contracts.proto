@@ -10,6 +10,7 @@ enum KnownType {
   Guid = 3;
   Uri = 4;
   Boolean = 5;
+  ValueType = 6;
   UInt8 = 100;
   Int8 = 101;
   Int16 = 102;

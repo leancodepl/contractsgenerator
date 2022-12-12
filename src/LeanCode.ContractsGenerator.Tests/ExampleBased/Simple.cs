@@ -51,6 +51,15 @@ public class Simple
     }
 
     [Fact]
+    public void Simple_Struct()
+    {
+        "simple/struct.cs"
+            .Compiles()
+            .WithSingle()
+            .Dto("Struct");
+    }
+
+    [Fact]
     public void Simple_Enum()
     {
         "simple/enum.cs"

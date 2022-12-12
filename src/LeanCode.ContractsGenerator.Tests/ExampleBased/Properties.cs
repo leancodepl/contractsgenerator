@@ -52,4 +52,14 @@ public class Properties
                 .WithProperty("C", Array(Known(KnownType.Binary)))
                 .WithProperty("D", Map(Known(KnownType.Binary), Known(KnownType.Binary)));
     }
+
+    [Fact]
+    public void Properties_with_struct_types()
+    {
+        "properties/struct.cs"
+            .Compiles()
+            .WithDto("DTO")
+                .WithProperty("A", TypeRefExtensions.Internal("Struct"))
+                .WithProperty("B", TypeRefExtensions.Internal("Struct").Nullable());
+    }
 }
