@@ -47,7 +47,7 @@
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
-    <PackageReference Include="LeanCode.CodeAnalysis" Version="6.1.1614" PrivateAssets="all" />
+    <PackageReference Include="LeanCode.CodeAnalysis" Version="7.0.1659" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net7.0' ">
