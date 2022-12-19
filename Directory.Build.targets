@@ -1,7 +1,7 @@
 <Project>
 
   <ItemGroup>
-    <PackageReference Update="Google.Protobuf" Version="3.21.11" />
+    <PackageReference Update="Google.Protobuf" Version="3.21.12" />
     <PackageReference Update="Grpc.Tools" Version="2.51.0" />
     <PackageReference Update="CommandLineParser" Version="2.9.1" />
     <PackageReference Update="Microsoft.SourceLink.GitHub" Version="1.1.1" />
