@@ -58,4 +58,19 @@ public class Attributes
             .WithCommand("A")
                 .WithAttribute("LeanCode.Contracts.Security.AllowUnauthorizedAttribute");
     }
+
+    [Fact]
+    public void AuthorizeWhen_attribute_is_correctly_propagated()
+    {
+        "attributes/authorize_when.cs"
+            .Compiles()
+            .WithCommand("A")
+                .WithAttribute("AuthorizeWhenCustomCtorAttribute")
+            .WithCommand("B")
+                .WithAttribute("AuthorizeWhenCustomGenericAttribute")
+            .WithDto("AuthorizeWhenCustomCtorAttribute")
+                .ThatExtends(Known(KnownType.AuthorizeWhenAttribute))
+            .WithDto("AuthorizeWhenCustomGenericAttribute")
+                .ThatExtends(Known(KnownType.AuthorizeWhenAttribute));
+    }
 }

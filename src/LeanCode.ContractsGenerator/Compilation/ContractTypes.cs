@@ -14,6 +14,7 @@ public sealed class ContractTypes
     private HashSet<INamedTypeSymbol> OperationType { get; }
 
     private HashSet<INamedTypeSymbol> AuthorizeWhenAttribute { get; }
+    private HashSet<INamedTypeSymbol> GenericAuthorizeWhenAttribute { get; }
     private HashSet<INamedTypeSymbol> AuthorizeWhenHasAnyOfAttribute { get; }
     private HashSet<INamedTypeSymbol> QueryCacheAttribute { get; }
 
@@ -31,6 +32,7 @@ public sealed class ContractTypes
         OperationType = GetUnboundTypeSymbols(compilations, typeof(IOperation<>));
 
         AuthorizeWhenAttribute = GetTypeSymbols<AuthorizeWhenAttribute>(compilations);
+        GenericAuthorizeWhenAttribute = GetUnboundTypeSymbols(compilations, typeof(AuthorizeWhenAttribute<>));
         AuthorizeWhenHasAnyOfAttribute = GetTypeSymbols<AuthorizeWhenHasAnyOfAttribute>(compilations);
         QueryCacheAttribute = GetTypeSymbols<QueryCacheAttribute>(compilations);
         ExcludeFromContractsGenerationAttribute = GetTypeSymbols<ExcludeFromContractsGenerationAttribute>(compilations);
@@ -150,7 +152,7 @@ public sealed class ContractTypes
         i is INamedTypeSymbol ns && ns.IsGenericType && OperationType.Contains(ns.ConstructUnboundGenericType());
 
     public bool IsAuthorizeWhenType(ITypeSymbol i) =>
-        AuthorizeWhenAttribute.Contains(i);
+        AuthorizeWhenAttribute.Contains(i) || (i is INamedTypeSymbol ns && ns.IsGenericType && GenericAuthorizeWhenAttribute.Contains(ns.ConstructUnboundGenericType()));
 
     public bool IsAuthorizeWhenHasAnyOfType(ITypeSymbol i) =>
         AuthorizeWhenHasAnyOfAttribute.Contains(i);
