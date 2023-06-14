@@ -24,6 +24,12 @@ public static class ExampleBasedAsserts
         return new(stmt.Export, Assert.Single(stmt.Export.Statements));
     }
 
+    public static AssertedExport WithStatements(this AssertedExport stmt, int count)
+    {
+        Assert.Equal(count, stmt.Export.Statements.Count);
+        return stmt;
+    }
+
     public static AssertedCommand WithCommand(this AssertedExport export, string name)
     {
         return export.With(name).Command(name);
@@ -155,6 +161,12 @@ public static class ExampleBasedAsserts
         Assert.Equal(value, c.Value);
         Assert.Equal(comment, c.Comment);
         return new(stmt.Export, stmt.Statement, c);
+    }
+
+    public static AssertedEnum WithoutMember(this AssertedEnum stmt, string name)
+    {
+        Assert.DoesNotContain(stmt.Statement.Enum.Members, c => c.Name == name);
+        return stmt;
     }
 
     public static T ThatExtends<T>(this T stmt, TypeRef typeRef)

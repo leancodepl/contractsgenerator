@@ -120,6 +120,7 @@ public class ContractsGenerator
                 result.Enum = new();
                 symbol.GetMembers()
                     .OfType<IFieldSymbol>()
+                    .Where(s => !IsExcluded(s))
                     .Select(ToEnumValue)
                     .SaveToRepeatedField(result.Enum.Members);
             }
