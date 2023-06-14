@@ -17,6 +17,13 @@ namespace Exclusions
         None = 0,
     }
 
+    public enum IncludedEnum
+    {
+        [ExcludeFromContractsGeneration]
+        ExcludedValue = 1,
+        IncludedValue = 0,
+    }
+
     public class IncludedDTO
     {
         [ExcludeFromContractsGeneration]

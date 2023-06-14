@@ -40,9 +40,16 @@ public class SupportedUseCases
     {
         "supported_use_cases/exclusions.cs"
             .Compiles()
-            .WithSingle()
-            .Dto("Exclusions.IncludedDTO")
+            .WithStatements(2)
+            .WithDto("Exclusions.IncludedDTO")
                 .WithProperty("IncludedProperty", Known(KnownType.Int32))
-                .WithoutProperty("ExcludedProperty");
+                .WithoutProperty("ExcludedProperty")
+            .WithEnum("Exclusions.IncludedEnum")
+                .WithMember("IncludedValue", 0)
+                .WithoutMember("ExcludedValue")
+            .Without("ExcludedEnum")
+            .Without("ExcludedStruct")
+            .Without("ExcludedClass")
+            .Without("IExcludedInterface");
     }
 }
