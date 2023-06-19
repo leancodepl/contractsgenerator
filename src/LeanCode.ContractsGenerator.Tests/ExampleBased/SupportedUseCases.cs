@@ -52,4 +52,14 @@ public class SupportedUseCases
             .Without("ExcludedClass")
             .Without("IExcludedInterface");
     }
+
+    [Fact]
+    public void Basic_LeanPipe_setup()
+    {
+        "supported_use_cases/leanpipe.cs"
+            .Compiles()
+            .WithDto("Notification")
+            .WithTopic("Topic")
+            .WithNotification(TypeRefExtensions.Internal("Notification"));
+    }
 }
