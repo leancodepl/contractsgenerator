@@ -115,6 +115,17 @@ public class ContractsGenerator
                     ReturnType = typeRef.From(contracts.Types.ExtractOperationResult(symbol)),
                 };
             }
+            else if (contracts.Types.IsTopic(symbol))
+            {
+                result.Topic = new()
+                {
+                    TypeDescriptor = MapTypeDescriptor(symbol),
+                };
+                contracts.Types
+                    .ExtractTopicNotifications(symbol)
+                    .Select(typeRef.From)
+                    .SaveToRepeatedField(result.Topic.Notifications);
+            }
             else if (symbol.TypeKind == TypeKind.Enum)
             {
                 result.Enum = new();

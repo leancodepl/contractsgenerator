@@ -95,6 +95,8 @@ public sealed class TypeRefFactory
                 New(KnownType.Command),
             _ when contracts.Types.IsOperationType(ts) =>
                 New(KnownType.Operation, From(contracts.Types.ExtractOperationResult(ts))),
+            _ when contracts.Types.IsTopicType(ts) =>
+                New(KnownType.Topic),
             _ when contracts.Types.IsAuthorizeWhenType(ts) =>
                 New(KnownType.AuthorizeWhenAttribute),
             _ when contracts.Types.IsAuthorizeWhenHasAnyOfType(ts) =>
