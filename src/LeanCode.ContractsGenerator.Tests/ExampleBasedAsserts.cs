@@ -45,6 +45,11 @@ public static class ExampleBasedAsserts
         return export.With(name).Operation(name);
     }
 
+    public static AssertedTopic WithTopic(this AssertedExport export, string name)
+    {
+        return export.With(name).Topic(name);
+    }
+
     public static AssertedDto WithDto(this AssertedExport export, string name)
     {
         return export.With(name).Dto(name);
@@ -74,6 +79,13 @@ public static class ExampleBasedAsserts
         Assert.NotNull(stmt.Statement.Operation);
         Assert.Equal(name, stmt.Statement.Name);
         return new(stmt.Export, stmt.Statement, stmt.Statement.Operation.TypeDescriptor);
+    }
+
+    public static AssertedTopic Topic(this AssertedStatement stmt, string name)
+    {
+        Assert.NotNull(stmt.Statement.Topic);
+        Assert.Equal(name, stmt.Statement.Name);
+        return new(stmt.Export, stmt.Statement, stmt.Statement.Topic.TypeDescriptor);
     }
 
     public static AssertedDto Dto(this AssertedStatement stmt, string name)
@@ -278,6 +290,7 @@ public record AssertedType(Export Export, Statement Statement, TypeDescriptor De
 public record AssertedCommand(Export Export, Statement Statement, TypeDescriptor Descriptor) : AssertedType(Export, Statement, Descriptor);
 public record AssertedQuery(Export Export, Statement Statement, TypeDescriptor Descriptor) : AssertedType(Export, Statement, Descriptor);
 public record AssertedOperation(Export Export, Statement Statement, TypeDescriptor Descriptor) : AssertedType(Export, Statement, Descriptor);
+public record AssertedTopic(Export Export, Statement Statement, TypeDescriptor Descriptor) : AssertedType(Export, Statement, Descriptor);
 public record AssertedDto(Export Export, Statement Statement, TypeDescriptor Descriptor) : AssertedType(Export, Statement, Descriptor);
 [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1711", Justification = "We don't care.")]
 public record AssertedEnum(Export Export, Statement Statement) : AssertedStatement(Export, Statement);
