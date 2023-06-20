@@ -30,8 +30,10 @@ public sealed class ProjectLoader : IDisposable
         foreach (var projectPath in projectPathsList)
         {
             if (msbuildWorkspace.CurrentSolution.Projects
-                .Where(p => p.FilePath is not null)
-                .Any(p => ResolveCanonicalPath(p.FilePath) == projectPath))
+                .Select(p => p.FilePath)
+                .OfType<string>()
+                .Select(ResolveCanonicalPath)
+                .Contains(projectPath))
             {
                 continue;
             }
