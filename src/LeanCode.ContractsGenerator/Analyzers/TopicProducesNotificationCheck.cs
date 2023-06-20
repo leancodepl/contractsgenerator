@@ -6,13 +6,9 @@ public class TopicProducesNotificationCheck : BaseAnalyzer
 
     public override IEnumerable<AnalyzeError> AnalyzeTopic(AnalyzerContext context, Statement stmt, Statement.Types.Topic topic)
     {
-        var errors = base.AnalyzeTopic(context, stmt, topic);
         if (topic.Notifications.Count == 0)
         {
-            errors = errors.Append(
-                new AnalyzeError(Code, $"Topic type `{stmt.Name}` doesn't produce any notification.", context));
+            yield return new AnalyzeError(Code, $"Topic type `{stmt.Name}` doesn't produce any notification.", context);
         }
-
-        return errors;
     }
 }
