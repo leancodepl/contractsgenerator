@@ -2,7 +2,7 @@ namespace LeanCode.ContractsGenerator.Analyzers;
 
 public class AllAnalyzers : IAnalyzer
 {
-    private static readonly IReadOnlyList<IAnalyzer> Analyzers = new IAnalyzer[]
+    private readonly IReadOnlyList<IAnalyzer> analyzers = new IAnalyzer[]
     {
         new InternalStructureCheck(),
         new KnownTypeCheck(),
@@ -13,6 +13,6 @@ public class AllAnalyzers : IAnalyzer
 
     public IEnumerable<AnalyzeError> Analyze(Export export)
     {
-        return Analyzers.SelectMany(a => a.Analyze(export));
+        return analyzers.SelectMany(a => a.Analyze(export));
     }
 }
