@@ -7,8 +7,7 @@ public class ExternalTypeCheck : BaseAnalyzer
     public const string Code = "CNTR0004";
 
     private ImmutableHashSet<string> knownTypes = ImmutableHashSet.Create(
-        "LeanCode.Contracts.IProduceNotification",
-        "LeanCode.Contracts.INotification");
+        "LeanCode.Contracts.IProduceNotification");
 
     public override IEnumerable<AnalyzeError> Analyze(Export export)
     {

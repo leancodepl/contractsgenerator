@@ -51,15 +51,6 @@ public class Simple
     }
 
     [Fact]
-    public void Simple_Notification()
-    {
-        "simple/notification.cs"
-            .Compiles()
-            .WithSingle()
-            .Dto("Notification");
-    }
-
-    [Fact]
     public void Simple_Topic()
     {
         "simple/topic.cs"

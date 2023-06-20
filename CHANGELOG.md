@@ -21,7 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Basic docs,
 - Enum members (`EnumValue`) have attributes,
 - Support for `struct` members,
-- `ITopic`, `INotification`, and `IProduceNotification<>` interfaces and their support in the generator.
+- `ITopic` and `IProduceNotification<>` interfaces and their support in the generator.
 
 #### Breaking changes
 
