@@ -6,12 +6,11 @@ public class ExternalTypeCheck : BaseAnalyzer
 {
     public const string Code = "CNTR0004";
 
-    private ImmutableHashSet<string> knownTypes = ImmutableHashSet.Create(
-        "LeanCode.Contracts.IProduceNotification");
+    private ImmutableHashSet<string> knownTypes = ImmutableHashSet<string>.Empty;
 
     public override IEnumerable<AnalyzeError> Analyze(Export export)
     {
-        knownTypes = knownTypes.Union(GatherTypes(export));
+        knownTypes = GatherTypes(export);
         return base.Analyze(export);
     }
 

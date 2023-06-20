@@ -188,6 +188,7 @@ public class ContractsGenerator
             symbol.SpecialType == SpecialType.System_ValueType ||
             symbol.SpecialType == SpecialType.System_Enum ||
             ErrorCodes.IsErrorCode(symbol) ||
+            contracts.Types.IsProduceNotificationType(symbol) ||
             contracts.Types.IsAttributeUsageType(symbol);
     }
 
