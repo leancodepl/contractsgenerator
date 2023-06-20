@@ -55,8 +55,9 @@ public class Simple
     {
         "simple/topic.cs"
             .Compiles()
-            .WithSingle()
-            .Topic("Topic");
+            .WithDto("Notification")
+            .WithTopic("Topic")
+            .WithNotification(TypeRefExtensions.Internal("Notification"));
     }
 
     [Fact]

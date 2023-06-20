@@ -56,10 +56,85 @@ public class SupportedUseCases
     [Fact]
     public void Basic_LeanPipe_setup()
     {
-        "supported_use_cases/leanpipe.cs"
+        "supported_use_cases/leanpipe/topic_with_parameter.cs"
             .Compiles()
             .WithDto("Notification")
+                .WithProperty("Num", Known(KnownType.Int32))
             .WithTopic("Topic")
-            .WithNotification(TypeRefExtensions.Internal("Notification"));
+                .WithProperty("Key", Known(KnownType.String))
+                .WithNotification(TypeRefExtensions.Internal("Notification"));
+    }
+
+    [Fact]
+    public void Topic_with_multiple_notifications()
+    {
+        "supported_use_cases/leanpipe/topic_with_multiple_notifications.cs"
+            .Compiles()
+            .WithDto("FirstNotification")
+            .WithDto("SecondNotification")
+            .WithTopic("Topic")
+                .WithNotification(TypeRefExtensions.Internal("FirstNotification"))
+                .WithNotification(TypeRefExtensions.Internal("SecondNotification"));
+    }
+
+    [Fact]
+    public void Topic_from_abstract_base_class()
+    {
+        "supported_use_cases/leanpipe/topic_from_abstract_base_class.cs"
+            .Compiles()
+            .WithDto("Notification")
+            .WithDto("TopicBase")
+            .WithTopic("Topic")
+                .ThatExtends(TypeRefExtensions.Internal("TopicBase"))
+                .WithNotification(TypeRefExtensions.Internal("Notification"));
+    }
+
+    [Fact]
+    public void Topic_from_concrete_base_class()
+    {
+        "supported_use_cases/leanpipe/topic_from_concrete_base_class.cs"
+            .Compiles()
+            .WithDto("Notification")
+            .WithTopic("TopicBase")
+                .WithNotification(TypeRefExtensions.Internal("Notification"))
+            .WithTopic("Topic")
+                .ThatExtends(TypeRefExtensions.Internal("TopicBase"))
+                .WithNotification(TypeRefExtensions.Internal("Notification"));
+    }
+
+    [Fact]
+    public void Topic_from_base_interface()
+    {
+        "supported_use_cases/leanpipe/topic_from_base_interface.cs"
+            .Compiles()
+            .WithDto("Notification")
+            .WithDto("ITopicBase")
+            .WithTopic("Topic")
+                .ThatExtends(TypeRefExtensions.Internal("ITopicBase"))
+                .WithNotification(TypeRefExtensions.Internal("Notification"));
+    }
+
+    [Fact]
+    public void Produce_notification_from_inherited_interface()
+    {
+        "supported_use_cases/leanpipe/produce_notification_from_inherited_interface.cs"
+            .Compiles()
+            .WithDto("Notification")
+            .WithDto("IProducer")
+            .WithTopic("Topic")
+                .ThatExtends(TypeRefExtensions.Internal("IProducer"))
+                .WithNotification(TypeRefExtensions.Internal("Notification"));
+    }
+
+    [Fact]
+    public void Produce_notification_from_inherited_type()
+    {
+        "supported_use_cases/leanpipe/produce_notification_from_inherited_type.cs"
+            .Compiles()
+            .WithDto("Notification")
+            .WithDto("Producer")
+            .WithTopic("Topic")
+                .ThatExtends(TypeRefExtensions.Internal("Producer"))
+                .WithNotification(TypeRefExtensions.Internal("Notification"));
     }
 }

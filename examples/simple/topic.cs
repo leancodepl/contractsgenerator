@@ -1,3 +1,5 @@
 using LeanCode.Contracts;
 
-public class Topic : ITopic { }
+public class Notification { }
+
+public class Topic : ITopic, IProduceNotification<Notification> { }
