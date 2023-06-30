@@ -1,6 +1,6 @@
 namespace LeanCode.Contracts;
 
-public class NotificationEnvelope
+public sealed class NotificationEnvelope
 {
     public Guid Id { get; private init; }
     public string TopicType { get; private init; } = default!;

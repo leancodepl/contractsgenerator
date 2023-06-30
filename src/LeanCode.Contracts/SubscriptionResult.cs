@@ -1,6 +1,6 @@
 namespace LeanCode.Contracts;
 
-public class SubscriptionResult
+public sealed class SubscriptionResult
 {
     public Guid SubscriptionId { get; private init; }
     public SubscriptionStatus Status { get; private init; }
