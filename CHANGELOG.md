@@ -42,6 +42,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## LeanCode.Contracts
 
+### 2.0.0 (unreleased)
+
+- Added LeanPipe contracts.
+
 ### 1.1.1
 
 #### Changed
