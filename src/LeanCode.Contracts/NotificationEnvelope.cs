@@ -8,7 +8,21 @@ public sealed class NotificationEnvelope
     public object Topic { get; private init; } = default!;
     public object Notification { get; private init; } = default!;
 
-    public static NotificationEnvelope Create<TTopic, TNotification>(TTopic topic, TNotification notification)
+    private NotificationEnvelope() { }
+
+    public NotificationEnvelope(Guid id, ITopic topic, object notification)
+    {
+        Id = id;
+        TopicType = topic.GetType().FullName!;
+        NotificationType = notification.GetType().FullName!;
+        Topic = topic;
+        Notification = notification;
+    }
+
+    public static NotificationEnvelope Create<TTopic, TNotification>(
+        TTopic topic,
+        TNotification notification
+    )
         where TTopic : ITopic, IProduceNotification<TNotification>
         where TNotification : notnull
     {
