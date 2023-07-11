@@ -99,8 +99,6 @@ public sealed class TypeRefFactory
                 New(KnownType.AuthorizeWhenAttribute),
             _ when contracts.Types.IsAuthorizeWhenHasAnyOfType(ts) =>
                 New(KnownType.AuthorizeWhenHasAnyOfAttribute),
-            _ when contracts.Types.IsQueryCacheType(ts) =>
-                New(KnownType.QueryCacheAttribute),
             _ when contracts.Types.IsAttributeType(ts) =>
                 New(KnownType.Attribute),
 
