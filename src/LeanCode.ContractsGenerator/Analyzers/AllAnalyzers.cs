@@ -9,7 +9,8 @@ public class AllAnalyzers : IAnalyzer
         new ErrorCodesUniqueness(),
         new ExternalTypeCheck(),
         new InvalidTypeCheck(),
-        new TopicProducesNotificationCheck(),
+        new TopicWithoutNotificationCheck(),
+        new TopicWithNullableNotificationCheck(),
     };
 
     public IEnumerable<AnalyzeError> Analyze(Export export)
