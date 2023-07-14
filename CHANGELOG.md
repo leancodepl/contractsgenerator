@@ -17,7 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Support for attributes on Enum members (`EnumValue`),
 - `dotnet contracts-generate` global tool,
 - Allow running the generator in check-only mode,
-- _Invalid type_ analyzer.
+- _Invalid type_ analyzer,
+- Basic docs.
 
 #### Breaking changes
 
