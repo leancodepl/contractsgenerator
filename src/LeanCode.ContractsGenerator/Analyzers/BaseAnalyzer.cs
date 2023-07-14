@@ -171,7 +171,7 @@ public class BaseAnalyzer : IAnalyzer
     public virtual IEnumerable<AnalyzeError> AnalyzeTypeDescriptorForTopic(AnalyzerContext context, TypeDescriptor descr)
     {
         return descr.Extends
-            .Where(e => e.Known is null || e.Known.Type != KnownType.Topic) // Exclude `Topic` type, as it will be checked by the `Return` check
+            .Where(e => e.Known is null || e.Known.Type != KnownType.Topic)
             .SelectMany(t => AnalyzeTypeRef(context.Extends(t), t))
             .Concat(descr.Properties.SelectMany(p => AnalyzePropertyRef(context.Descend(p), p)))
             .Concat(descr.Constants.SelectMany(c => AnalyzeConstantRef(context.Descend(c), c)));
