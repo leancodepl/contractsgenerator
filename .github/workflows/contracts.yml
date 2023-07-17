@@ -16,7 +16,7 @@ jobs:
         id: version
         run: |
           VERSION=${GITHUB_REF#refs/tags/contracts-v}
-          if ! [[ ${VERSION} =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9]+(\.[0-9]+)*)?$ ]]
+          if ! [[ ${VERSION} =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*)?$ ]]
           then
             echo 1>&2 "Invalid version: ${VERSION}"
             exit 1
