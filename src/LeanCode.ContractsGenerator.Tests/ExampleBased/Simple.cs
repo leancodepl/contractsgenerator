@@ -51,6 +51,16 @@ public class Simple
     }
 
     [Fact]
+    public void Simple_Topic()
+    {
+        "simple/topic.cs"
+            .Compiles()
+            .WithDto("Notification")
+            .WithTopic("Topic")
+            .WithNotification(TypeRefExtensions.Internal("Notification"));
+    }
+
+    [Fact]
     public void Simple_Struct()
     {
         "simple/struct.cs"

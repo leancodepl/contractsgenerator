@@ -29,7 +29,7 @@ jobs:
       - name: Restore
         run: dotnet restore
       - name: Build
-        run: dotnet build --no-restore --framework net${{ matrix.dotnet }}
+        run: dotnet build --no-restore
       - name: Test
         run: dotnet test --collect "XPlat Code Coverage" --settings coverlet.runsettings --logger trx --framework net${{ matrix.dotnet }}
       - name: Upload coverage to Codecov

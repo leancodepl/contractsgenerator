@@ -168,6 +168,15 @@ public class BaseAnalyzer : IAnalyzer
             .Concat(descr.Constants.SelectMany(c => AnalyzeConstantRef(context.Descend(c), c)));
     }
 
+    public virtual IEnumerable<AnalyzeError> AnalyzeTypeDescriptorForTopic(AnalyzerContext context, TypeDescriptor descr)
+    {
+        return descr.Extends
+            .Where(e => e.Known is null || e.Known.Type != KnownType.Topic)
+            .SelectMany(t => AnalyzeTypeRef(context.Extends(t), t))
+            .Concat(descr.Properties.SelectMany(p => AnalyzePropertyRef(context.Descend(p), p)))
+            .Concat(descr.Constants.SelectMany(c => AnalyzeConstantRef(context.Descend(c), c)));
+    }
+
     public virtual IEnumerable<AnalyzeError> AnalyzeDTO(AnalyzerContext context, Statement stmt, Statement.Types.DTO dto)
     {
         return AnalyzeTypeDescriptor(context, dto.TypeDescriptor);
@@ -196,6 +205,12 @@ public class BaseAnalyzer : IAnalyzer
             .Concat(AnalyzeTypeRef(context.Returns(operation.ReturnType), operation.ReturnType));
     }
 
+    public virtual IEnumerable<AnalyzeError> AnalyzeTopic(AnalyzerContext context, Statement stmt, Statement.Types.Topic topic)
+    {
+        return AnalyzeTypeDescriptorForTopic(context, topic.TypeDescriptor)
+            .Concat(topic.Notifications.SelectMany(n => AnalyzeTypeRef(context.Returns(n), n)));
+    }
+
     public virtual IEnumerable<AnalyzeError> AnalyzeStatement(AnalyzerContext context, Statement stmt)
     {
         return AnalyzeInner(context, stmt)
@@ -222,6 +237,10 @@ public class BaseAnalyzer : IAnalyzer
             else if (stmt.Operation is Statement.Types.Operation op)
             {
                 return AnalyzeOperation(context, stmt, op);
+            }
+            else if (stmt.Topic is Statement.Types.Topic topic)
+            {
+                return AnalyzeTopic(context, stmt, topic);
             }
             else
             {

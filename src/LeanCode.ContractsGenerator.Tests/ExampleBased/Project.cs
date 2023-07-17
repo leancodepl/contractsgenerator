@@ -25,15 +25,22 @@ public class Project
         "project/aggregated/Combined/Combined.csproj"
             .ProjectCompiles()
             .WithCommand("A.Command")
-            .WithQuery("B.Query");
+            .WithQuery("B.Query")
+            .WithTopic("C.Topic")
+                .WithNotification(TypeRefExtensions.Internal("C.Notification"));
     }
 
     [Fact]
     public void Multiple_separate_projects_compile()
     {
-        ProjectsCompile("project/aggregated/A/A.csproj", "project/aggregated/B/B.csproj")
+        ProjectsCompile(
+            "project/aggregated/A/A.csproj",
+            "project/aggregated/B/B.csproj",
+            "project/aggregated/C/C.csproj")
             .WithCommand("A.Command")
-            .WithQuery("B.Query");
+            .WithQuery("B.Query")
+            .WithTopic("C.Topic")
+                .WithNotification(TypeRefExtensions.Internal("C.Notification"));
     }
 
     [Fact]
@@ -53,16 +60,22 @@ public class Project
         ProjectsCompile(
             "project/aggregated/A/A.csproj",
             "project/aggregated/B/B.csproj",
+            "project/aggregated/C/C.csproj",
             "project/aggregated/Combined/Combined.csproj")
             .WithCommand("A.Command")
-            .WithQuery("B.Query");
+            .WithQuery("B.Query")
+            .WithTopic("C.Topic")
+                .WithNotification(TypeRefExtensions.Internal("C.Notification"));
 
         ProjectsCompile(
             "project/aggregated/Combined/Combined.csproj",
             "project/aggregated/A/A.csproj",
-            "project/aggregated/B/B.csproj")
+            "project/aggregated/B/B.csproj",
+            "project/aggregated/C/C.csproj")
             .WithCommand("A.Command")
-            .WithQuery("B.Query");
+            .WithQuery("B.Query")
+            .WithTopic("C.Topic")
+                .WithNotification(TypeRefExtensions.Internal("C.Notification"));
     }
 
     [Fact]

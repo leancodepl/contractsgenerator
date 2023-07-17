@@ -48,7 +48,8 @@ public class InternalStructureCheck : BaseAnalyzer
             stmt.Enum is null &&
             stmt.Query is null &&
             stmt.Command is null &&
-            stmt.Operation is null)
+            stmt.Operation is null &&
+            stmt.Topic is null)
         {
             yield return new(Code, $"`{nameof(Statement)}` type is unknown: {stmt}.", context);
         }
