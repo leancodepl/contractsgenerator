@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## LeanCode.ContractsGenerator
 
+### 3.0.0 (unreleased)
+
+#### Added
+
+- `ITopic` and `IProduceNotification<>` interfaces and their support in the generator.
+
+#### Breaking changes
+
+- Added `Topic` to the content of the `Statement` message.
+
 ### [2.0.0]
 
 #### Added
