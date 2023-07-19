@@ -8,7 +8,7 @@
 
   <Target Name="PackDependencies" BeforeTargets="Build" Condition="'$(IsInnerBuild)' != 'true'">
     <MSBuild Projects="../LeanCode.Contracts/LeanCode.Contracts.csproj" Properties="Configuration=Debug" Targets="Restore" />
-    <MSBuild Projects="../LeanCode.Contracts/LeanCode.Contracts.csproj" Properties="Configuration=Debug" Targets="Build;Pack" />
+    <MSBuild Projects="../LeanCode.Contracts/LeanCode.Contracts.csproj" Targets="Build;Pack" />
   </Target>
 
   <ItemGroup>
