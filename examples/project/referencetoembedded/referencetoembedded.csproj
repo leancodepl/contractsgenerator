@@ -10,7 +10,7 @@
   </Target>
 
   <ItemGroup>
-    <PackageReference Include="embedded" Version="0.0.1" />
+    <PackageReference Include="embedded" Version="$(Version)" />
   </ItemGroup>
 
 </Project>
