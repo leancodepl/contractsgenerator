@@ -24,7 +24,7 @@ public sealed class NotificationEnvelope
         TNotification notification
     )
         where TTopic : ITopic, IProduceNotification<TNotification>
-        where TNotification : notnull
+        where TNotification : class
     {
         return new()
         {
