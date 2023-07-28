@@ -25,7 +25,7 @@ public class Simple
                 .WithReturnType(Known(KnownType.Int32))
                 .ThatExtends(
                     Known(KnownType.Query)
-                        .WithArgument(Known(KnownType.Int32)));
+                        .WithArguments(Known(KnownType.Int32)));
     }
 
     [Fact]
@@ -38,7 +38,7 @@ public class Simple
                 .WithReturnType(Known(KnownType.Int32))
                 .ThatExtends(
                     Known(KnownType.Operation)
-                        .WithArgument(Known(KnownType.Int32)));
+                        .WithArguments(Known(KnownType.Int32)));
     }
 
     [Fact]
@@ -57,7 +57,9 @@ public class Simple
             .Compiles()
             .WithDto("Notification")
             .WithTopic("Topic")
-            .WithNotification(TypeRefExtensions.Internal("Notification"));
+            .WithNotification(NotificationTypeRefExtensions.WithTag(
+                TypeRefExtensions.Internal("Notification"),
+                "Notification"));
     }
 
     [Fact]

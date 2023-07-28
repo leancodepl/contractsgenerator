@@ -62,7 +62,10 @@ public class SupportedUseCases
                 .WithProperty("Num", Known(KnownType.Int32))
             .WithTopic("Topic")
                 .WithProperty("Key", Known(KnownType.String))
-                .WithNotification(TypeRefExtensions.Internal("Notification"));
+                .WithNotification(
+                    NotificationTypeRefExtensions.WithTag(
+                        TypeRefExtensions.Internal("Notification"),
+                        "Notification"));
     }
 
     [Fact]
@@ -73,8 +76,14 @@ public class SupportedUseCases
             .WithDto("FirstNotification")
             .WithDto("SecondNotification")
             .WithTopic("Topic")
-                .WithNotification(TypeRefExtensions.Internal("FirstNotification"))
-                .WithNotification(TypeRefExtensions.Internal("SecondNotification"));
+                .WithNotification(
+                    NotificationTypeRefExtensions.WithTag(
+                        TypeRefExtensions.Internal("FirstNotification"),
+                        "FirstNotification"))
+                .WithNotification(
+                    NotificationTypeRefExtensions.WithTag(
+                        TypeRefExtensions.Internal("SecondNotification"),
+                        "SecondNotification"));
     }
 
     [Fact]
@@ -86,7 +95,10 @@ public class SupportedUseCases
             .WithDto("TopicBase")
             .WithTopic("Topic")
                 .ThatExtends(TypeRefExtensions.Internal("TopicBase"))
-                .WithNotification(TypeRefExtensions.Internal("Notification"));
+                .WithNotification(
+                    NotificationTypeRefExtensions.WithTag(
+                        TypeRefExtensions.Internal("Notification"),
+                        "Notification"));
     }
 
     [Fact]
@@ -96,10 +108,15 @@ public class SupportedUseCases
             .Compiles()
             .WithDto("Notification")
             .WithTopic("TopicBase")
-                .WithNotification(TypeRefExtensions.Internal("Notification"))
+                .WithNotification(
+                    NotificationTypeRefExtensions.WithTag(
+                        TypeRefExtensions.Internal("Notification"),
+                        "Notification"))
             .WithTopic("Topic")
-                .ThatExtends(TypeRefExtensions.Internal("TopicBase"))
-                .WithNotification(TypeRefExtensions.Internal("Notification"));
+                .WithNotification(
+                    NotificationTypeRefExtensions.WithTag(
+                        TypeRefExtensions.Internal("Notification"),
+                        "Notification"));
     }
 
     [Fact]
@@ -111,7 +128,10 @@ public class SupportedUseCases
             .WithDto("ITopicBase")
             .WithTopic("Topic")
                 .ThatExtends(TypeRefExtensions.Internal("ITopicBase"))
-                .WithNotification(TypeRefExtensions.Internal("Notification"));
+                .WithNotification(
+                    NotificationTypeRefExtensions.WithTag(
+                        TypeRefExtensions.Internal("Notification"),
+                        "Notification"));
     }
 
     [Fact]
@@ -123,7 +143,10 @@ public class SupportedUseCases
             .WithDto("IProducer")
             .WithTopic("Topic")
                 .ThatExtends(TypeRefExtensions.Internal("IProducer"))
-                .WithNotification(TypeRefExtensions.Internal("Notification"));
+                .WithNotification(
+                    NotificationTypeRefExtensions.WithTag(
+                        TypeRefExtensions.Internal("Notification"),
+                        "Notification"));
     }
 
     [Fact]
@@ -135,6 +158,9 @@ public class SupportedUseCases
             .WithDto("Producer")
             .WithTopic("Topic")
                 .ThatExtends(TypeRefExtensions.Internal("Producer"))
-                .WithNotification(TypeRefExtensions.Internal("Notification"));
+                .WithNotification(
+                    NotificationTypeRefExtensions.WithTag(
+                        TypeRefExtensions.Internal("Notification"),
+                        "Notification"));
     }
 }
