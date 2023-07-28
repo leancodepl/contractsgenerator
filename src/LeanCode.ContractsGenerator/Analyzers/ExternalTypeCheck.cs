@@ -14,11 +14,11 @@ public class ExternalTypeCheck : BaseAnalyzer
         return base.Analyze(export);
     }
 
-    public override IEnumerable<AnalyzeError> AnalyzeInternalTypeRef(AnalyzerContext context, TypeRef typeRef, TypeRef.Types.Internal i)
+    public override IEnumerable<AnalyzeError> AnalyzeInternalTypeRef(AnalyzerContext context, TypeRef.Types.Internal i)
     {
         if (knownTypes.Contains(i.Name) || InvalidTypeCheck.InvalidTypes.ContainsKey(i.Name))
         {
-            return base.AnalyzeInternalTypeRef(context, typeRef, i);
+            return base.AnalyzeInternalTypeRef(context, i);
         }
         else
         {

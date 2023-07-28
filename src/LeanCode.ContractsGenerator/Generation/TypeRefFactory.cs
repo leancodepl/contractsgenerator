@@ -62,6 +62,56 @@ public sealed class TypeRefFactory
         }
     }
 
+    public NotificationTypeRef FromNotification(ITypeSymbol symbol)
+    {
+        return new()
+        {
+            Type = From(symbol),
+            Tag = GetFullTypeName(symbol),
+        };
+    }
+
+    private static string GetFullTypeName(ITypeSymbol typeSymbol)
+    {
+        // Represents a type other than an array, a pointer, a type parameter.
+        if (typeSymbol is INamedTypeSymbol namedTypeSymbol)
+        {
+            var typeName = namedTypeSymbol.ContainingNamespace.IsGlobalNamespace
+                ? namedTypeSymbol.Name
+                : $"{namedTypeSymbol.ContainingNamespace}.{namedTypeSymbol.Name}";
+
+            if (namedTypeSymbol.TypeArguments.Length > 0)
+            {
+                typeName += "`" + namedTypeSymbol.TypeArguments.Length + "[";
+
+                for (var i = 0; i < namedTypeSymbol.TypeArguments.Length; i++)
+                {
+                    if (i > 0)
+                    {
+                        typeName += ",";
+                    }
+
+                    var typeArg = GetFullTypeName(namedTypeSymbol.TypeArguments[i]);
+                    typeName += typeArg;
+                }
+
+                typeName += "]";
+            }
+
+            return typeName;
+        }
+        else if (typeSymbol is IArrayTypeSymbol arrayTypeSymbol)
+        {
+            var elementType = GetFullTypeName(arrayTypeSymbol.ElementType);
+            var rank = arrayTypeSymbol.Rank;
+            var dimensions = new string(',', rank - 1);
+
+            return elementType + "[" + dimensions + "]";
+        }
+
+        return typeSymbol.Name;
+    }
+
     private TypeRef.Types.Known? TryKnownTypeRef(ITypeSymbol ts)
     {
         return ts switch

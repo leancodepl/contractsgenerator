@@ -161,7 +161,7 @@ public static class ExampleBasedAsserts
         return stmt;
     }
 
-    public static AssertedTopic WithNotification(this AssertedTopic stmt, TypeRef typeRef)
+    public static AssertedTopic WithNotification(this AssertedTopic stmt, NotificationTypeRef typeRef)
     {
         Assert.Contains(typeRef, stmt.Statement.Topic.Notifications);
         return stmt;
