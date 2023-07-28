@@ -57,26 +57,6 @@ public class BaseAnalyzer : IAnalyzer
         }
     }
 
-    public virtual IEnumerable<AnalyzeError> AnalyzeNotificationTypeRef(AnalyzerContext context, NotificationTypeRef typeRef)
-    {
-        if (typeRef.Type.Internal is TypeRef.Types.Internal i)
-        {
-            return AnalyzeInternalTypeRef(context, i);
-        }
-        else if (typeRef.Type.Known is TypeRef.Types.Known k)
-        {
-            return AnalyzeKnownTypeRef(context, k);
-        }
-        else if (typeRef.Type.Generic is TypeRef.Types.Generic g)
-        {
-            return AnalyzeGenericTypeRef(context, g);
-        }
-        else
-        {
-            return Enumerable.Empty<AnalyzeError>();
-        }
-    }
-
     public virtual IEnumerable<AnalyzeError> AnalyzeGenericParameter(AnalyzerContext context, GenericParameter genericParam)
     {
         return Enumerable.Empty<AnalyzeError>();
@@ -228,7 +208,7 @@ public class BaseAnalyzer : IAnalyzer
     public virtual IEnumerable<AnalyzeError> AnalyzeTopic(AnalyzerContext context, Statement stmt, Statement.Types.Topic topic)
     {
         return AnalyzeTypeDescriptorForTopic(context, topic.TypeDescriptor)
-            .Concat(topic.Notifications.SelectMany(n => AnalyzeNotificationTypeRef(context.Returns(n.Type), n)));
+            .Concat(topic.Notifications.SelectMany(n => AnalyzeTypeRef(context.Returns(n.Type), n.Type)));
     }
 
     public virtual IEnumerable<AnalyzeError> AnalyzeStatement(AnalyzerContext context, Statement stmt)
