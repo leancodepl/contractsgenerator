@@ -53,7 +53,7 @@ public class Generic
     }
 
     [Fact]
-    public void Nested_known_type_generic()
+    public void Nested_known_type_generic_notification()
     {
         "notifications/generic.cs"
             .Compiles()
