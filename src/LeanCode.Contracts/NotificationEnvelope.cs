@@ -13,8 +13,8 @@ public sealed class NotificationEnvelope
     public NotificationEnvelope(Guid id, ITopic topic, object notification)
     {
         Id = id;
-        TopicType = topic.GetType().FullName!;
-        NotificationType = notification.GetType().FullName!;
+        TopicType = topic.GetType().ToString();
+        NotificationType = notification.GetType().ToString();
         Topic = topic;
         Notification = notification;
     }
@@ -29,8 +29,8 @@ public sealed class NotificationEnvelope
         return new()
         {
             Id = Guid.NewGuid(),
-            TopicType = typeof(TTopic).FullName!,
-            NotificationType = typeof(TNotification).FullName!,
+            TopicType = typeof(TTopic).ToString(),
+            NotificationType = typeof(TNotification).ToString(),
             Topic = topic,
             Notification = notification,
         };
