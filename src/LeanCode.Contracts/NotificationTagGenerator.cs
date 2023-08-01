@@ -16,7 +16,7 @@ public static class NotificationTagGenerator
     {
         return type switch
         {
-            _ when TryKnownType(type, out var name)
+            _ when TryKnownType(type) is string name
                 => type.GetElementType() is Type t ?
                     $"{KnownTypePrefix}{name}{GetArgumentsString(t)}"
                     : $"{KnownTypePrefix}{name}{GetArgumentsString(type.GetGenericArguments())}",
@@ -63,9 +63,9 @@ public static class NotificationTagGenerator
         return argsBuilder.ToString();
     }
 
-    private static bool TryKnownType(Type type, out string? name)
+    private static string? TryKnownType(Type type)
     {
-        name = type switch
+        return type switch
         {
             _ when type == typeof(object) => "Object",
             _ when type == typeof(string) => "String",
@@ -93,15 +93,13 @@ public static class NotificationTagGenerator
                         || i.GetGenericTypeDefinition() == typeof(IReadOnlyDictionary<,>)))
                     || type.GetGenericTypeDefinition() == typeof(IDictionary<,>)
                     || type.GetGenericTypeDefinition() == typeof(IReadOnlyDictionary<,>)) => "Map",
-            _ when (type.IsGenericType
+            _ when type.IsGenericType
                 && type.GetGenericArguments().Length == 1
                 && (type.GetInterfaces()
                     .Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IEnumerable<>))
-                    || type.GetGenericTypeDefinition() == typeof(IEnumerable<>)))
-                || type.IsArray => "Array",
+                    || type.GetGenericTypeDefinition() == typeof(IEnumerable<>)) => "Array",
+            _ when type.IsArray => "Array",
             _ => null,
         };
-
-        return name != null;
     }
 }
