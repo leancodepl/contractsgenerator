@@ -9,7 +9,7 @@ public class InvalidTypeCheck : BaseAnalyzer
         ["System.DateTime"] = "Use `DateTimeOffset` with zero offset instead.",
     };
 
-    public override IEnumerable<AnalyzeError> AnalyzeInternalTypeRef(AnalyzerContext context, TypeRef.Types.Internal i)
+    public override IEnumerable<AnalyzeError> AnalyzeInternalTypeRef(AnalyzerContext context, TypeRef typeRef, TypeRef.Types.Internal i)
     {
         if (InvalidTypes.TryGetValue(i.Name, out var msg))
         {
@@ -17,7 +17,7 @@ public class InvalidTypeCheck : BaseAnalyzer
         }
         else
         {
-            return base.AnalyzeInternalTypeRef(context, i);
+            return base.AnalyzeInternalTypeRef(context, typeRef, i);
         }
     }
 }

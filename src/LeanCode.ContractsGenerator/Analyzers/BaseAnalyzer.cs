@@ -20,17 +20,17 @@ public class BaseAnalyzer : IAnalyzer
         return Enumerable.Empty<AnalyzeError>();
     }
 
-    public virtual IEnumerable<AnalyzeError> AnalyzeGenericTypeRef(AnalyzerContext context, TypeRef.Types.Generic g)
+    public virtual IEnumerable<AnalyzeError> AnalyzeGenericTypeRef(AnalyzerContext context, TypeRef typeRef, TypeRef.Types.Generic g)
     {
         return Enumerable.Empty<AnalyzeError>();
     }
 
-    public virtual IEnumerable<AnalyzeError> AnalyzeInternalTypeRef(AnalyzerContext context, TypeRef.Types.Internal i)
+    public virtual IEnumerable<AnalyzeError> AnalyzeInternalTypeRef(AnalyzerContext context, TypeRef typeRef, TypeRef.Types.Internal i)
     {
         return i.Arguments.SelectMany((a, i) => AnalyzeTypeRef(context.Argument(i, a), a));
     }
 
-    public virtual IEnumerable<AnalyzeError> AnalyzeKnownTypeRef(AnalyzerContext context, TypeRef.Types.Known k)
+    public virtual IEnumerable<AnalyzeError> AnalyzeKnownTypeRef(AnalyzerContext context, TypeRef typeRef, TypeRef.Types.Known k)
     {
         return k.Arguments
             .SelectMany((a, i) => AnalyzeTypeRef(context.Argument(i, a), a))
@@ -41,15 +41,15 @@ public class BaseAnalyzer : IAnalyzer
     {
         if (typeRef.Internal is TypeRef.Types.Internal i)
         {
-            return AnalyzeInternalTypeRef(context, i);
+            return AnalyzeInternalTypeRef(context, typeRef, i);
         }
         else if (typeRef.Known is TypeRef.Types.Known k)
         {
-            return AnalyzeKnownTypeRef(context, k);
+            return AnalyzeKnownTypeRef(context, typeRef, k);
         }
         else if (typeRef.Generic is TypeRef.Types.Generic g)
         {
-            return AnalyzeGenericTypeRef(context, g);
+            return AnalyzeGenericTypeRef(context, typeRef, g);
         }
         else
         {
