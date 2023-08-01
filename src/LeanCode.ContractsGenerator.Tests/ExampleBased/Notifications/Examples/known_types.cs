@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using LeanCode.Contracts;
 
-namespace Notifications;
+namespace Notifications.KnownTypes;
 
 public class Topic1 : ITopic, IProduceNotification<int> { }
 
@@ -23,3 +23,9 @@ public class Topic8 : ITopic, IProduceNotification<List<int>> { }
 public class Topic9 : ITopic, IProduceNotification<string> { }
 
 public class Topic10 : ITopic, IProduceNotification<Dictionary<int, string>> { }
+
+public class Topic11 : ITopic, IProduceNotification<IEnumerable<int>> { }
+
+public class Topic12 : ITopic, IProduceNotification<IDictionary<int, string>> { }
+
+public class Topic13 : ITopic, IProduceNotification<IReadOnlyDictionary<int, string>> { }

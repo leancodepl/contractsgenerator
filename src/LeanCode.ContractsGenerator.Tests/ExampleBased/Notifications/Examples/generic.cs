@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using LeanCode.Contracts;
 
-namespace Notifications;
+namespace Notifications.Generic;
 
 public class Topic1 : ITopic, IProduceNotification<Notification1<int>> { }
 
@@ -12,6 +12,7 @@ public class Topic3 : ITopic, IProduceNotification<Notification2<DateTimeOffset,
 
 public class Topic4 : ITopic, IProduceNotification<Dictionary<int, DTO2<int>>> { }
 
+public class Topic5 : ITopic, IProduceNotification<Notification1<int>>, IProduceNotification<Notification2<byte, TimeSpan>> { }
 
 public class Notification1<T> { }
 
