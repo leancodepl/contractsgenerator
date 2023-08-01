@@ -91,7 +91,7 @@ public class KnownTypes
             .WithNotification(
                 NotificationTypeRefExtensions.WithTag(
                     TypeRefExtensions.Known(KnownType.Object),
-                    LeanCode.Contracts.NotificationTagGenerator.Generate(typeof(Object))));
+                    LeanCode.Contracts.NotificationTagGenerator.Generate(typeof(object))));
                     // !Object
     }
 
