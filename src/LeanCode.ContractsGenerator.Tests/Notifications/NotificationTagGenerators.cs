@@ -1,3 +1,4 @@
+using LeanCode.Contracts;
 using Xunit;
 using CompilationTagGenerator = LeanCode.ContractsGenerator.Generation.NotificationTagGenerator;
 using ContractsTagGenerator = LeanCode.Contracts.NotificationTagGenerator;
@@ -6,9 +7,9 @@ namespace LeanCode.ContractsGenerator.Tests.Notifications;
 
 public class NotificationTagGenerators
 {
-    private readonly string class1SimpleName = GetSimpleName(typeof(Class1));
-    private readonly string class2SimpleName = GetSimpleName(typeof(Class2<>));
-    private readonly string class3SimplName = GetSimpleName(typeof(Class3<,>));
+    private readonly string class1SimpleName = typeof(Class1).GetSimpleName();
+    private readonly string class2SimpleName = typeof(Class2<>).GetSimpleName();
+    private readonly string class3SimpleName = typeof(Class3<,>).GetSimpleName();
 
     [Fact]
     public void Internal()
@@ -35,11 +36,11 @@ public class NotificationTagGenerators
     public void Multiple_generic_arguments()
     {
         var type = typeof(Class3<int, DateTimeOffset>);
-        var typeRef = TypeRefExtensions.Internal(class3SimplName)
+        var typeRef = TypeRefExtensions.Internal(class3SimpleName)
             .WithArguments(
                 TypeRefExtensions.Known(KnownType.Int32),
                 TypeRefExtensions.Known(KnownType.DateTimeOffset));
-        var expectedTag = $"{class3SimplName}[!Int32,!DateTimeOffset]";
+        var expectedTag = $"{class3SimpleName}[!Int32,!DateTimeOffset]";
 
         VerifyGenerators(type, typeRef, expectedTag);
     }
@@ -48,13 +49,13 @@ public class NotificationTagGenerators
     public void Nested_generic_arguments()
     {
         var type = typeof(Class3<Class2<object>, Class2<int[]>>);
-        var typeRef = TypeRefExtensions.Internal(class3SimplName)
+        var typeRef = TypeRefExtensions.Internal(class3SimpleName)
             .WithArguments(
                 TypeRefExtensions.Internal(class2SimpleName)
                     .WithArguments(TypeRefExtensions.Known(KnownType.Object)),
                 TypeRefExtensions.Internal(class2SimpleName)
                     .WithArguments(TypeRefExtensions.Array(TypeRefExtensions.Known(KnownType.Int32))));
-        var expectedTag = $"{class3SimplName}[{class2SimpleName}[!Object],{class2SimpleName}[!Array[!Int32]]]";
+        var expectedTag = $"{class3SimpleName}[{class2SimpleName}[!Object],{class2SimpleName}[!Array[!Int32]]]";
 
         VerifyGenerators(type, typeRef, expectedTag);
     }
@@ -107,19 +108,6 @@ public class NotificationTagGenerators
         Assert.Equal(
             expected: expectedTag,
             actual: CompilationTagGenerator.Generate(typeRef));
-    }
-
-    private static string GetSimpleName(Type type)
-    {
-        var typeName = type.FullName!;
-        var backtickIndex = typeName.IndexOf('`');
-
-        if (backtickIndex > 0)
-        {
-            typeName = typeName[..backtickIndex];
-        }
-
-        return typeName;
     }
 }
 

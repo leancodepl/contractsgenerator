@@ -25,7 +25,7 @@ public static class NotificationTagGenerator
         };
     }
 
-    private static string GetSimpleName(this Type type)
+    public static string GetSimpleName(this Type type)
     {
         var typeName = type.FullName!;
         var backtickIndex = typeName.IndexOf('`');
