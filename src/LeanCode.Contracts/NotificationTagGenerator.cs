@@ -28,11 +28,11 @@ public static class NotificationTagGenerator
     private static string GetSimpleName(this Type type)
     {
         var typeName = type.FullName!;
-        int backtickIndex = typeName.IndexOf('`');
+        var backtickIndex = typeName.IndexOf('`');
 
         if (backtickIndex > 0)
         {
-            typeName = typeName.Substring(0, backtickIndex);
+            typeName = typeName[..backtickIndex];
         }
 
         return typeName;
