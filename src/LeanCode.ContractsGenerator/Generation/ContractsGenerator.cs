@@ -123,7 +123,7 @@ public class ContractsGenerator
                 };
                 contracts.Types
                     .ExtractTopicNotifications(symbol)
-                    .Select(typeRef.From)
+                    .Select(typeRef.FromNotification)
                     .SaveToRepeatedField(result.Topic.Notifications);
             }
             else if (symbol.TypeKind == TypeKind.Enum)

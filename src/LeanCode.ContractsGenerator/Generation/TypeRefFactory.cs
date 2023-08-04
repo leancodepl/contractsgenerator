@@ -62,6 +62,17 @@ public sealed class TypeRefFactory
         }
     }
 
+    public NotificationTypeRef FromNotification(ITypeSymbol symbol)
+    {
+        var type = From(symbol);
+
+        return new()
+        {
+            Type = type,
+            Tag = NotificationTagGenerator.Generate(type),
+        };
+    }
+
     private TypeRef.Types.Known? TryKnownTypeRef(ITypeSymbol ts)
     {
         return ts switch

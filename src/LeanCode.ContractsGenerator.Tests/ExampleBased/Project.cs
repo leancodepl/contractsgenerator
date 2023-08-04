@@ -27,7 +27,10 @@ public class Project
             .WithCommand("A.Command")
             .WithQuery("B.Query")
             .WithTopic("C.Topic")
-                .WithNotification(TypeRefExtensions.Internal("C.Notification"));
+                .WithNotification(
+                    NotificationTypeRefExtensions.WithTag(
+                        TypeRefExtensions.Internal("C.Notification"),
+                        "C.Notification"));
     }
 
     [Fact]
@@ -40,7 +43,10 @@ public class Project
             .WithCommand("A.Command")
             .WithQuery("B.Query")
             .WithTopic("C.Topic")
-                .WithNotification(TypeRefExtensions.Internal("C.Notification"));
+                .WithNotification(
+                    NotificationTypeRefExtensions.WithTag(
+                        TypeRefExtensions.Internal("C.Notification"),
+                        "C.Notification"));
     }
 
     [Fact]
@@ -65,7 +71,10 @@ public class Project
             .WithCommand("A.Command")
             .WithQuery("B.Query")
             .WithTopic("C.Topic")
-                .WithNotification(TypeRefExtensions.Internal("C.Notification"));
+                .WithNotification(
+                    NotificationTypeRefExtensions.WithTag(
+                        TypeRefExtensions.Internal("C.Notification"),
+                        "C.Notification"));
 
         ProjectsCompile(
             "project/aggregated/Combined/Combined.csproj",
@@ -75,7 +84,10 @@ public class Project
             .WithCommand("A.Command")
             .WithQuery("B.Query")
             .WithTopic("C.Topic")
-                .WithNotification(TypeRefExtensions.Internal("C.Notification"));
+                .WithNotification(
+                    NotificationTypeRefExtensions.WithTag(
+                        TypeRefExtensions.Internal("C.Notification"),
+                        "C.Notification"));
     }
 
     [Fact]

@@ -47,15 +47,15 @@ public static class TypeRefExtensions
         return typeRef;
     }
 
-    public static TypeRef WithArgument(this TypeRef typeRef, TypeRef arg)
+    public static TypeRef WithArguments(this TypeRef typeRef, params TypeRef[] args)
     {
         if (typeRef.Internal is not null)
         {
-            typeRef.Internal.Arguments.Add(arg);
+            typeRef.Internal.Arguments.Add(args);
         }
         else if (typeRef.Known is not null)
         {
-            typeRef.Known.Arguments.Add(arg);
+            typeRef.Known.Arguments.Add(args);
         }
         else
         {

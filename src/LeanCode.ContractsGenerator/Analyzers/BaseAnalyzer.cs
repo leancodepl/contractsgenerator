@@ -208,7 +208,7 @@ public class BaseAnalyzer : IAnalyzer
     public virtual IEnumerable<AnalyzeError> AnalyzeTopic(AnalyzerContext context, Statement stmt, Statement.Types.Topic topic)
     {
         return AnalyzeTypeDescriptorForTopic(context, topic.TypeDescriptor)
-            .Concat(topic.Notifications.SelectMany(n => AnalyzeTypeRef(context.Returns(n), n)));
+            .Concat(topic.Notifications.SelectMany(n => AnalyzeTypeRef(context.Returns(n.Type), n.Type)));
     }
 
     public virtual IEnumerable<AnalyzeError> AnalyzeStatement(AnalyzerContext context, Statement stmt)

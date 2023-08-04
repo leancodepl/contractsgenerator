@@ -72,6 +72,11 @@ message TypeRef {
   }
 }
 
+message NotificationTypeRef {
+  TypeRef type = 1;
+  string tag = 2;
+}
+
 message GenericParameter { string name = 1; }
 
 message AttributeArgument {
@@ -155,7 +160,7 @@ message Statement {
   }
   message Topic {
     TypeDescriptor typeDescriptor = 1;
-    repeated TypeRef notifications = 2;
+    repeated NotificationTypeRef notifications = 2;
   }
 
   string name = 1;
