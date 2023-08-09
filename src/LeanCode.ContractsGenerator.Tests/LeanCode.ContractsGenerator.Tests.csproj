@@ -6,9 +6,10 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
-  <Target Name="PackDependencies" BeforeTargets="Build" Condition="'$(IsInnerBuild)' != 'true'">
-    <MSBuild Projects="../LeanCode.Contracts/LeanCode.Contracts.csproj" Properties="Configuration=Debug" Targets="Restore" />
-    <MSBuild Projects="../LeanCode.Contracts/LeanCode.Contracts.csproj" Targets="Build;Pack" />
+  <Target Name="PackDependenciesForTests" BeforeTargets="Build" Condition="'$(IsInnerBuild)' != 'true'">
+    <Message Importance="high" Text="Packing the dependency" />
+    <MSBuild Projects="../LeanCode.Contracts/LeanCode.Contracts.csproj" Properties="Configuration=Debug;Version=9.9.9.9-internal" Targets="Restore" />
+    <MSBuild Projects="../LeanCode.Contracts/LeanCode.Contracts.csproj" Properties="Configuration=Debug;Version=9.9.9.9-internal" Targets="Build;Pack" />
   </Target>
 
   <ItemGroup>
@@ -21,10 +22,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="../LeanCode.Contracts/bin/Debug/LeanCode.Contracts.*.nupkg">
-      <Link>examples/%(Filename)%(Extension)</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="../LeanCode.Contracts/bin/Release/LeanCode.Contracts.*.nupkg">
       <Link>examples/%(Filename)%(Extension)</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
