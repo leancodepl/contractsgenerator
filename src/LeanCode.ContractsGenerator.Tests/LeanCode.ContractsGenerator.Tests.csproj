@@ -12,12 +12,12 @@
   </Target>
 
   <ItemGroup>
+    <Compile Include="../../examples/notifications/**/*.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="../../examples/**/*">
       <Link>examples/%(RecursiveDir)%(Filename)%(Extension)</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="ExampleBased/Notifications/Examples/**/*">
-      <Link>examples/notifications/%(RecursiveDir)%(Filename)%(Extension)</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="../LeanCode.Contracts/bin/Debug/LeanCode.Contracts.*.nupkg">
