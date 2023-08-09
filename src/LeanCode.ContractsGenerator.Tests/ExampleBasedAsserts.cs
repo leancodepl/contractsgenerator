@@ -9,7 +9,10 @@ public static class ExampleBasedAsserts
 {
     private static AssertedStatement With(this AssertedExport export, string name)
     {
-        return new(export.Export, Assert.Single(export.Export.Statements, stmt => stmt.Name == name));
+        return new(
+            export.Export,
+            Assert.Single(export.Export.Statements, stmt => stmt.Name == name)
+        );
     }
 
     public static T Without<T>(this T export, string name)
@@ -128,16 +131,27 @@ public static class ExampleBasedAsserts
         return errors;
     }
 
-    public static AssertedErrors WithError(this AssertedErrors errors, string code, string path, string messagePattern)
+    public static AssertedErrors WithError(
+        this AssertedErrors errors,
+        string code,
+        string path,
+        string messagePattern
+    )
     {
         var regex = new Regex(messagePattern);
         try
         {
-            Assert.Contains(errors.Errors, e => e.Code == code && e.Context.Path == path && regex.IsMatch(e.Message));
+            Assert.Contains(
+                errors.Errors,
+                e => e.Code == code && e.Context.Path == path && regex.IsMatch(e.Message)
+            );
         }
         catch (ContainsException ex)
         {
-            throw new ContainsException($"Error {code} at {path} that matches '{messagePattern}'.", ex.Actual);
+            throw new ContainsException(
+                $"Error {code} at {path} that matches '{messagePattern}'.",
+                ex.Actual
+            );
         }
 
         return errors;
@@ -161,7 +175,10 @@ public static class ExampleBasedAsserts
         return stmt;
     }
 
-    public static AssertedTopic WithNotification(this AssertedTopic stmt, NotificationTypeRef typeRef)
+    public static AssertedTopic WithNotification(
+        this AssertedTopic stmt,
+        NotificationTypeRef typeRef
+    )
     {
         Assert.Contains(typeRef, stmt.Statement.Topic.Notifications);
         return stmt;
@@ -173,7 +190,12 @@ public static class ExampleBasedAsserts
         return stmt;
     }
 
-    public static AssertedEnumMember WithMember(this AssertedEnum stmt, string name, long value, string comment = "")
+    public static AssertedEnumMember WithMember(
+        this AssertedEnum stmt,
+        string name,
+        long value,
+        string comment = ""
+    )
     {
         var c = Assert.Single(stmt.Statement.Enum.Members, c => c.Name == name);
         Assert.Equal(value, c.Value);
@@ -246,7 +268,11 @@ public static class ExampleBasedAsserts
         return prop;
     }
 
-    public static AssertedProperty WithAttribute(this AssertedProperty prop, string name, params AttributeArgument[] args)
+    public static AssertedProperty WithAttribute(
+        this AssertedProperty prop,
+        string name,
+        params AttributeArgument[] args
+    )
     {
         var attr = Assert.Single(prop.Property.Attributes, a => a.AttributeName == name);
         Assert.Equal(Positional(args), Positional(attr.Argument));
@@ -254,7 +280,11 @@ public static class ExampleBasedAsserts
         return prop;
     }
 
-    public static AssertedEnumMember WithAttribute(this AssertedEnumMember member, string name, params AttributeArgument[] args)
+    public static AssertedEnumMember WithAttribute(
+        this AssertedEnumMember member,
+        string name,
+        params AttributeArgument[] args
+    )
     {
         var attr = Assert.Single(member.Value.Attributes, a => a.AttributeName == name);
         Assert.Equal(Positional(args), Positional(attr.Argument));
@@ -271,19 +301,21 @@ public static class ExampleBasedAsserts
         return stmt;
     }
 
-    private static IEnumerable<AttributeArgument.Types.Positional> Positional(IEnumerable<AttributeArgument> args)
+    private static IEnumerable<AttributeArgument.Types.Positional> Positional(
+        IEnumerable<AttributeArgument> args
+    )
     {
-        return args
-            .Select(a => a.Positional)
+        return args.Select(a => a.Positional)
             .Where(p => p is not null)
             .OrderBy(p => p.Position)
             .Cast<AttributeArgument.Types.Positional>();
     }
 
-    private static IEnumerable<AttributeArgument.Types.Named> Named(IEnumerable<AttributeArgument> args)
+    private static IEnumerable<AttributeArgument.Types.Named> Named(
+        IEnumerable<AttributeArgument> args
+    )
     {
-        return args
-            .Select(a => a.Named)
+        return args.Select(a => a.Named)
             .Where(p => p is not null)
             .OrderBy(p => p.Name)
             .Cast<AttributeArgument.Types.Named>();
@@ -291,16 +323,34 @@ public static class ExampleBasedAsserts
 }
 
 public record AssertedExport(Export Export);
+
 public record AssertedStatement(Export Export, Statement Statement) : AssertedExport(Export);
-public record AssertedType(Export Export, Statement Statement, TypeDescriptor Descriptor) : AssertedStatement(Export, Statement);
-public record AssertedCommand(Export Export, Statement Statement, TypeDescriptor Descriptor) : AssertedType(Export, Statement, Descriptor);
-public record AssertedQuery(Export Export, Statement Statement, TypeDescriptor Descriptor) : AssertedType(Export, Statement, Descriptor);
-public record AssertedOperation(Export Export, Statement Statement, TypeDescriptor Descriptor) : AssertedType(Export, Statement, Descriptor);
-public record AssertedTopic(Export Export, Statement Statement, TypeDescriptor Descriptor) : AssertedType(Export, Statement, Descriptor);
-public record AssertedDto(Export Export, Statement Statement, TypeDescriptor Descriptor) : AssertedType(Export, Statement, Descriptor);
+
+public record AssertedType(Export Export, Statement Statement, TypeDescriptor Descriptor)
+    : AssertedStatement(Export, Statement);
+
+public record AssertedCommand(Export Export, Statement Statement, TypeDescriptor Descriptor)
+    : AssertedType(Export, Statement, Descriptor);
+
+public record AssertedQuery(Export Export, Statement Statement, TypeDescriptor Descriptor)
+    : AssertedType(Export, Statement, Descriptor);
+
+public record AssertedOperation(Export Export, Statement Statement, TypeDescriptor Descriptor)
+    : AssertedType(Export, Statement, Descriptor);
+
+public record AssertedTopic(Export Export, Statement Statement, TypeDescriptor Descriptor)
+    : AssertedType(Export, Statement, Descriptor);
+
+public record AssertedDto(Export Export, Statement Statement, TypeDescriptor Descriptor)
+    : AssertedType(Export, Statement, Descriptor);
+
 [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1711", Justification = "We don't care.")]
-public record AssertedEnum(Export Export, Statement Statement) : AssertedStatement(Export, Statement);
-public record AssertedEnumMember(Export Export, Statement Statement, EnumValue Value) : AssertedEnum(Export, Statement);
+public record AssertedEnum(Export Export, Statement Statement)
+    : AssertedStatement(Export, Statement);
+
+public record AssertedEnumMember(Export Export, Statement Statement, EnumValue Value)
+    : AssertedEnum(Export, Statement);
+
 public record AssertedProperty(PropertyRef Property);
 
 public record AssertedErrors(IReadOnlyList<AnalyzeError> Errors);

@@ -9,14 +9,14 @@ public static class ErrorCodes
 
     public static bool IsErrorCode(ISymbol? sym)
     {
-        return
-            sym?.Name == ErrorCodesName ||
-            (sym?.ContainingSymbol is not null && IsErrorCode(sym.ContainingSymbol));
+        return sym?.Name == ErrorCodesName
+            || (sym?.ContainingSymbol is not null && IsErrorCode(sym.ContainingSymbol));
     }
 
     public static IEnumerable<ErrorCode> Extract(INamedTypeSymbol symbol)
     {
-        var errCodes = symbol.GetMembers()
+        var errCodes = symbol
+            .GetMembers()
             .OfType<INamedTypeSymbol>()
             .Where(s => s.Name == ErrorCodesName)
             .SingleOrDefault();
@@ -31,14 +31,8 @@ public static class ErrorCodes
 
         static IEnumerable<ErrorCode> MapCodes(INamedTypeSymbol errCodes)
         {
-            var consts = errCodes
-                .GetMembers()
-                .OfType<IFieldSymbol>()
-                .Select(ToSingleCode);
-            var groups = errCodes
-                .GetMembers()
-                .OfType<INamedTypeSymbol>()
-                .Select(ToGroupCode);
+            var consts = errCodes.GetMembers().OfType<IFieldSymbol>().Select(ToSingleCode);
+            var groups = errCodes.GetMembers().OfType<INamedTypeSymbol>().Select(ToGroupCode);
             return consts.Concat(groups);
         }
 
@@ -46,7 +40,9 @@ public static class ErrorCodes
         {
             if (!f.HasConstantValue)
             {
-                throw new InvalidOperationException("The error codes class can only contain constant numeric fields & derived types.");
+                throw new InvalidOperationException(
+                    "The error codes class can only contain constant numeric fields & derived types."
+                );
             }
 
             return new()
@@ -63,7 +59,9 @@ public static class ErrorCodes
         {
             if (ns.BaseType?.Name != ErrorCodesName)
             {
-                throw new InvalidOperationException($"The base class for error codes group needs to be named `{ErrorCodesName}`.");
+                throw new InvalidOperationException(
+                    $"The base class for error codes group needs to be named `{ErrorCodesName}`."
+                );
             }
 
             var g = new ErrorCode.Types.Group
@@ -76,7 +74,9 @@ public static class ErrorCodes
         }
     }
 
-    public static IEnumerable<ErrorCode.Types.Group> ListKnownGroups(IEnumerable<Statement> statements)
+    public static IEnumerable<ErrorCode.Types.Group> ListKnownGroups(
+        IEnumerable<Statement> statements
+    )
     {
         return statements
             .Where(s => s.Command is not null)

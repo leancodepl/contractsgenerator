@@ -9,10 +9,26 @@ public class TopicWithoutNotification
     {
         "analyzers/topic_without_notification.cs"
             .AnalyzeFails()
-                .WithErrorNumber(4)
-                .WithError("CNTR0007", "EmptyTopic", messagePattern: "Topic type .+ doesn't produce any notification.")
-                .WithError("CNTR0007", "EmptyInheritedTopic", messagePattern: "Topic type .+ doesn't produce any notification.")
-                .WithError("CNTR0007", "InheritedInterfaceEmptyTopic", messagePattern: "Topic type .+ doesn't produce any notification.")
-                .WithError("CNTR0007", "ConcreteEmptyTopic", messagePattern: "Topic type .+ doesn't produce any notification.");
+            .WithErrorNumber(4)
+            .WithError(
+                "CNTR0007",
+                "EmptyTopic",
+                messagePattern: "Topic type .+ doesn't produce any notification."
+            )
+            .WithError(
+                "CNTR0007",
+                "EmptyInheritedTopic",
+                messagePattern: "Topic type .+ doesn't produce any notification."
+            )
+            .WithError(
+                "CNTR0007",
+                "InheritedInterfaceEmptyTopic",
+                messagePattern: "Topic type .+ doesn't produce any notification."
+            )
+            .WithError(
+                "CNTR0007",
+                "ConcreteEmptyTopic",
+                messagePattern: "Topic type .+ doesn't produce any notification."
+            );
     }
 }

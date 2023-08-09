@@ -16,12 +16,16 @@ public class Internal
             .WithNotification(
                 NotificationTypeRefExtensions.WithTag(
                     TypeRefExtensions.Internal("Notifications.Internal.DTO1"),
-                    LeanCode.Contracts.NotificationTagGenerator.Generate(typeof(DTO1))))
-                    // Notifications.Internal.DTO1
+                    LeanCode.Contracts.NotificationTagGenerator.Generate(typeof(DTO1))
+                )
+            )
+            // Notifications.Internal.DTO1
             .WithNotification(
                 NotificationTypeRefExtensions.WithTag(
                     TypeRefExtensions.Internal("Notifications.Internal.DTO2"),
-                    LeanCode.Contracts.NotificationTagGenerator.Generate(typeof(DTO2))));
-                    // Notifications.Internal.DTO2
+                    LeanCode.Contracts.NotificationTagGenerator.Generate(typeof(DTO2))
+                )
+            );
+        // Notifications.Internal.DTO2
     }
 }

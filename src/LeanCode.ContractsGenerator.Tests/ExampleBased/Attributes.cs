@@ -12,10 +12,10 @@ public class Attributes
         "attributes/property.cs"
             .Compiles()
             .WithCommand("A")
-                .WithProperty(
-                    "Prop",
-                    p => p
-                        .WithAttribute("System.ObsoleteAttribute", Positional(0, "Msg")));
+            .WithProperty(
+                "Prop",
+                p => p.WithAttribute("System.ObsoleteAttribute", Positional(0, "Msg"))
+            );
     }
 
     [Fact]
@@ -24,7 +24,7 @@ public class Attributes
         "attributes/obsolete.cs"
             .Compiles()
             .WithCommand("A")
-                .WithAttribute("System.ObsoleteAttribute", Positional(0, "Msg"));
+            .WithAttribute("System.ObsoleteAttribute", Positional(0, "Msg"));
     }
 
     [Fact]
@@ -33,10 +33,10 @@ public class Attributes
         "attributes/enum.cs"
             .Compiles()
             .WithEnum("EnumDTO")
-                .WithAttribute("System.ObsoleteAttribute", Positional(0, "OnEnum"))
-                .WithMember("A", 0)
-                .WithMember("B", 1)
-                    .WithAttribute("System.ObsoleteAttribute", Positional(0, "OnMember"));
+            .WithAttribute("System.ObsoleteAttribute", Positional(0, "OnEnum"))
+            .WithMember("A", 0)
+            .WithMember("B", 1)
+            .WithAttribute("System.ObsoleteAttribute", Positional(0, "OnMember"));
     }
 
     [Fact]
@@ -45,9 +45,9 @@ public class Attributes
         "attributes/custom.cs"
             .Compiles()
             .WithDto("CustomAttribute")
-                .ThatExtends(Known(KnownType.Attribute))
+            .ThatExtends(Known(KnownType.Attribute))
             .WithDto("Dto")
-                .WithAttribute("CustomAttribute", Named("NamedArg", "Test"));
+            .WithAttribute("CustomAttribute", Named("NamedArg", "Test"));
     }
 
     [Fact]
@@ -56,7 +56,7 @@ public class Attributes
         "attributes/unauthorized.cs"
             .Compiles()
             .WithCommand("A")
-                .WithAttribute("LeanCode.Contracts.Security.AllowUnauthorizedAttribute");
+            .WithAttribute("LeanCode.Contracts.Security.AllowUnauthorizedAttribute");
     }
 
     [Fact]
@@ -65,12 +65,12 @@ public class Attributes
         "attributes/authorize_when.cs"
             .Compiles()
             .WithCommand("A")
-                .WithAttribute("AuthorizeWhenCustomCtorAttribute")
+            .WithAttribute("AuthorizeWhenCustomCtorAttribute")
             .WithCommand("B")
-                .WithAttribute("AuthorizeWhenCustomGenericAttribute")
+            .WithAttribute("AuthorizeWhenCustomGenericAttribute")
             .WithDto("AuthorizeWhenCustomCtorAttribute")
-                .ThatExtends(Known(KnownType.AuthorizeWhenAttribute))
+            .ThatExtends(Known(KnownType.AuthorizeWhenAttribute))
             .WithDto("AuthorizeWhenCustomGenericAttribute")
-                .ThatExtends(Known(KnownType.AuthorizeWhenAttribute));
+            .ThatExtends(Known(KnownType.AuthorizeWhenAttribute));
     }
 }

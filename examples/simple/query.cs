@@ -1,3 +1,3 @@
 using LeanCode.Contracts;
 
-public class Query : IQuery<int> {}
+public class Query : IQuery<int> { }

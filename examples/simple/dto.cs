@@ -1,3 +1,3 @@
 using LeanCode.Contracts;
 
-public class DTO {}
+public class DTO { }

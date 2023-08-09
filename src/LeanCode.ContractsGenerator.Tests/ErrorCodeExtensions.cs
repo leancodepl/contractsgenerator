@@ -6,11 +6,7 @@ public static class ErrorCodeExtensions
     {
         return new ErrorCode
         {
-            Single = new()
-            {
-                Name = name,
-                Code = value,
-            },
+            Single = new() { Name = name, Code = value, },
         };
     }
 
@@ -18,11 +14,7 @@ public static class ErrorCodeExtensions
     {
         var g = new ErrorCode
         {
-            Group = new()
-            {
-                Name = name,
-                GroupId = groupId,
-            },
+            Group = new() { Name = name, GroupId = groupId, },
         };
         g.Group.InnerCodes.AddRange(inner);
         return g;

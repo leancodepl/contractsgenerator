@@ -24,16 +24,19 @@ public sealed class ProjectLoader : IDisposable
         if (MSBuildHelper.RestoreProjects(projectPathsList) > 0)
         {
             await Console.Error.WriteLineAsync(
-                "Failed to restore some of the projects, restore them manually or expect problems.");
+                "Failed to restore some of the projects, restore them manually or expect problems."
+            );
         }
 
         foreach (var projectPath in projectPathsList)
         {
-            if (msbuildWorkspace.CurrentSolution.Projects
-                .Select(p => p.FilePath)
-                .OfType<string>()
-                .Select(ResolveCanonicalPath)
-                .Contains(projectPath))
+            if (
+                msbuildWorkspace.CurrentSolution.Projects
+                    .Select(p => p.FilePath)
+                    .OfType<string>()
+                    .Select(ResolveCanonicalPath)
+                    .Contains(projectPath)
+            )
             {
                 continue;
             }
@@ -78,7 +81,8 @@ public sealed class ProjectLoader : IDisposable
     private async Task CompileTransitivelyAsync(
         Workspace workspace,
         ProjectId id,
-        Dictionary<ProjectId, CSharpCompilation> output)
+        Dictionary<ProjectId, CSharpCompilation> output
+    )
     {
         if (output.ContainsKey(id))
         {
@@ -105,12 +109,16 @@ public sealed class ProjectLoader : IDisposable
             }
             else
             {
-                throw new InvalidProjectException($"Cannot compile project {id}. The project does not support compilation.");
+                throw new InvalidProjectException(
+                    $"Cannot compile project {id}. The project does not support compilation."
+                );
             }
         }
         else
         {
-            throw new InvalidProjectException($"Cannot compile project - the project {id} cannot be located.");
+            throw new InvalidProjectException(
+                $"Cannot compile project - the project {id} cannot be located."
+            );
         }
     }
 
@@ -121,7 +129,8 @@ public static class ProjectExtensions
 {
     public static Project AddUniqueMetadataReferences(
         this Project project,
-        IEnumerable<MetadataReference> metadataReferences)
+        IEnumerable<MetadataReference> metadataReferences
+    )
     {
         var existingMetadataReferences = project.MetadataReferences
             .Select(mr => Path.GetFileName(mr.Display))

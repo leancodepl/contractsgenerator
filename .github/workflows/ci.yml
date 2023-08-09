@@ -28,6 +28,10 @@ jobs:
           dotnet-version: 7.0.x
       - name: Restore
         run: dotnet restore
+      - name: Tool Restore
+        run: dotnet tool restore
+      - name: Check formatting
+        run: dotnet csharpier . --check
       - name: Build
         run: dotnet build --no-restore
       - name: Test

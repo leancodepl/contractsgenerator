@@ -13,8 +13,10 @@ public class KnownTypes
             .WithNotification(
                 NotificationTypeRefExtensions.WithTag(
                     TypeRefExtensions.Known(KnownType.Int32),
-                    LeanCode.Contracts.NotificationTagGenerator.Generate(typeof(int))));
-                    // !Int32
+                    LeanCode.Contracts.NotificationTagGenerator.Generate(typeof(int))
+                )
+            );
+        // !Int32
     }
 
     [Fact]
@@ -26,8 +28,10 @@ public class KnownTypes
             .WithNotification(
                 NotificationTypeRefExtensions.WithTag(
                     TypeRefExtensions.Known(KnownType.Boolean),
-                    LeanCode.Contracts.NotificationTagGenerator.Generate(typeof(bool))));
-                    // !Boolean
+                    LeanCode.Contracts.NotificationTagGenerator.Generate(typeof(bool))
+                )
+            );
+        // !Boolean
     }
 
     [Fact]
@@ -39,8 +43,10 @@ public class KnownTypes
             .WithNotification(
                 NotificationTypeRefExtensions.WithTag(
                     TypeRefExtensions.Known(KnownType.DateTimeOffset),
-                    LeanCode.Contracts.NotificationTagGenerator.Generate(typeof(DateTimeOffset))));
-                    // !DateTimeOffset
+                    LeanCode.Contracts.NotificationTagGenerator.Generate(typeof(DateTimeOffset))
+                )
+            );
+        // !DateTimeOffset
     }
 
     [Fact]
@@ -52,8 +58,10 @@ public class KnownTypes
             .WithNotification(
                 NotificationTypeRefExtensions.WithTag(
                     TypeRefExtensions.Known(KnownType.Guid),
-                    LeanCode.Contracts.NotificationTagGenerator.Generate(typeof(Guid))));
-                    // !Guid
+                    LeanCode.Contracts.NotificationTagGenerator.Generate(typeof(Guid))
+                )
+            );
+        // !Guid
     }
 
     [Fact]
@@ -65,8 +73,10 @@ public class KnownTypes
             .WithNotification(
                 NotificationTypeRefExtensions.WithTag(
                     TypeRefExtensions.Array(TypeRefExtensions.Known(KnownType.Int32)),
-                    LeanCode.Contracts.NotificationTagGenerator.Generate(typeof(int[]))));
-                    // !Array[!Int32]
+                    LeanCode.Contracts.NotificationTagGenerator.Generate(typeof(int[]))
+                )
+            );
+        // !Array[!Int32]
     }
 
     [Fact]
@@ -77,9 +87,13 @@ public class KnownTypes
             .WithTopic("Notifications.KnownTypes.Topic6")
             .WithNotification(
                 NotificationTypeRefExtensions.WithTag(
-                    TypeRefExtensions.Array(TypeRefExtensions.Array(TypeRefExtensions.Known(KnownType.Int32))),
-                    LeanCode.Contracts.NotificationTagGenerator.Generate(typeof(int[,,][]))));
-                    // !Array[!Array[!Int32]]
+                    TypeRefExtensions.Array(
+                        TypeRefExtensions.Array(TypeRefExtensions.Known(KnownType.Int32))
+                    ),
+                    LeanCode.Contracts.NotificationTagGenerator.Generate(typeof(int[,,][]))
+                )
+            );
+        // !Array[!Array[!Int32]]
     }
 
     [Fact]
@@ -91,8 +105,10 @@ public class KnownTypes
             .WithNotification(
                 NotificationTypeRefExtensions.WithTag(
                     TypeRefExtensions.Known(KnownType.Object),
-                    LeanCode.Contracts.NotificationTagGenerator.Generate(typeof(object))));
-                    // !Object
+                    LeanCode.Contracts.NotificationTagGenerator.Generate(typeof(object))
+                )
+            );
+        // !Object
     }
 
     [Fact]
@@ -104,8 +120,10 @@ public class KnownTypes
             .WithNotification(
                 NotificationTypeRefExtensions.WithTag(
                     TypeRefExtensions.Array(TypeRefExtensions.Known(KnownType.Int32)),
-                    LeanCode.Contracts.NotificationTagGenerator.Generate(typeof(List<int>))));
-                    // !Array[!Int32]
+                    LeanCode.Contracts.NotificationTagGenerator.Generate(typeof(List<int>))
+                )
+            );
+        // !Array[!Int32]
     }
 
     [Fact]
@@ -117,8 +135,10 @@ public class KnownTypes
             .WithNotification(
                 NotificationTypeRefExtensions.WithTag(
                     TypeRefExtensions.Known(KnownType.String),
-                    LeanCode.Contracts.NotificationTagGenerator.Generate(typeof(string))));
-                    // !String
+                    LeanCode.Contracts.NotificationTagGenerator.Generate(typeof(string))
+                )
+            );
+        // !String
     }
 
     [Fact]
@@ -131,9 +151,14 @@ public class KnownTypes
                 NotificationTypeRefExtensions.WithTag(
                     TypeRefExtensions.Map(
                         TypeRefExtensions.Known(KnownType.Int32),
-                        TypeRefExtensions.Known(KnownType.String)),
-                    LeanCode.Contracts.NotificationTagGenerator.Generate(typeof(Dictionary<int, string>))));
-                    // !Map[!Int32,!String]
+                        TypeRefExtensions.Known(KnownType.String)
+                    ),
+                    LeanCode.Contracts.NotificationTagGenerator.Generate(
+                        typeof(Dictionary<int, string>)
+                    )
+                )
+            );
+        // !Map[!Int32,!String]
     }
 
     [Fact]
@@ -145,8 +170,10 @@ public class KnownTypes
             .WithNotification(
                 NotificationTypeRefExtensions.WithTag(
                     TypeRefExtensions.Array(TypeRefExtensions.Known(KnownType.Int32)),
-                    LeanCode.Contracts.NotificationTagGenerator.Generate(typeof(IEnumerable<int>))));
-                    // !Array[!Int32]
+                    LeanCode.Contracts.NotificationTagGenerator.Generate(typeof(IEnumerable<int>))
+                )
+            );
+        // !Array[!Int32]
     }
 
     [Fact]
@@ -157,9 +184,16 @@ public class KnownTypes
             .WithTopic("Notifications.KnownTypes.Topic12")
             .WithNotification(
                 NotificationTypeRefExtensions.WithTag(
-                    TypeRefExtensions.Map(TypeRefExtensions.Known(KnownType.Int32), TypeRefExtensions.Known(KnownType.String)),
-                    LeanCode.Contracts.NotificationTagGenerator.Generate(typeof(IDictionary<int, string>))));
-                    // !Map[!Int32,!String]
+                    TypeRefExtensions.Map(
+                        TypeRefExtensions.Known(KnownType.Int32),
+                        TypeRefExtensions.Known(KnownType.String)
+                    ),
+                    LeanCode.Contracts.NotificationTagGenerator.Generate(
+                        typeof(IDictionary<int, string>)
+                    )
+                )
+            );
+        // !Map[!Int32,!String]
     }
 
     [Fact]
@@ -170,8 +204,15 @@ public class KnownTypes
             .WithTopic("Notifications.KnownTypes.Topic13")
             .WithNotification(
                 NotificationTypeRefExtensions.WithTag(
-                    TypeRefExtensions.Map(TypeRefExtensions.Known(KnownType.Int32), TypeRefExtensions.Known(KnownType.String)),
-                    LeanCode.Contracts.NotificationTagGenerator.Generate(typeof(IReadOnlyDictionary<int, string>))));
-                    // !Map[!Int32,!String]
+                    TypeRefExtensions.Map(
+                        TypeRefExtensions.Known(KnownType.Int32),
+                        TypeRefExtensions.Known(KnownType.String)
+                    ),
+                    LeanCode.Contracts.NotificationTagGenerator.Generate(
+                        typeof(IReadOnlyDictionary<int, string>)
+                    )
+                )
+            );
+        // !Map[!Int32,!String]
     }
 }

@@ -4,13 +4,23 @@ public class ErrorCodesUniqueness : BaseAnalyzer
 {
     public const string Code = "CNTR0003";
 
-    public override IEnumerable<AnalyzeError> AnalyzeErrorCodes(AnalyzerContext context, IEnumerable<ErrorCode> errCodes)
+    public override IEnumerable<AnalyzeError> AnalyzeErrorCodes(
+        AnalyzerContext context,
+        IEnumerable<ErrorCode> errCodes
+    )
     {
         return errCodes
             .SelectMany(Flatten)
             .GroupBy(e => e.Code)
             .Where(g => g.Count() > 1)
-            .Select(g => new AnalyzeError(Code, $"Duplicate error codes: {string.Join(", ", g.Select(c => c.Name))}", context));
+            .Select(
+                g =>
+                    new AnalyzeError(
+                        Code,
+                        $"Duplicate error codes: {string.Join(", ", g.Select(c => c.Name))}",
+                        context
+                    )
+            );
 
         static IEnumerable<ErrorCode.Types.Single> Flatten(ErrorCode errCode)
         {
@@ -29,17 +39,22 @@ public class ErrorCodesUniqueness : BaseAnalyzer
     {
         var context = AnalyzerContext.Empty;
 
-        return export.Statements
-            .SelectMany(s => AnalyzeStatement(context.Descend(s), s))
-            .ToList();
+        return export.Statements.SelectMany(s => AnalyzeStatement(context.Descend(s), s)).ToList();
     }
 
-    public override IEnumerable<AnalyzeError> AnalyzeCommand(AnalyzerContext context, Statement stmt, Statement.Types.Command command)
+    public override IEnumerable<AnalyzeError> AnalyzeCommand(
+        AnalyzerContext context,
+        Statement stmt,
+        Statement.Types.Command command
+    )
     {
         return AnalyzeErrorCodes(context.ErrorCodes(), command.ErrorCodes);
     }
 
-    public override IEnumerable<AnalyzeError> AnalyzeStatement(AnalyzerContext context, Statement stmt)
+    public override IEnumerable<AnalyzeError> AnalyzeStatement(
+        AnalyzerContext context,
+        Statement stmt
+    )
     {
         if (stmt.Command is Statement.Types.Command cmd)
         {

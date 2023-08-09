@@ -5,7 +5,10 @@ using static LeanCode.ContractsGenerator.Tests.TypeRefExtensions;
 namespace LeanCode.ContractsGenerator.Tests.ExampleBased;
 
 [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1711", Justification = "We don't care.")]
-[CollectionDefinition(nameof(MSBuildTestCurrentDirectoryWorkaroundCollection), DisableParallelization = true)]
+[CollectionDefinition(
+    nameof(MSBuildTestCurrentDirectoryWorkaroundCollection),
+    DisableParallelization = true
+)]
 public class MSBuildTestCurrentDirectoryWorkaroundCollection { }
 
 [Collection(nameof(MSBuildTestCurrentDirectoryWorkaroundCollection))]
@@ -14,9 +17,7 @@ public class Project
     [Fact]
     public void Single_project_compiles_correctly()
     {
-        "project/single/single.csproj"
-            .ProjectCompiles()
-            .WithCommand("Single.Command");
+        "project/single/single.csproj".ProjectCompiles().WithCommand("Single.Command");
     }
 
     [Fact]
@@ -27,34 +28,37 @@ public class Project
             .WithCommand("A.Command")
             .WithQuery("B.Query")
             .WithTopic("C.Topic")
-                .WithNotification(
-                    NotificationTypeRefExtensions.WithTag(
-                        TypeRefExtensions.Internal("C.Notification"),
-                        "C.Notification"));
+            .WithNotification(
+                NotificationTypeRefExtensions.WithTag(
+                    TypeRefExtensions.Internal("C.Notification"),
+                    "C.Notification"
+                )
+            );
     }
 
     [Fact]
     public void Multiple_separate_projects_compile()
     {
         ProjectsCompile(
-            "project/aggregated/A/A.csproj",
-            "project/aggregated/B/B.csproj",
-            "project/aggregated/C/C.csproj")
+                "project/aggregated/A/A.csproj",
+                "project/aggregated/B/B.csproj",
+                "project/aggregated/C/C.csproj"
+            )
             .WithCommand("A.Command")
             .WithQuery("B.Query")
             .WithTopic("C.Topic")
-                .WithNotification(
-                    NotificationTypeRefExtensions.WithTag(
-                        TypeRefExtensions.Internal("C.Notification"),
-                        "C.Notification"));
+            .WithNotification(
+                NotificationTypeRefExtensions.WithTag(
+                    TypeRefExtensions.Internal("C.Notification"),
+                    "C.Notification"
+                )
+            );
     }
 
     [Fact]
     public void Multiple_separate_projects_compile_even_if_are_totally_unrelated()
     {
-        ProjectsCompile(
-            "project/aggregated/A/A.csproj",
-            "project/single/single.csproj")
+        ProjectsCompile("project/aggregated/A/A.csproj", "project/single/single.csproj")
             .WithCommand("A.Command")
             .WithCommand("Single.Command");
     }
@@ -64,30 +68,36 @@ public class Project
     {
         // The order might matter so we check a few cases
         ProjectsCompile(
-            "project/aggregated/A/A.csproj",
-            "project/aggregated/B/B.csproj",
-            "project/aggregated/C/C.csproj",
-            "project/aggregated/Combined/Combined.csproj")
+                "project/aggregated/A/A.csproj",
+                "project/aggregated/B/B.csproj",
+                "project/aggregated/C/C.csproj",
+                "project/aggregated/Combined/Combined.csproj"
+            )
             .WithCommand("A.Command")
             .WithQuery("B.Query")
             .WithTopic("C.Topic")
-                .WithNotification(
-                    NotificationTypeRefExtensions.WithTag(
-                        TypeRefExtensions.Internal("C.Notification"),
-                        "C.Notification"));
+            .WithNotification(
+                NotificationTypeRefExtensions.WithTag(
+                    TypeRefExtensions.Internal("C.Notification"),
+                    "C.Notification"
+                )
+            );
 
         ProjectsCompile(
-            "project/aggregated/Combined/Combined.csproj",
-            "project/aggregated/A/A.csproj",
-            "project/aggregated/B/B.csproj",
-            "project/aggregated/C/C.csproj")
+                "project/aggregated/Combined/Combined.csproj",
+                "project/aggregated/A/A.csproj",
+                "project/aggregated/B/B.csproj",
+                "project/aggregated/C/C.csproj"
+            )
             .WithCommand("A.Command")
             .WithQuery("B.Query")
             .WithTopic("C.Topic")
-                .WithNotification(
-                    NotificationTypeRefExtensions.WithTag(
-                        TypeRefExtensions.Internal("C.Notification"),
-                        "C.Notification"));
+            .WithNotification(
+                NotificationTypeRefExtensions.WithTag(
+                    TypeRefExtensions.Internal("C.Notification"),
+                    "C.Notification"
+                )
+            );
     }
 
     [Fact]
@@ -96,7 +106,7 @@ public class Project
         "project/implicitusings/implicitusings.csproj"
             .ProjectCompiles()
             .WithDto("ImplicitUsings.DTO")
-                .WithProperty("Id", Known(KnownType.Guid));
+            .WithProperty("Id", Known(KnownType.Guid));
     }
 
     [Fact]
@@ -115,7 +125,7 @@ public class Project
         "project/packagereference/packagereference.csproj"
             .ProjectCompiles()
             .WithDto("PackageReference.OrderDTO")
-                .WithProperty("Id", Known(KnownType.String));
+            .WithProperty("Id", Known(KnownType.String));
     }
 
     [Fact]
@@ -124,6 +134,6 @@ public class Project
         "project/referencetoembedded/referencetoembedded.csproj"
             .ProjectCompiles()
             .WithDto("Embedded.DTO")
-                .WithProperty("Id", Known(KnownType.Int32));
+            .WithProperty("Id", Known(KnownType.Int32));
     }
 }

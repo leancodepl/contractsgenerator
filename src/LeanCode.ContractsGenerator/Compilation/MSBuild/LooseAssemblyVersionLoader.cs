@@ -10,7 +10,8 @@ namespace LeanCode.ContractsGenerator.Compilation.MSBuild;
 
 internal static class LooseVersionAssemblyLoader
 {
-    private static readonly Dictionary<string, Assembly> PathsToAssemblies = new(StringComparer.OrdinalIgnoreCase);
+    private static readonly Dictionary<string, Assembly> PathsToAssemblies =
+        new(StringComparer.OrdinalIgnoreCase);
     private static readonly Dictionary<string, Assembly> NamesToAssemblies = new();
 
     private static readonly object Guard = new();
@@ -21,7 +22,10 @@ internal static class LooseVersionAssemblyLoader
     /// </summary>
     public static void Register(string searchPath)
     {
-        AssemblyLoadContext.Default.Resolving += (AssemblyLoadContext context, AssemblyName assemblyName) =>
+        AssemblyLoadContext.Default.Resolving += (
+            AssemblyLoadContext context,
+            AssemblyName assemblyName
+        ) =>
         {
             lock (Guard)
             {
@@ -35,21 +39,30 @@ internal static class LooseVersionAssemblyLoader
         };
     }
 
-    private static Assembly TryResolveAssemblyFromPaths_NoLock(AssemblyLoadContext context, AssemblyName assemblyName, string searchPath)
+    private static Assembly TryResolveAssemblyFromPaths_NoLock(
+        AssemblyLoadContext context,
+        AssemblyName assemblyName,
+        string searchPath
+    )
     {
-        foreach (var cultureSubfolder in string.IsNullOrEmpty(assemblyName.CultureName)
-            // If no culture is specified, attempt to load directly from
-            // the known dependency paths.
-            ? new[] { string.Empty }
-            // Search for satellite assemblies in culture subdirectories
-            // of the assembly search directories, but fall back to the
-            // bare search directory if that fails.
-            : new[] { assemblyName.CultureName, string.Empty })
+        foreach (
+            var cultureSubfolder in string.IsNullOrEmpty(assemblyName.CultureName)
+                // If no culture is specified, attempt to load directly from
+                // the known dependency paths.
+                ? new[] { string.Empty }
+                // Search for satellite assemblies in culture subdirectories
+                // of the assembly search directories, but fall back to the
+                // bare search directory if that fails.
+                : new[] { assemblyName.CultureName, string.Empty }
+        )
         {
             foreach (var extension in Extensions)
             {
                 var candidatePath = Path.Combine(
-                    searchPath, cultureSubfolder, $"{assemblyName.Name}.{extension}");
+                    searchPath,
+                    cultureSubfolder,
+                    $"{assemblyName.Name}.{extension}"
+                );
 
                 var isAssemblyLoaded = PathsToAssemblies.ContainsKey(candidatePath);
                 if (isAssemblyLoaded || !File.Exists(candidatePath))

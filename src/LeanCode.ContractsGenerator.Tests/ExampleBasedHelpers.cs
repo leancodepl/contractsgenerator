@@ -16,7 +16,9 @@ public static class ExampleBasedHelpers
     {
         var code = File.ReadAllText(Path.Join("examples", path));
         var compiled = ContractsCompiler.CompileCode(code, "test");
-        var ex = Xunit.Assert.Throws<AnalyzeFailedException>(() => new ContractsGenerator.Generation.ContractsGenerator(compiled).Generate());
+        var ex = Xunit.Assert.Throws<AnalyzeFailedException>(
+            () => new ContractsGenerator.Generation.ContractsGenerator(compiled).Generate()
+        );
         return new(ex.Errors);
     }
 
@@ -29,8 +31,13 @@ public static class ExampleBasedHelpers
     {
         var projectPaths = paths.Select(p => Path.Join("examples", p));
         // HACK: The sync execution results in much cleaner tests
-        var (compiled, external) = ContractsCompiler.CompileProjectsAsync(projectPaths).GetAwaiter().GetResult();
-        return new(new ContractsGenerator.Generation.ContractsGenerator(compiled).Generate(external, false));
+        var (compiled, external) = ContractsCompiler
+            .CompileProjectsAsync(projectPaths)
+            .GetAwaiter()
+            .GetResult();
+        return new(
+            new ContractsGenerator.Generation.ContractsGenerator(compiled).Generate(external, false)
+        );
     }
 
     public static AssertedExport GlobCompiles(string[] includes, string[] excludes)

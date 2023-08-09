@@ -4,26 +4,17 @@ public static class TypeRefExtensions
 {
     public static TypeRef Generic(string name)
     {
-        return new()
-        {
-            Generic = new() { Name = name },
-        };
+        return new() { Generic = new() { Name = name }, };
     }
 
     public static TypeRef Known(KnownType type)
     {
-        return new()
-        {
-            Known = new() { Type = type },
-        };
+        return new() { Known = new() { Type = type }, };
     }
 
     public static TypeRef Internal(string name)
     {
-        return new()
-        {
-            Internal = new() { Name = name },
-        };
+        return new() { Internal = new() { Name = name }, };
     }
 
     public static TypeRef Map(TypeRef key, TypeRef value)
@@ -59,7 +50,9 @@ public static class TypeRefExtensions
         }
         else
         {
-            throw new ArgumentException("Cannot add generic arguments to other type than `Internal` and `Known`.");
+            throw new ArgumentException(
+                "Cannot add generic arguments to other type than `Internal` and `Known`."
+            );
         }
 
         return typeRef;

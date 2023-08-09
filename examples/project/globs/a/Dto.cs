@@ -1,5 +1,4 @@
 namespace A
 {
-    public class Dto
-    { }
+    public class Dto { }
 }

@@ -1,3 +1,3 @@
 using LeanCode.Contracts;
 
-public class Operation : IOperation<int> {}
+public class Operation : IOperation<int> { }
