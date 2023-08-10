@@ -26,14 +26,14 @@ jobs:
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: ${{ matrix.dotnet }}.x
-      - name: Restore
-        run: dotnet restore
       - name: Tool Restore
         run: dotnet tool restore
+      - name: Restore
+        run: dotnet restore
       - name: Check formatting
         run: dotnet csharpier . --check
       - name: Build
-        run: dotnet build --no-restore --framework net${{ matrix.dotnet }}
+        run: dotnet build --framework net${{ matrix.dotnet }}
       - name: Test
         run: dotnet test --collect "XPlat Code Coverage" --settings coverlet.runsettings --logger trx --framework net${{ matrix.dotnet }}
       - name: Upload coverage to Codecov

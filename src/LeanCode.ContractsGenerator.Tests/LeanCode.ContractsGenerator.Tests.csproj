@@ -6,10 +6,17 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
-  <Target Name="PackDependenciesForTests" BeforeTargets="Build" Condition="'$(IsInnerBuild)' != 'true'">
-    <Message Importance="high" Text="Packing the dependency" />
-    <MSBuild Projects="../LeanCode.Contracts/LeanCode.Contracts.csproj" Properties="Configuration=Debug;Version=9.9.9.9-internal" Targets="Restore" />
-    <MSBuild Projects="../LeanCode.Contracts/LeanCode.Contracts.csproj" Properties="Configuration=Debug;Version=9.9.9.9-internal" Targets="Build;Pack" />
+  <ItemGroup>
+    <FxToCompile Include="$(TargetFrameworks)" />
+  </ItemGroup>
+
+  <Target Name="PackDependenciesForTests" BeforeTargets="AfterBuild">
+    <Message Text="Packing the LeanCode.Contracts" Importance="high" />
+    <MSBuild
+      StopOnFirstFailure="true"
+      Projects="../LeanCode.Contracts/LeanCode.Contracts.csproj"
+      Properties="Configuration=Debug;TargetFramework=net6.0;TargetFrameworks=net6.0;Version=9.9.9.9-internal"
+      Targets="Restore;Build;Pack" />
   </Target>
 
   <ItemGroup>

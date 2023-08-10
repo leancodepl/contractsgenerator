@@ -1,4 +1,5 @@
 using LeanCode.ContractsGenerator.Compilation.MSBuild;
+using Microsoft.Build.Logging;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.MSBuild;
