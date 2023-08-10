@@ -11,19 +11,6 @@ namespace LeanCode.ContractsGenerator.Compilation;
 
 public static class ContractsCompiler
 {
-    private static readonly ImmutableList<string> ImplicitGlobalUsings = ImmutableList.CreateRange(
-        new[]
-        {
-            "System",
-            "System.Collections.Generic",
-            "System.IO",
-            "System.Linq",
-            "System.Net.Http",
-            "System.Threading",
-            "System.Threading.Tasks",
-        }
-    );
-
 #if NET6_0
     public static readonly ImmutableHashSet<string> ReferenceAssemblyNames =
         ImmutableHashSet.CreateRange(
@@ -98,7 +85,7 @@ public static class ContractsCompiler
         List<Export> External
     )> CompileProjectsAsync(IEnumerable<string> projectPaths)
     {
-        using var loader = new ProjectLoader(PrepareCompilationOptions());
+        using var loader = new ProjectLoader();
         await loader.LoadProjectsAsync(projectPaths);
         var compilations = await loader.CompileAsync();
         var compiledContracts = Compile(
@@ -172,7 +159,6 @@ public static class ContractsCompiler
     private static CSharpCompilationOptions PrepareCompilationOptions()
     {
         return new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary)
-            .WithUsings(ImplicitGlobalUsings)
             .WithConcurrentBuild(true)
             .WithAllowUnsafe(false)
             .WithNullableContextOptions(NullableContextOptions.Annotations)

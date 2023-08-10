@@ -5,12 +5,13 @@
   </PropertyGroup>
 
   <Target Name="BuildDependencies" BeforeTargets="Restore">
-    <MSBuild Projects="../embedded/embedded.csproj" Properties="Configuration=Debug" Targets="Restore" />
-    <MSBuild Projects="../embedded/embedded.csproj" Properties="Configuration=Debug" Targets="Build;Pack" />
+    <MSBuild Projects="../embedded/embedded.csproj" Properties="Configuration=Debug;Version=8.8.8.8-internal" Targets="Restore" />
+    <MSBuild Projects="../embedded/embedded.csproj" Properties="Configuration=Debug;Version=8.8.8.8-internal" Targets="Build;Pack" />
   </Target>
 
   <ItemGroup>
-    <PackageReference Include="embedded" Version="$(Version)" />
+    <PackageReference Include="LeanCode.Contracts" Version="9.9.9.9-internal" />
+    <PackageReference Include="embedded" Version="8.8.8.8-internal" />
   </ItemGroup>
 
 </Project>

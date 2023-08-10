@@ -8,7 +8,6 @@
 
     <PackageReference Update="Microsoft.Extensions.DependencyModel" Version="7.0.0" />
     <PackageReference Update="Microsoft.Extensions.FileSystemGlobbing" Version="7.0.0" />
-    <PackageReference Update="System.Reflection.MetadataLoadContext" Version="7.0.0" />
 
     <PackageReference Update="Microsoft.Build.Locator" Version="1.5.5" />
   </ItemGroup>
@@ -20,6 +19,8 @@
     <PackageReference Update="Microsoft.CodeAnalysis.CSharp" Version="4.2.0" />
     <PackageReference Update="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.2.0" />
     <PackageReference Update="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="4.2.0" />
+
+    <PackageReference Update="System.Reflection.MetadataLoadContext" Version="6.0.0" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net7.0' ">
@@ -29,6 +30,8 @@
     <PackageReference Update="Microsoft.CodeAnalysis.CSharp" Version="4.4.0" />
     <PackageReference Update="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.4.0" />
     <PackageReference Update="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="4.4.0" />
+
+    <PackageReference Update="System.Reflection.MetadataLoadContext" Version="7.0.0" />
   </ItemGroup>
 
   <ItemGroup>
