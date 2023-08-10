@@ -1,8 +1,8 @@
 <Project>
 
   <ItemGroup>
-    <PackageReference Update="Google.Protobuf" Version="3.21.11" />
-    <PackageReference Update="Grpc.Tools" Version="2.51.0" />
+    <PackageReference Update="Google.Protobuf" Version="3.24.0" />
+    <PackageReference Update="Grpc.Tools" Version="2.56.2" />
     <PackageReference Update="CommandLineParser" Version="2.9.1" />
     <PackageReference Update="Microsoft.SourceLink.GitHub" Version="1.1.1" />
 
@@ -38,12 +38,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="17.4.0" />
-    <PackageReference Update="xunit.analyzers" Version="1.1.0" />
-    <PackageReference Update="xunit.runner.visualstudio" Version="2.4.5" />
-    <PackageReference Update="xunit" Version="2.4.2" />
+    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="17.7.0" />
+    <PackageReference Update="xunit.analyzers" Version="1.2.0" />
+    <PackageReference Update="xunit.runner.visualstudio" Version="2.5.0" />
+    <PackageReference Update="xunit" Version="2.5.0" />
 
-    <PackageReference Update="coverlet.collector" Version="3.2.0" />
+    <PackageReference Update="coverlet.collector" Version="6.0.0" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net7.0' ">

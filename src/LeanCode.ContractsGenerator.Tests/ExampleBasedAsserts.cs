@@ -123,9 +123,9 @@ public static class ExampleBasedAsserts
         {
             Assert.Contains(errors.Errors, e => e.Code == code && e.Context.Path == path);
         }
-        catch (ContainsException ex)
+        catch (ContainsException)
         {
-            throw new ContainsException($"Error {code} at {path}.", ex.Actual);
+            throw new XunitException($"Expected to contain analyzer error {code} at {path}.");
         }
 
         return errors;
@@ -146,11 +146,10 @@ public static class ExampleBasedAsserts
                 e => e.Code == code && e.Context.Path == path && regex.IsMatch(e.Message)
             );
         }
-        catch (ContainsException ex)
+        catch (ContainsException)
         {
-            throw new ContainsException(
-                $"Error {code} at {path} that matches '{messagePattern}'.",
-                ex.Actual
+            throw new XunitException(
+                $"Expected to contain analyzer error {code} at {path} that matches '{messagePattern}'."
             );
         }
 
