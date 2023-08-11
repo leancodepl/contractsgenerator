@@ -72,34 +72,11 @@ public class Generic
     }
 
     [Fact]
-    public void Nested_known_type_generic_notification()
-    {
-        "notifications/generic.cs"
-            .Compiles()
-            .WithDto("Notifications.Generic.DTO2")
-            .WithTopic("Notifications.Generic.Topic4")
-            .WithNotification(
-                NotificationTypeRefExtensions.WithTag(
-                    TypeRefExtensions.Map(
-                        TypeRefExtensions.Known(KnownType.Int32),
-                        TypeRefExtensions
-                            .Internal("Notifications.Generic.DTO2")
-                            .WithArguments(TypeRefExtensions.Known(KnownType.Int32))
-                    ),
-                    LeanCode.Contracts.NotificationTagGenerator.Generate(
-                        typeof(Dictionary<int, DTO2<int>>)
-                    )
-                )
-            );
-        // !Map[!Int32,Notifications.Generic.DTO2[!Int32]]
-    }
-
-    [Fact]
     public void Multiple_generic_notifications_topic()
     {
         "notifications/generic.cs"
             .Compiles()
-            .WithTopic("Notifications.Generic.Topic5")
+            .WithTopic("Notifications.Generic.Topic4")
             .WithNotification(
                 NotificationTypeRefExtensions.WithTag(
                     TypeRefExtensions

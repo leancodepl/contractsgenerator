@@ -9,4 +9,5 @@ public static class AnalyzerCodes
     public const string UnsupportedType = "CNTR0005";
     public const string TopicDoesNotProduceNotification = "CNTR0006";
     public const string TopicProducesNullableNotification = "CNTR0007";
+    public const string TopicMustProduceInternalType = "CNTR0008";
 }
