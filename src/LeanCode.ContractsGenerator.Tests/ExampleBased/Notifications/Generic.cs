@@ -1,5 +1,8 @@
+using LeanCode.Contracts;
 using Notifications.Generic;
 using Xunit;
+using static LeanCode.ContractsGenerator.Tests.TypeRefExtensions;
+using static LeanCode.ContractsGenerator.Tests.NotificationTypeRefExtensions;
 
 namespace LeanCode.ContractsGenerator.Tests.ExampleBased.Notifications;
 
@@ -13,14 +16,13 @@ public class Generic
             .WithDto("Notifications.Generic.Notification1")
             .WithTopic("Notifications.Generic.Topic1")
             .WithNotification(
-                NotificationTypeRefExtensions.WithTag(
+                WithTag(
                     TypeRefExtensions
                         .Internal("Notifications.Generic.Notification1")
-                        .WithArguments(TypeRefExtensions.Known(KnownType.Int32)),
-                    LeanCode.Contracts.NotificationTagGenerator.Generate(typeof(Notification1<int>))
+                        .WithArguments(Known(KnownType.Int32)),
+                    NotificationTagGenerator.Generate(typeof(Notification1<int>))
                 )
             );
-        // Notifications.Generic.Notification1[!Int32]
     }
 
     [Fact]
@@ -31,19 +33,16 @@ public class Generic
             .WithDto("Notifications.Generic.DTO1")
             .WithTopic("Notifications.Generic.Topic2")
             .WithNotification(
-                NotificationTypeRefExtensions.WithTag(
+                WithTag(
                     TypeRefExtensions
                         .Internal("Notifications.Generic.Notification2")
                         .WithArguments(
-                            TypeRefExtensions.Known(KnownType.Int32),
+                            Known(KnownType.Int32),
                             TypeRefExtensions.Internal("Notifications.Generic.DTO1")
                         ),
-                    LeanCode.Contracts.NotificationTagGenerator.Generate(
-                        typeof(Notification2<int, DTO1>)
-                    )
+                    NotificationTagGenerator.Generate(typeof(Notification2<int, DTO1>))
                 )
             );
-        // Notifications.Generic.Notification2[!Int32,Notifications.Generic.DTO1]
     }
 
     [Fact]
@@ -54,21 +53,20 @@ public class Generic
             .WithDto("Notifications.Generic.DTO2")
             .WithTopic("Notifications.Generic.Topic3")
             .WithNotification(
-                NotificationTypeRefExtensions.WithTag(
+                WithTag(
                     TypeRefExtensions
                         .Internal("Notifications.Generic.Notification2")
                         .WithArguments(
-                            TypeRefExtensions.Known(KnownType.DateTimeOffset),
+                            Known(KnownType.DateTimeOffset),
                             TypeRefExtensions
                                 .Internal("Notifications.Generic.DTO2")
-                                .WithArguments(TypeRefExtensions.Known(KnownType.Int32))
+                                .WithArguments(Known(KnownType.Int32))
                         ),
-                    LeanCode.Contracts.NotificationTagGenerator.Generate(
+                    NotificationTagGenerator.Generate(
                         typeof(Notification2<DateTimeOffset, DTO2<int>>)
                     )
                 )
             );
-        // Notifications.Generic.Notification2[!DateTimeOffset,Notifications.Generic.DTO2[!Int32]]
     }
 
     [Fact]
@@ -78,27 +76,20 @@ public class Generic
             .Compiles()
             .WithTopic("Notifications.Generic.Topic4")
             .WithNotification(
-                NotificationTypeRefExtensions.WithTag(
+                WithTag(
                     TypeRefExtensions
                         .Internal("Notifications.Generic.Notification1")
-                        .WithArguments(TypeRefExtensions.Known(KnownType.Int32)),
-                    LeanCode.Contracts.NotificationTagGenerator.Generate(typeof(Notification1<int>))
+                        .WithArguments(Known(KnownType.Int32)),
+                    NotificationTagGenerator.Generate(typeof(Notification1<int>))
                 )
             )
-            // !Map[!Int32,Notifications.Generic.DTO2[!Int32]]
             .WithNotification(
-                NotificationTypeRefExtensions.WithTag(
+                WithTag(
                     TypeRefExtensions
                         .Internal("Notifications.Generic.Notification2")
-                        .WithArguments(
-                            TypeRefExtensions.Known(KnownType.Uint8),
-                            TypeRefExtensions.Known(KnownType.TimeSpan)
-                        ),
-                    LeanCode.Contracts.NotificationTagGenerator.Generate(
-                        typeof(Notification2<byte, TimeSpan>)
-                    )
+                        .WithArguments(Known(KnownType.Uint8), Known(KnownType.TimeSpan)),
+                    NotificationTagGenerator.Generate(typeof(Notification2<byte, TimeSpan>))
                 )
             );
-        // Notifications.Generic.Notification2[!Uint8,!TimeSpan]
     }
 }

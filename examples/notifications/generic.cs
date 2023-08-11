@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using LeanCode.Contracts;
 
 namespace Notifications.Generic;
