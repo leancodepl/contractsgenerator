@@ -1,3 +1,4 @@
+using LeanCode.ContractsGenerator.Analyzers;
 using Xunit;
 
 namespace LeanCode.ContractsGenerator.Tests.ExampleBased.Analyzers;
@@ -9,13 +10,16 @@ public class Context
     {
         "analyzers/context.cs"
             .AnalyzeFails()
-            .WithError("CNTR0004", "Dto1.A<0: System.Decimal>")
-            .WithError("CNTR0004", "Dto2.A<0: System.Decimal>")
-            .WithError("CNTR0004", "Dto3:System.IDisposable")
-            .WithError("CNTR0004", "Dto4:System.IDisposable")
-            .WithError("CNTR0004", "Dto5:Inner<0: System.Decimal>")
-            .WithError("CNTR0004", "Dto6:Inner<0: Inner><0: System.Decimal>")
-            .WithError("CNTR0004", "Query1->System.Decimal")
-            .WithError("CNTR0004", "Query2->Inner<0: System.Decimal>");
+            .WithError(AnalyzerCodes.InternalTypeIsNotKnown, "Dto1.A<0: System.Decimal>")
+            .WithError(AnalyzerCodes.InternalTypeIsNotKnown, "Dto2.A<0: System.Decimal>")
+            .WithError(AnalyzerCodes.InternalTypeIsNotKnown, "Dto3:System.IDisposable")
+            .WithError(AnalyzerCodes.InternalTypeIsNotKnown, "Dto4:System.IDisposable")
+            .WithError(AnalyzerCodes.InternalTypeIsNotKnown, "Dto5:Inner<0: System.Decimal>")
+            .WithError(
+                AnalyzerCodes.InternalTypeIsNotKnown,
+                "Dto6:Inner<0: Inner><0: System.Decimal>"
+            )
+            .WithError(AnalyzerCodes.InternalTypeIsNotKnown, "Query1->System.Decimal")
+            .WithError(AnalyzerCodes.InternalTypeIsNotKnown, "Query2->Inner<0: System.Decimal>");
     }
 }

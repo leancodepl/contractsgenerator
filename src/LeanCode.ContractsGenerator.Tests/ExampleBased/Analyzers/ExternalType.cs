@@ -1,3 +1,4 @@
+using LeanCode.ContractsGenerator.Analyzers;
 using Xunit;
 
 namespace LeanCode.ContractsGenerator.Tests.ExampleBased.Analyzers;
@@ -10,9 +11,9 @@ public class ExternalType
         "analyzers/external_types.cs"
             .AnalyzeFails()
             .WithErrorNumber(4)
-            .WithError("CNTR0004", "Dto.Wrong1")
-            .WithError("CNTR0004", "Dto.Wrong2")
-            .WithError("CNTR0004", "Dto.Wrong3")
-            .WithError("CNTR0004", "Query->System.Decimal");
+            .WithError(AnalyzerCodes.InternalTypeIsNotKnown, "Dto.Wrong1")
+            .WithError(AnalyzerCodes.InternalTypeIsNotKnown, "Dto.Wrong2")
+            .WithError(AnalyzerCodes.InternalTypeIsNotKnown, "Dto.Wrong3")
+            .WithError(AnalyzerCodes.InternalTypeIsNotKnown, "Query->System.Decimal");
     }
 }

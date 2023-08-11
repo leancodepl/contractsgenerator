@@ -4,8 +4,6 @@ namespace LeanCode.ContractsGenerator.Analyzers;
 
 public class ExternalTypeCheck : BaseAnalyzer
 {
-    public const string Code = "CNTR0004";
-
     private ImmutableHashSet<string> knownTypes = ImmutableHashSet<string>.Empty;
 
     public override IEnumerable<AnalyzeError> Analyze(Export export)
@@ -28,7 +26,11 @@ public class ExternalTypeCheck : BaseAnalyzer
         {
             return new[]
             {
-                new AnalyzeError(Code, $"Internal type `{i.Name}` is not known.", context)
+                new AnalyzeError(
+                    AnalyzerCodes.InternalTypeIsNotKnown,
+                    $"Internal type `{i.Name}` is not known.",
+                    context
+                )
             };
         }
     }

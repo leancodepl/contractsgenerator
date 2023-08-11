@@ -2,8 +2,6 @@ namespace LeanCode.ContractsGenerator.Analyzers;
 
 public class ErrorCodesUniqueness : BaseAnalyzer
 {
-    public const string Code = "CNTR0003";
-
     public override IEnumerable<AnalyzeError> AnalyzeErrorCodes(
         AnalyzerContext context,
         IEnumerable<ErrorCode> errCodes
@@ -16,7 +14,7 @@ public class ErrorCodesUniqueness : BaseAnalyzer
             .Select(
                 g =>
                     new AnalyzeError(
-                        Code,
+                        AnalyzerCodes.DuplicateErrorCodes,
                         $"Duplicate error codes: {string.Join(", ", g.Select(c => c.Name))}",
                         context
                     )

@@ -1,3 +1,4 @@
+using LeanCode.ContractsGenerator.Analyzers;
 using Xunit;
 
 namespace LeanCode.ContractsGenerator.Tests.ExampleBased.Analyzers;
@@ -9,7 +10,7 @@ public class ErrorCodes
     {
         "analyzers/error_codes.cs"
             .AnalyzeFails()
-            .WithError("CNTR0003", "Cmd1.ErrorCodes")
-            .WithError("CNTR0003", "Cmd2.ErrorCodes");
+            .WithError(AnalyzerCodes.DuplicateErrorCodes, "Cmd1.ErrorCodes")
+            .WithError(AnalyzerCodes.DuplicateErrorCodes, "Cmd2.ErrorCodes");
     }
 }
