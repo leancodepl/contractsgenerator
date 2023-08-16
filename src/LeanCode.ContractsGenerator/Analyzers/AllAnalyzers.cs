@@ -11,6 +11,7 @@ public class AllAnalyzers : IAnalyzer
         new InvalidTypeCheck(),
         new TopicWithoutNotificationCheck(),
         new TopicWithNullableNotificationCheck(),
+        new TopicMustProduceInternalType(),
     };
 
     public IEnumerable<AnalyzeError> Analyze(Export export)

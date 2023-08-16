@@ -1,5 +1,7 @@
 using Notifications.Internal;
 using Xunit;
+using LeanCode.Contracts;
+using static LeanCode.ContractsGenerator.Tests.NotificationTypeRefExtensions;
 
 namespace LeanCode.ContractsGenerator.Tests.ExampleBased.Notifications;
 
@@ -10,22 +12,18 @@ public class Internal
     {
         "notifications/internal.cs"
             .Compiles()
-            .WithDto("Notifications.Internal.DTO1")
-            .WithDto("Notifications.Internal.DTO2")
             .WithTopic("Notifications.Internal.Topic")
             .WithNotification(
-                NotificationTypeRefExtensions.WithTag(
+                WithTag(
                     TypeRefExtensions.Internal("Notifications.Internal.DTO1"),
-                    LeanCode.Contracts.NotificationTagGenerator.Generate(typeof(DTO1))
+                    NotificationTagGenerator.Generate(typeof(DTO1))
                 )
             )
-            // Notifications.Internal.DTO1
             .WithNotification(
-                NotificationTypeRefExtensions.WithTag(
+                WithTag(
                     TypeRefExtensions.Internal("Notifications.Internal.DTO2"),
-                    LeanCode.Contracts.NotificationTagGenerator.Generate(typeof(DTO2))
+                    NotificationTagGenerator.Generate(typeof(DTO2))
                 )
             );
-        // Notifications.Internal.DTO2
     }
 }

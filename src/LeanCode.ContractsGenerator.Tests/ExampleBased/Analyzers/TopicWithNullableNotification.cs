@@ -1,3 +1,4 @@
+using LeanCode.ContractsGenerator.Analyzers;
 using Xunit;
 
 namespace LeanCode.ContractsGenerator.Tests.ExampleBased.Analyzers;
@@ -11,12 +12,12 @@ public class TopicWithNullableNotification
             .AnalyzeFails()
             .WithErrorNumber(2)
             .WithError(
-                "CNTR0008",
+                AnalyzerCodes.TopicProducesNullableNotification,
                 "NullableNotificationTopic",
                 messagePattern: "Topic type .+ produces nullable notification type"
             )
             .WithError(
-                "CNTR0008",
+                AnalyzerCodes.TopicProducesNullableNotification,
                 "NullableNotificationTopic",
                 messagePattern: "Topic type .+ produces nullable notification type."
             );

@@ -1,3 +1,4 @@
+using LeanCode.ContractsGenerator.Analyzers;
 using Xunit;
 
 namespace LeanCode.ContractsGenerator.Tests.ExampleBased.Analyzers;
@@ -11,22 +12,22 @@ public class TopicWithoutNotification
             .AnalyzeFails()
             .WithErrorNumber(4)
             .WithError(
-                "CNTR0007",
+                AnalyzerCodes.TopicDoesNotProduceNotification,
                 "EmptyTopic",
                 messagePattern: "Topic type .+ doesn't produce any notification."
             )
             .WithError(
-                "CNTR0007",
+                AnalyzerCodes.TopicDoesNotProduceNotification,
                 "EmptyInheritedTopic",
                 messagePattern: "Topic type .+ doesn't produce any notification."
             )
             .WithError(
-                "CNTR0007",
+                AnalyzerCodes.TopicDoesNotProduceNotification,
                 "InheritedInterfaceEmptyTopic",
                 messagePattern: "Topic type .+ doesn't produce any notification."
             )
             .WithError(
-                "CNTR0007",
+                AnalyzerCodes.TopicDoesNotProduceNotification,
                 "ConcreteEmptyTopic",
                 messagePattern: "Topic type .+ doesn't produce any notification."
             );

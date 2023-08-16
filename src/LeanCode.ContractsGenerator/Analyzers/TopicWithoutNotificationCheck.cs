@@ -2,8 +2,6 @@ namespace LeanCode.ContractsGenerator.Analyzers;
 
 public class TopicWithoutNotificationCheck : BaseAnalyzer
 {
-    public const string Code = "CNTR0007";
-
     public override IEnumerable<AnalyzeError> AnalyzeTopic(
         AnalyzerContext context,
         Statement stmt,
@@ -13,7 +11,7 @@ public class TopicWithoutNotificationCheck : BaseAnalyzer
         if (topic.Notifications.Count == 0)
         {
             yield return new AnalyzeError(
-                Code,
+                AnalyzerCodes.TopicDoesNotProduceNotification,
                 $"Topic type `{stmt.Name}` doesn't produce any notification.",
                 context
             );

@@ -1,3 +1,4 @@
+using LeanCode.ContractsGenerator.Analyzers;
 using Xunit;
 
 namespace LeanCode.ContractsGenerator.Tests.ExampleBased.Analyzers;
@@ -11,7 +12,7 @@ public class InvalidTypes
             .AnalyzeFails()
             .WithErrorNumber(1)
             .WithError(
-                "CNTR0006",
+                AnalyzerCodes.UnsupportedType,
                 "Dto.Wrong1",
                 messagePattern: ".+Use `DateTimeOffset` with zero offset instead.+"
             );

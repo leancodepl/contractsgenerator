@@ -2,8 +2,6 @@ namespace LeanCode.ContractsGenerator.Analyzers;
 
 public class InvalidTypeCheck : BaseAnalyzer
 {
-    public const string Code = "CNTR0006";
-
     public static readonly IReadOnlyDictionary<string, string> InvalidTypes = new Dictionary<
         string,
         string
@@ -22,7 +20,11 @@ public class InvalidTypeCheck : BaseAnalyzer
         {
             return new[]
             {
-                new AnalyzeError(Code, $"Type `{i.Name}` is unsupported. {msg}", context)
+                new AnalyzeError(
+                    AnalyzerCodes.UnsupportedType,
+                    $"Type `{i.Name}` is unsupported. {msg}",
+                    context
+                )
             };
         }
         else

@@ -2,7 +2,7 @@ namespace LeanCode.ContractsGenerator.Analyzers;
 
 public class InternalStructureCheck : BaseAnalyzer
 {
-    public const string Code = "CNTR0001";
+    public const string Code = AnalyzerCodes.InternalStructureIsWrong;
 
     public override IEnumerable<AnalyzeError> AnalyzeTypeRef(
         AnalyzerContext context,
