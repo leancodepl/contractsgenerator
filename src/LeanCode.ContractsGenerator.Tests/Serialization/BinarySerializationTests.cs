@@ -23,7 +23,10 @@ public class BinarySerializationTests
     [Fact]
     public void Binary_is_serialized_as_base64_string()
     {
-        var serialized = JsonSerializer.Serialize(DTO, new JsonSerializerOptions { WriteIndented = true });
+        var serialized = JsonSerializer.Serialize(
+            DTO,
+            new JsonSerializerOptions { WriteIndented = true }
+        );
 
         Assert.Equal(Json, serialized);
     }

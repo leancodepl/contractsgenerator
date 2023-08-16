@@ -36,7 +36,11 @@ public static class SymbolExtensions
         }
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1031", Justification = "Exception boundary.")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "?",
+        "CA1031",
+        Justification = "Exception boundary."
+    )]
     public static string GetComments(this ISymbol symbol)
     {
         var xml = symbol.GetDocumentationCommentXml();

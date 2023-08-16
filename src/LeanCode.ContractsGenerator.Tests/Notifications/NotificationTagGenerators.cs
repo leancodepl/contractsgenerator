@@ -9,7 +9,8 @@ public class NotificationTagGenerators
 {
     private readonly string class1Name = $"{typeof(Class1).FullName}";
     private readonly string class2Name = $"{typeof(Class2<>).Namespace}.{nameof(Class2<object>)}";
-    private readonly string class3Name = $"{typeof(Class3<,>).Namespace}.{nameof(Class3<object, object>)}";
+    private readonly string class3Name =
+        $"{typeof(Class3<,>).Namespace}.{nameof(Class3<object, object>)}";
     private readonly string listName = $"{typeof(List<>).Namespace}.{nameof(List<object>)}";
     private readonly string dto1Name = $"{typeof(DTO1).FullName}";
     private readonly string otherNamespaceDto1Name = $"{typeof(OtherNamespaceDTO1).FullName}";
@@ -28,7 +29,8 @@ public class NotificationTagGenerators
     public void Single_generic_argument()
     {
         var type = typeof(Class2<int>);
-        var typeRef = TypeRefExtensions.Internal(class2Name)
+        var typeRef = TypeRefExtensions
+            .Internal(class2Name)
             .WithArguments(TypeRefExtensions.Known(KnownType.Int32));
         var expectedTag = $"{class2Name}[!Int32]";
 
@@ -39,10 +41,12 @@ public class NotificationTagGenerators
     public void Multiple_generic_arguments()
     {
         var type = typeof(Class3<int, DateTimeOffset>);
-        var typeRef = TypeRefExtensions.Internal(class3Name)
+        var typeRef = TypeRefExtensions
+            .Internal(class3Name)
             .WithArguments(
                 TypeRefExtensions.Known(KnownType.Int32),
-                TypeRefExtensions.Known(KnownType.DateTimeOffset));
+                TypeRefExtensions.Known(KnownType.DateTimeOffset)
+            );
         var expectedTag = $"{class3Name}[!Int32,!DateTimeOffset]";
 
         CheckGeneratedTags(type, typeRef, expectedTag);
@@ -52,12 +56,18 @@ public class NotificationTagGenerators
     public void Nested_generic_arguments()
     {
         var type = typeof(Class3<Class2<object>, Class2<int[]>>);
-        var typeRef = TypeRefExtensions.Internal(class3Name)
+        var typeRef = TypeRefExtensions
+            .Internal(class3Name)
             .WithArguments(
-                TypeRefExtensions.Internal(class2Name)
+                TypeRefExtensions
+                    .Internal(class2Name)
                     .WithArguments(TypeRefExtensions.Known(KnownType.Object)),
-                TypeRefExtensions.Internal(class2Name)
-                    .WithArguments(TypeRefExtensions.Array(TypeRefExtensions.Known(KnownType.Int32))));
+                TypeRefExtensions
+                    .Internal(class2Name)
+                    .WithArguments(
+                        TypeRefExtensions.Array(TypeRefExtensions.Known(KnownType.Int32))
+                    )
+            );
         var expectedTag = $"{class3Name}[{class2Name}[!Object],{class2Name}[!Array[!Int32]]]";
 
         CheckGeneratedTags(type, typeRef, expectedTag);
@@ -69,8 +79,10 @@ public class NotificationTagGenerators
         var type = typeof(Dictionary<Guid[], Class2<TimeSpan>>);
         var typeRef = TypeRefExtensions.Map(
             TypeRefExtensions.Array(TypeRefExtensions.Known(KnownType.Guid)),
-            TypeRefExtensions.Internal(class2Name)
-                .WithArguments(TypeRefExtensions.Known(KnownType.TimeSpan)));
+            TypeRefExtensions
+                .Internal(class2Name)
+                .WithArguments(TypeRefExtensions.Known(KnownType.TimeSpan))
+        );
         var expectedTag = $"!Map[!Array[!Guid],{class2Name}[!TimeSpan]]";
 
         CheckGeneratedTags(type, typeRef, expectedTag);
@@ -90,12 +102,17 @@ public class NotificationTagGenerators
             TypeRefExtensions.Array(
                 TypeRefExtensions.Map(
                     TypeRefExtensions.Known(KnownType.Int32),
-                    TypeRefExtensions.Known(KnownType.String))));
+                    TypeRefExtensions.Known(KnownType.String)
+                )
+            )
+        );
         var expectedTag = "!Array[!Array[!Map[!Int32,!String]]]";
 
         CheckGeneratedTags(type, typeRef, expectedTag);
 
-        var listType = typeof(System.Collections.Generic.List<System.Collections.Generic.List<Dictionary<int, string>>>);
+        var listType = typeof(System.Collections.Generic.List<System.Collections.Generic.List<
+            Dictionary<int, string>
+        >>);
         CheckGeneratedTags(listType, typeRef, expectedTag);
 
         var enumerableType = typeof(IEnumerable<IEnumerable<Dictionary<int, string>>>);
@@ -110,7 +127,9 @@ public class NotificationTagGenerators
 
         CheckIfTagsAreDifferent(type1, type2);
 
-        var typeRef1 = TypeRefExtensions.Internal(listName).WithArguments(TypeRefExtensions.Known(KnownType.Int32));
+        var typeRef1 = TypeRefExtensions
+            .Internal(listName)
+            .WithArguments(TypeRefExtensions.Known(KnownType.Int32));
         var typeRef2 = TypeRefExtensions.Array(TypeRefExtensions.Known(KnownType.Int32));
 
         CheckIfTagsAreDifferent(typeRef1, typeRef2);
@@ -138,23 +157,25 @@ public class NotificationTagGenerators
 
     private static void CheckGeneratedTags(Type type, TypeRef typeRef, string expectedTag)
     {
-        Assert.Equal(
-            expected: expectedTag,
-            actual: ContractsTagGenerator.Generate(type));
+        Assert.Equal(expected: expectedTag, actual: ContractsTagGenerator.Generate(type));
 
-        Assert.Equal(
-            expected: expectedTag,
-            actual: CompilationTagGenerator.Generate(typeRef));
+        Assert.Equal(expected: expectedTag, actual: CompilationTagGenerator.Generate(typeRef));
     }
 
     private static void CheckIfTagsAreDifferent(Type type1, Type type2)
     {
-        Assert.NotEqual(ContractsTagGenerator.Generate(type1), ContractsTagGenerator.Generate(type2));
+        Assert.NotEqual(
+            ContractsTagGenerator.Generate(type1),
+            ContractsTagGenerator.Generate(type2)
+        );
     }
 
     private static void CheckIfTagsAreDifferent(TypeRef typeRef1, TypeRef typeRef2)
     {
-        Assert.NotEqual(CompilationTagGenerator.Generate(typeRef1), CompilationTagGenerator.Generate(typeRef2));
+        Assert.NotEqual(
+            CompilationTagGenerator.Generate(typeRef1),
+            CompilationTagGenerator.Generate(typeRef2)
+        );
     }
 }
 

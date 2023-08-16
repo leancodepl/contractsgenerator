@@ -4,7 +4,11 @@ public class TopicWithNullableNotificationCheck : BaseAnalyzer
 {
     public const string Code = "CNTR0008";
 
-    public override IEnumerable<AnalyzeError> AnalyzeTopic(AnalyzerContext context, Statement stmt, Statement.Types.Topic topic)
+    public override IEnumerable<AnalyzeError> AnalyzeTopic(
+        AnalyzerContext context,
+        Statement stmt,
+        Statement.Types.Topic topic
+    )
     {
         var nullableNotifications = topic.Notifications.Where(n => n.Type.Nullable);
 
@@ -13,7 +17,8 @@ public class TopicWithNullableNotificationCheck : BaseAnalyzer
             yield return new AnalyzeError(
                 Code,
                 $"Topic type `{stmt.Name}` produces nullable notification type.",
-                context);
+                context
+            );
         }
     }
 }

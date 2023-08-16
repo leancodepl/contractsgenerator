@@ -4,6 +4,5 @@ using LeanCode.Contracts.Security;
 namespace Single
 {
     [AllowUnauthorized]
-    public class Command : ICommand
-    { }
+    public class Command : ICommand { }
 }

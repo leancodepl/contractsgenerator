@@ -9,7 +9,11 @@ public class InvalidTypes
     {
         "analyzers/invalid_types.cs"
             .AnalyzeFails()
-                .WithErrorNumber(1)
-                .WithError("CNTR0006", "Dto.Wrong1", messagePattern: ".+Use `DateTimeOffset` with zero offset instead.+");
+            .WithErrorNumber(1)
+            .WithError(
+                "CNTR0006",
+                "Dto.Wrong1",
+                messagePattern: ".+Use `DateTimeOffset` with zero offset instead.+"
+            );
     }
 }

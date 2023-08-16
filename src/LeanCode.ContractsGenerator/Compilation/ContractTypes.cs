@@ -32,12 +32,21 @@ public sealed class ContractTypes
         CommandType = GetTypeSymbols<ICommand>(compilations);
         OperationType = GetUnboundTypeSymbols(compilations, typeof(IOperation<>));
         TopicType = GetTypeSymbols<ITopic>(compilations);
-        ProduceNotificationType = GetUnboundTypeSymbols(compilations, typeof(IProduceNotification<>));
+        ProduceNotificationType = GetUnboundTypeSymbols(
+            compilations,
+            typeof(IProduceNotification<>)
+        );
 
         AuthorizeWhenAttribute = GetTypeSymbols<AuthorizeWhenAttribute>(compilations);
-        GenericAuthorizeWhenAttribute = GetUnboundTypeSymbols(compilations, typeof(AuthorizeWhenAttribute<>));
-        AuthorizeWhenHasAnyOfAttribute = GetTypeSymbols<AuthorizeWhenHasAnyOfAttribute>(compilations);
-        ExcludeFromContractsGenerationAttribute = GetTypeSymbols<ExcludeFromContractsGenerationAttribute>(compilations);
+        GenericAuthorizeWhenAttribute = GetUnboundTypeSymbols(
+            compilations,
+            typeof(AuthorizeWhenAttribute<>)
+        );
+        AuthorizeWhenHasAnyOfAttribute = GetTypeSymbols<AuthorizeWhenHasAnyOfAttribute>(
+            compilations
+        );
+        ExcludeFromContractsGenerationAttribute =
+            GetTypeSymbols<ExcludeFromContractsGenerationAttribute>(compilations);
         Attribute = GetTypeSymbols<Attribute>(compilations);
         AttributeUsageAttribute = GetTypeSymbols<AttributeUsageAttribute>(compilations);
         ReadOnlyDictionary = GetUnboundTypeSymbols(compilations, typeof(IReadOnlyDictionary<,>));
@@ -45,7 +54,8 @@ public sealed class ContractTypes
     }
 
     private static HashSet<INamedTypeSymbol> GetTypeSymbols<T>(
-        IReadOnlyCollection<CSharpCompilation> compilations)
+        IReadOnlyCollection<CSharpCompilation> compilations
+    )
     {
         var name = typeof(T).FullName!;
         var result = new HashSet<INamedTypeSymbol>(SymbolEqualityComparer.Default);
@@ -54,7 +64,9 @@ public sealed class ContractTypes
             var type = c.GetTypeByMetadataName(name);
             if (type is null)
             {
-                throw new CompilationFailedException($"Cannot locate type {name} in compilation unit `{c.AssemblyName ?? "UNKNOWN"}`.");
+                throw new CompilationFailedException(
+                    $"Cannot locate type {name} in compilation unit `{c.AssemblyName ?? "UNKNOWN"}`."
+                );
             }
 
             result.Add(type);
@@ -65,7 +77,8 @@ public sealed class ContractTypes
 
     private static HashSet<INamedTypeSymbol> GetUnboundTypeSymbols(
         IReadOnlyCollection<CSharpCompilation> compilations,
-        Type type)
+        Type type
+    )
     {
         var name = type.FullName!;
         var result = new HashSet<INamedTypeSymbol>(SymbolEqualityComparer.Default);
@@ -74,7 +87,9 @@ public sealed class ContractTypes
             var t = c.GetTypeByMetadataName(name)?.ConstructUnboundGenericType();
             if (t is null)
             {
-                throw new CompilationFailedException($"Cannot locate generic type {name} in compilation unit `{c.AssemblyName ?? "UNKNOWN"}`.");
+                throw new CompilationFailedException(
+                    $"Cannot locate generic type {name} in compilation unit `{c.AssemblyName ?? "UNKNOWN"}`."
+                );
             }
 
             result.Add(t);
@@ -85,38 +100,34 @@ public sealed class ContractTypes
 
     public bool IsQuery(ITypeSymbol symbol)
     {
-        return
-            symbol is INamedTypeSymbol ns &&
-            !ns.IsUnboundGenericType &&
-            !ns.IsAbstract &&
-            ns.AllInterfaces.Any(IsQueryType);
+        return symbol is INamedTypeSymbol ns
+            && !ns.IsUnboundGenericType
+            && !ns.IsAbstract
+            && ns.AllInterfaces.Any(IsQueryType);
     }
 
     public bool IsCommand(ITypeSymbol symbol)
     {
-        return
-            symbol is INamedTypeSymbol ns &&
-            !ns.IsUnboundGenericType &&
-            !ns.IsAbstract &&
-            ns.AllInterfaces.Any(IsCommandType);
+        return symbol is INamedTypeSymbol ns
+            && !ns.IsUnboundGenericType
+            && !ns.IsAbstract
+            && ns.AllInterfaces.Any(IsCommandType);
     }
 
     public bool IsOperation(ITypeSymbol symbol)
     {
-        return
-            symbol is INamedTypeSymbol ns &&
-            !ns.IsUnboundGenericType &&
-            !ns.IsAbstract &&
-            ns.AllInterfaces.Any(IsOperationType);
+        return symbol is INamedTypeSymbol ns
+            && !ns.IsUnboundGenericType
+            && !ns.IsAbstract
+            && ns.AllInterfaces.Any(IsOperationType);
     }
 
     public bool IsTopic(ITypeSymbol symbol)
     {
-        return
-            symbol is INamedTypeSymbol ns &&
-            !ns.IsUnboundGenericType &&
-            !ns.IsAbstract &&
-            ns.AllInterfaces.Any(IsTopicType);
+        return symbol is INamedTypeSymbol ns
+            && !ns.IsUnboundGenericType
+            && !ns.IsAbstract
+            && ns.AllInterfaces.Any(IsTopicType);
     }
 
     public ITypeSymbol ExtractQueryResult(ITypeSymbol symbol)
@@ -160,26 +171,37 @@ public sealed class ContractTypes
             throw new ArgumentException($"The symbol `{symbol}` is not a topic type.");
         }
 
-        return symbol.AllInterfaces.Where(IsProduceNotificationType).Select(i => i.TypeArguments[0]);
+        return symbol.AllInterfaces
+            .Where(IsProduceNotificationType)
+            .Select(i => i.TypeArguments[0]);
     }
 
     public bool IsQueryType(ITypeSymbol i) =>
-        i is INamedTypeSymbol ns && ns.IsGenericType && QueryType.Contains(ns.ConstructUnboundGenericType());
+        i is INamedTypeSymbol ns
+        && ns.IsGenericType
+        && QueryType.Contains(ns.ConstructUnboundGenericType());
 
-    public bool IsCommandType(ITypeSymbol i) =>
-        CommandType.Contains(i);
+    public bool IsCommandType(ITypeSymbol i) => CommandType.Contains(i);
 
     public bool IsOperationType(ITypeSymbol i) =>
-        i is INamedTypeSymbol ns && ns.IsGenericType && OperationType.Contains(ns.ConstructUnboundGenericType());
+        i is INamedTypeSymbol ns
+        && ns.IsGenericType
+        && OperationType.Contains(ns.ConstructUnboundGenericType());
 
-    public bool IsTopicType(ITypeSymbol i) =>
-        TopicType.Contains(i);
+    public bool IsTopicType(ITypeSymbol i) => TopicType.Contains(i);
 
     public bool IsProduceNotificationType(ITypeSymbol i) =>
-        i is INamedTypeSymbol ns && ns.IsGenericType && ProduceNotificationType.Contains(ns.ConstructUnboundGenericType());
+        i is INamedTypeSymbol ns
+        && ns.IsGenericType
+        && ProduceNotificationType.Contains(ns.ConstructUnboundGenericType());
 
     public bool IsAuthorizeWhenType(ITypeSymbol i) =>
-        AuthorizeWhenAttribute.Contains(i) || (i is INamedTypeSymbol ns && ns.IsGenericType && GenericAuthorizeWhenAttribute.Contains(ns.ConstructUnboundGenericType()));
+        AuthorizeWhenAttribute.Contains(i)
+        || (
+            i is INamedTypeSymbol ns
+            && ns.IsGenericType
+            && GenericAuthorizeWhenAttribute.Contains(ns.ConstructUnboundGenericType())
+        );
 
     public bool IsAuthorizeWhenHasAnyOfType(ITypeSymbol i) =>
         AuthorizeWhenHasAnyOfAttribute.Contains(i);
@@ -187,18 +209,17 @@ public sealed class ContractTypes
     public bool IsExcludeFromContractsGenerationType(ITypeSymbol? i) =>
         ExcludeFromContractsGenerationAttribute.Contains(i);
 
-    public bool IsAttributeType(ITypeSymbol i) =>
-        Attribute.Contains(i);
+    public bool IsAttributeType(ITypeSymbol i) => Attribute.Contains(i);
 
-    public bool IsAttributeUsageType(ITypeSymbol i) =>
-        AttributeUsageAttribute.Contains(i);
+    public bool IsAttributeUsageType(ITypeSymbol i) => AttributeUsageAttribute.Contains(i);
 
     public bool IsReadOnlyDictionary(ITypeSymbol i)
     {
-        return
-            i is INamedTypeSymbol ns &&
-            ns.IsGenericType && (
-                ReadOnlyDictionary.Contains(ns.ConstructUnboundGenericType()) ||
-                Dictionary.Contains(ns.ConstructUnboundGenericType()));
+        return i is INamedTypeSymbol ns
+            && ns.IsGenericType
+            && (
+                ReadOnlyDictionary.Contains(ns.ConstructUnboundGenericType())
+                || Dictionary.Contains(ns.ConstructUnboundGenericType())
+            );
     }
 }

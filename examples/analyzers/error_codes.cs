@@ -26,6 +26,7 @@ public class Cmd2 : ICommand
     public static class ErrorCodes
     {
         public const int Dup = 100;
+
         public class Inner : Dto.ErrorCodes { }
     }
 }

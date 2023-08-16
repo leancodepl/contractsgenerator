@@ -9,8 +9,16 @@ public class TopicWithNullableNotification
     {
         "analyzers/topic_with_nullable_notifications.cs"
             .AnalyzeFails()
-                .WithErrorNumber(2)
-                .WithError("CNTR0008", "NullableNotificationTopic", messagePattern: "Topic type .+ produces nullable notification type")
-                .WithError("CNTR0008", "NullableNotificationTopic", messagePattern: "Topic type .+ produces nullable notification type.");
+            .WithErrorNumber(2)
+            .WithError(
+                "CNTR0008",
+                "NullableNotificationTopic",
+                messagePattern: "Topic type .+ produces nullable notification type"
+            )
+            .WithError(
+                "CNTR0008",
+                "NullableNotificationTopic",
+                messagePattern: "Topic type .+ produces nullable notification type."
+            );
     }
 }

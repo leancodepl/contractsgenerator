@@ -28,9 +28,7 @@ public class ContractsGenerator
     {
         var export = GenerateCore();
 
-        var merged = externalContracts.Count > 0
-            ? new(export)
-            : export;
+        var merged = externalContracts.Count > 0 ? new(export) : export;
 
         foreach (var e in externalContracts)
         {
@@ -40,23 +38,21 @@ public class ContractsGenerator
         merged.ProjectName = export.ProjectName;
         Analyze(merged);
 
-        return excludeExternalContractsFromOutput
-            ? export
-            : merged;
+        return excludeExternalContractsFromOutput ? export : merged;
     }
 
     private Export GenerateCore()
     {
         var export = new Export() { ProjectName = contracts.ProjectName };
-        contracts.ListAllTypes()
+        contracts
+            .ListAllTypes()
             .Select(ProcessType)
             .Where(s => s is not null)
             .Cast<Statement>()
             .ToList()
             .OrderBy(s => s.Name)
             .SaveToRepeatedField(export.Statements);
-        ErrorCodes.ListKnownGroups(export.Statements)
-            .SaveToRepeatedField(export.KnownErrorGroups);
+        ErrorCodes.ListKnownGroups(export.Statements).SaveToRepeatedField(export.KnownErrorGroups);
         return export;
     }
 
@@ -80,11 +76,7 @@ public class ContractsGenerator
             return null;
         }
 
-        var result = new Statement
-        {
-            Name = symbol.ToFullName(),
-            Comment = symbol.GetComments(),
-        };
+        var result = new Statement { Name = symbol.ToFullName(), Comment = symbol.GetComments(), };
         MapType(symbol, result);
         GetAttributes(symbol, result.Attributes);
         return result;
@@ -101,10 +93,7 @@ public class ContractsGenerator
             }
             else if (contracts.Types.IsCommand(symbol))
             {
-                result.Command = new()
-                {
-                    TypeDescriptor = MapTypeDescriptor(symbol),
-                };
+                result.Command = new() { TypeDescriptor = MapTypeDescriptor(symbol), };
                 ErrorCodes.Extract(symbol).SaveToRepeatedField(result.Command.ErrorCodes);
             }
             else if (contracts.Types.IsOperation(symbol))
@@ -117,10 +106,7 @@ public class ContractsGenerator
             }
             else if (contracts.Types.IsTopic(symbol))
             {
-                result.Topic = new()
-                {
-                    TypeDescriptor = MapTypeDescriptor(symbol),
-                };
+                result.Topic = new() { TypeDescriptor = MapTypeDescriptor(symbol), };
                 contracts.Types
                     .ExtractTopicNotifications(symbol)
                     .Select(typeRef.FromNotification)
@@ -129,7 +115,8 @@ public class ContractsGenerator
             else if (symbol.TypeKind == TypeKind.Enum)
             {
                 result.Enum = new();
-                symbol.GetMembers()
+                symbol
+                    .GetMembers()
                     .OfType<IFieldSymbol>()
                     .Where(s => !IsExcluded(s))
                     .Select(ToEnumValue)
@@ -137,10 +124,7 @@ public class ContractsGenerator
             }
             else
             {
-                result.Dto = new()
-                {
-                    TypeDescriptor = MapTypeDescriptor(symbol),
-                };
+                result.Dto = new() { TypeDescriptor = MapTypeDescriptor(symbol), };
             }
         }
     }
@@ -148,16 +132,15 @@ public class ContractsGenerator
     private TypeDescriptor MapTypeDescriptor(INamedTypeSymbol symbol)
     {
         var descriptor = new TypeDescriptor();
-        symbol.TypeParameters
-            .Select(ToParam)
-            .SaveToRepeatedField(descriptor.GenericParameters);
+        symbol.TypeParameters.Select(ToParam).SaveToRepeatedField(descriptor.GenericParameters);
         symbol.Interfaces
             .Append(symbol.BaseType)
             .Where(IsNotIgnored)
             .Select(typeRef.From!)
             .SaveToRepeatedField(descriptor.Extends);
         MapProperties(symbol, descriptor);
-        symbol.GetMembers()
+        symbol
+            .GetMembers()
             .OfType<IFieldSymbol>()
             .Where(fs => fs.HasConstantValue)
             .Select(ToConstant)
@@ -176,20 +159,24 @@ public class ContractsGenerator
         }
     }
 
-    private bool IsNotIgnored([System.Diagnostics.CodeAnalysis.NotNullWhen(true)] INamedTypeSymbol? symbol)
+    private bool IsNotIgnored(
+        [System.Diagnostics.CodeAnalysis.NotNullWhen(true)] INamedTypeSymbol? symbol
+    )
     {
         return !IsIgnored(symbol);
     }
 
-    private bool IsIgnored([System.Diagnostics.CodeAnalysis.NotNullWhen(false)] INamedTypeSymbol? symbol)
+    private bool IsIgnored(
+        [System.Diagnostics.CodeAnalysis.NotNullWhen(false)] INamedTypeSymbol? symbol
+    )
     {
-        return symbol is null ||
-            symbol.SpecialType == SpecialType.System_Object ||
-            symbol.SpecialType == SpecialType.System_ValueType ||
-            symbol.SpecialType == SpecialType.System_Enum ||
-            ErrorCodes.IsErrorCode(symbol) ||
-            contracts.Types.IsProduceNotificationType(symbol) ||
-            contracts.Types.IsAttributeUsageType(symbol);
+        return symbol is null
+            || symbol.SpecialType == SpecialType.System_Object
+            || symbol.SpecialType == SpecialType.System_ValueType
+            || symbol.SpecialType == SpecialType.System_Enum
+            || ErrorCodes.IsErrorCode(symbol)
+            || contracts.Types.IsProduceNotificationType(symbol)
+            || contracts.Types.IsAttributeUsageType(symbol);
     }
 
     private bool IsExcluded(ISymbol symbol)
@@ -254,7 +241,8 @@ public class ContractsGenerator
 
     private void GetAttributes(ISymbol symbol, RepeatedField<AttributeRef> output)
     {
-        symbol.GetAttributes()
+        symbol
+            .GetAttributes()
             .Where(a => !IsIgnored(a.AttributeClass))
             .Select(ToAttribute)
             .Where(a => a is not null)
@@ -284,11 +272,7 @@ public class ContractsGenerator
             {
                 return new()
                 {
-                    Named = new()
-                    {
-                        Name = v.Key,
-                        Value = v.Value.ToValueRef(),
-                    },
+                    Named = new() { Name = v.Key, Value = v.Value.ToValueRef(), },
                 };
             }
 
@@ -296,20 +280,20 @@ public class ContractsGenerator
             {
                 return new()
                 {
-                    Positional = new()
-                    {
-                        Position = i,
-                        Value = v.ToValueRef(),
-                    },
+                    Positional = new() { Position = i, Value = v.ToValueRef(), },
                 };
             }
 
             static IEnumerable<object?> FlattenPositionalArray(TypedConstant a)
             {
-                return a.Kind == TypedConstantKind.Array ? a.Values.Select(v => v.Value) : new[] { a.Value };
+                return a.Kind == TypedConstantKind.Array
+                    ? a.Values.Select(v => v.Value)
+                    : new[] { a.Value };
             }
 
-            static IEnumerable<(string Key, object? Value)> FlattenNamedArray(KeyValuePair<string, TypedConstant> a)
+            static IEnumerable<(string Key, object? Value)> FlattenNamedArray(
+                KeyValuePair<string, TypedConstant> a
+            )
             {
                 if (a.Value.Kind == TypedConstantKind.Array)
                 {

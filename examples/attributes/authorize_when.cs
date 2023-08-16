@@ -10,8 +10,7 @@ public class B : ICommand { }
 public class AuthorizeWhenCustomCtorAttribute : AuthorizeWhenAttribute
 {
     public AuthorizeWhenCustomCtorAttribute()
-        : base(typeof(A))
-    { }
+        : base(typeof(A)) { }
 }
 
 public class AuthorizeWhenCustomGenericAttribute : AuthorizeWhenAttribute<B> { }

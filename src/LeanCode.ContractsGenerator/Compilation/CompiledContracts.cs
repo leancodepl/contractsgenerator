@@ -11,7 +11,10 @@ public sealed class CompiledContracts
     public ContractTypes Types { get; }
     public string ProjectName { get; }
 
-    public CompiledContracts(IReadOnlyCollection<CSharpCompilation> compilations, string projectName)
+    public CompiledContracts(
+        IReadOnlyCollection<CSharpCompilation> compilations,
+        string projectName
+    )
     {
         this.compilations = compilations;
         ProjectName = projectName;
@@ -21,9 +24,9 @@ public sealed class CompiledContracts
 
     public IEnumerable<INamedTypeSymbol> ListAllTypes()
     {
-        return compilations
-            .SelectMany(c => c.SyntaxTrees
-                .SelectMany(t =>
+        return compilations.SelectMany(
+            c =>
+                c.SyntaxTrees.SelectMany(t =>
                 {
                     var model = c.GetSemanticModel(t);
                     var root = t.GetRoot();
@@ -32,6 +35,7 @@ public sealed class CompiledContracts
                         .Select(s => model.GetDeclaredSymbol(s))
                         .Where(s => s is not null)
                         .OfType<INamedTypeSymbol>();
-                }));
+                })
+        );
     }
 }

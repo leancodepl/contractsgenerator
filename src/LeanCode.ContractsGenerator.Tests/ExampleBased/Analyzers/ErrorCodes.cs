@@ -9,7 +9,7 @@ public class ErrorCodes
     {
         "analyzers/error_codes.cs"
             .AnalyzeFails()
-                .WithError("CNTR0003", "Cmd1.ErrorCodes")
-                .WithError("CNTR0003", "Cmd2.ErrorCodes");
+            .WithError("CNTR0003", "Cmd1.ErrorCodes")
+            .WithError("CNTR0003", "Cmd2.ErrorCodes");
     }
 }

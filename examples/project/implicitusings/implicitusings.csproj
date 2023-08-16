@@ -5,4 +5,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="LeanCode.Contracts" Version="9.9.9.9-internal" />
+  </ItemGroup>
+
 </Project>

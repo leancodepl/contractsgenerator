@@ -3,7 +3,11 @@ using System.Reflection;
 
 namespace LeanCode.Contracts.Security;
 
-[AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface, AllowMultiple = true, Inherited = true)]
+[AttributeUsage(
+    AttributeTargets.Class | AttributeTargets.Interface,
+    AllowMultiple = true,
+    Inherited = true
+)]
 public abstract class AuthorizeWhenAttribute : Attribute
 {
     private readonly Type authorizerType;
@@ -15,12 +19,12 @@ public abstract class AuthorizeWhenAttribute : Attribute
         this.customData = customData;
     }
 
-    public static List<AuthorizerDefinition> GetCustomAuthorizers<T>() => GetCustomAuthorizers(typeof(T));
+    public static List<AuthorizerDefinition> GetCustomAuthorizers<T>() =>
+        GetCustomAuthorizers(typeof(T));
 
     public static List<AuthorizerDefinition> GetCustomAuthorizers(Type type)
     {
-        return type
-            .GetCustomAttributes<AuthorizeWhenAttribute>()
+        return type.GetCustomAttributes<AuthorizeWhenAttribute>()
             .Select(AuthorizerDefinition.Create)
             .ToList();
     }
@@ -37,17 +41,19 @@ public abstract class AuthorizeWhenAttribute : Attribute
             CustomData = attr.customData;
         }
 
-        internal static AuthorizerDefinition Create(AuthorizeWhenAttribute attr) =>
-            new(attr);
+        internal static AuthorizerDefinition Create(AuthorizeWhenAttribute attr) => new(attr);
     }
 }
 
-[AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface, AllowMultiple = true, Inherited = true)]
+[AttributeUsage(
+    AttributeTargets.Class | AttributeTargets.Interface,
+    AllowMultiple = true,
+    Inherited = true
+)]
 public abstract class AuthorizeWhenAttribute<T> : AuthorizeWhenAttribute
 {
     protected AuthorizeWhenAttribute(object? customData = null)
-        : base(typeof(T), customData)
-    { }
+        : base(typeof(T), customData) { }
 
     [SuppressMessage("?", "CA1000", Justification = "Alternative method also exists.")]
     public static List<AuthorizerDefinition> GetCustomAuthorizers() =>

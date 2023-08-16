@@ -36,11 +36,19 @@ public class CompilationFailedException : Exception
         var lineSpan = location.GetMappedLineSpan();
         if (lineSpan.Path is not null)
         {
-            return lineSpan.Path + "@" + (lineSpan.StartLinePosition.Line + 1) + ":" + (lineSpan.StartLinePosition.Character + 1);
+            return lineSpan.Path
+                + "@"
+                + (lineSpan.StartLinePosition.Line + 1)
+                + ":"
+                + (lineSpan.StartLinePosition.Character + 1);
         }
         else if (location.IsInSource)
         {
-            return location.Kind + "(" + location.SourceTree?.FilePath + location.SourceSpan.ToString() + ")";
+            return location.Kind
+                + "("
+                + location.SourceTree?.FilePath
+                + location.SourceSpan.ToString()
+                + ")";
         }
         else if (location.IsInMetadata && location.MetadataModule is not null)
         {

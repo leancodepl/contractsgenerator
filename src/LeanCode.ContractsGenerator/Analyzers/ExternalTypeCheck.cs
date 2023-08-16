@@ -14,7 +14,11 @@ public class ExternalTypeCheck : BaseAnalyzer
         return base.Analyze(export);
     }
 
-    public override IEnumerable<AnalyzeError> AnalyzeInternalTypeRef(AnalyzerContext context, TypeRef typeRef, TypeRef.Types.Internal i)
+    public override IEnumerable<AnalyzeError> AnalyzeInternalTypeRef(
+        AnalyzerContext context,
+        TypeRef typeRef,
+        TypeRef.Types.Internal i
+    )
     {
         if (knownTypes.Contains(i.Name) || InvalidTypeCheck.InvalidTypes.ContainsKey(i.Name))
         {
@@ -22,14 +26,15 @@ public class ExternalTypeCheck : BaseAnalyzer
         }
         else
         {
-            return new[] { new AnalyzeError(Code, $"Internal type `{i.Name}` is not known.", context) };
+            return new[]
+            {
+                new AnalyzeError(Code, $"Internal type `{i.Name}` is not known.", context)
+            };
         }
     }
 
     private static ImmutableHashSet<string> GatherTypes(Export export)
     {
-        return export.Statements
-            .Select(s => s.Name)
-            .ToImmutableHashSet();
+        return export.Statements.Select(s => s.Name).ToImmutableHashSet();
     }
 }

@@ -17,10 +17,11 @@ public static class NotificationTagGenerator
         return type switch
         {
             _ when TryKnownType(type) is string name
-                => type.GetElementType() is Type t ?
-                    $"{KnownTypePrefix}{name}{GetArgumentsString(t)}"
+                => type.GetElementType() is Type t
+                    ? $"{KnownTypePrefix}{name}{GetArgumentsString(t)}"
                     : $"{KnownTypePrefix}{name}{GetArgumentsString(type.GetGenericArguments())}",
-            _ when type.IsGenericType => $"{type.GetSimpleName()}{GetArgumentsString(type.GetGenericArguments())}",
+            _ when type.IsGenericType
+                => $"{type.GetSimpleName()}{GetArgumentsString(type.GetGenericArguments())}",
             _ => type.FullName!,
         };
     }
@@ -86,18 +87,37 @@ public static class NotificationTagGenerator
             _ when type == typeof(Guid) => "Guid",
             _ when type == typeof(Uri) => "Uri",
             _ when type == typeof(TimeSpan) => "TimeSpan",
-            _ when type.IsGenericType
-                && type.GetGenericArguments().Length == 2
-                && (type.GetInterfaces()
-                    .Any(i => i.IsGenericType && (i.GetGenericTypeDefinition() == typeof(IDictionary<,>)
-                        || i.GetGenericTypeDefinition() == typeof(IReadOnlyDictionary<,>)))
-                    || type.GetGenericTypeDefinition() == typeof(IDictionary<,>)
-                    || type.GetGenericTypeDefinition() == typeof(IReadOnlyDictionary<,>)) => "Map",
-            _ when type.IsGenericType
-                && type.GetGenericArguments().Length == 1
-                && (type.GetInterfaces()
-                    .Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IEnumerable<>))
-                    || type.GetGenericTypeDefinition() == typeof(IEnumerable<>)) => "Array",
+            _
+                when type.IsGenericType
+                    && type.GetGenericArguments().Length == 2
+                    && (
+                        type.GetInterfaces()
+                            .Any(
+                                i =>
+                                    i.IsGenericType
+                                    && (
+                                        i.GetGenericTypeDefinition() == typeof(IDictionary<,>)
+                                        || i.GetGenericTypeDefinition()
+                                            == typeof(IReadOnlyDictionary<,>)
+                                    )
+                            )
+                        || type.GetGenericTypeDefinition() == typeof(IDictionary<,>)
+                        || type.GetGenericTypeDefinition() == typeof(IReadOnlyDictionary<,>)
+                    )
+                => "Map",
+            _
+                when type.IsGenericType
+                    && type.GetGenericArguments().Length == 1
+                    && (
+                        type.GetInterfaces()
+                            .Any(
+                                i =>
+                                    i.IsGenericType
+                                    && i.GetGenericTypeDefinition() == typeof(IEnumerable<>)
+                            )
+                        || type.GetGenericTypeDefinition() == typeof(IEnumerable<>)
+                    )
+                => "Array",
             _ when type.IsArray => "Array",
             _ => null,
         };

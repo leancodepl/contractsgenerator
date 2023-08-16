@@ -22,10 +22,8 @@ public class Simple
             .Compiles()
             .WithSingle()
             .Query("Query")
-                .WithReturnType(Known(KnownType.Int32))
-                .ThatExtends(
-                    Known(KnownType.Query)
-                        .WithArguments(Known(KnownType.Int32)));
+            .WithReturnType(Known(KnownType.Int32))
+            .ThatExtends(Known(KnownType.Query).WithArguments(Known(KnownType.Int32)));
     }
 
     [Fact]
@@ -35,19 +33,14 @@ public class Simple
             .Compiles()
             .WithSingle()
             .Operation("Operation")
-                .WithReturnType(Known(KnownType.Int32))
-                .ThatExtends(
-                    Known(KnownType.Operation)
-                        .WithArguments(Known(KnownType.Int32)));
+            .WithReturnType(Known(KnownType.Int32))
+            .ThatExtends(Known(KnownType.Operation).WithArguments(Known(KnownType.Int32)));
     }
 
     [Fact]
     public void Simple_Dto()
     {
-        "simple/dto.cs"
-            .Compiles()
-            .WithSingle()
-            .Dto("DTO");
+        "simple/dto.cs".Compiles().WithSingle().Dto("DTO");
     }
 
     [Fact]
@@ -57,18 +50,18 @@ public class Simple
             .Compiles()
             .WithDto("Notification")
             .WithTopic("Topic")
-            .WithNotification(NotificationTypeRefExtensions.WithTag(
-                TypeRefExtensions.Internal("Notification"),
-                "Notification"));
+            .WithNotification(
+                NotificationTypeRefExtensions.WithTag(
+                    TypeRefExtensions.Internal("Notification"),
+                    "Notification"
+                )
+            );
     }
 
     [Fact]
     public void Simple_Struct()
     {
-        "simple/struct.cs"
-            .Compiles()
-            .WithSingle()
-            .Dto("DTO");
+        "simple/struct.cs".Compiles().WithSingle().Dto("DTO");
     }
 
     [Fact]
@@ -78,9 +71,9 @@ public class Simple
             .Compiles()
             .WithSingle()
             .Enum("SimpleEnum")
-                .WithMember("A", 0)
-                .WithMember("B", 1)
-                .WithMember("C", 10);
+            .WithMember("A", 0)
+            .WithMember("B", 1)
+            .WithMember("C", 10);
     }
 
     [Fact]
@@ -89,13 +82,13 @@ public class Simple
         "simple/inheritance.cs"
             .Compiles()
             .WithDto("A")
-                .WithProperty("PropA", Known(KnownType.Int32))
+            .WithProperty("PropA", Known(KnownType.Int32))
             .WithDto("B")
-                .WithProperty("PropB", Known(KnownType.Int32))
+            .WithProperty("PropB", Known(KnownType.Int32))
             .WithDto("C")
-                .WithProperty("PropC", Known(KnownType.Int32))
-                .WithoutProperty("PropA")
-                .WithoutProperty("PropB");
+            .WithProperty("PropC", Known(KnownType.Int32))
+            .WithoutProperty("PropA")
+            .WithoutProperty("PropB");
     }
 
     [Fact]
@@ -104,8 +97,8 @@ public class Simple
         "simple/comments.cs"
             .Compiles()
             .WithQuery("Query1")
-                .Commented("Test comment.")
+            .Commented("Test comment.")
             .WithQuery("Query2")
-                .Commented("");
+            .Commented("");
     }
 }

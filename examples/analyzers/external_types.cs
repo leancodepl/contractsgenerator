@@ -8,4 +8,5 @@ public class Dto
     public LeanCode.Contracts.ExcludeFromContractsGenerationAttribute Wrong3 { get; set; }
 }
 
-[AllowUnauthorized] public class Query : IQuery<decimal> { }
+[AllowUnauthorized]
+public class Query : IQuery<decimal> { }

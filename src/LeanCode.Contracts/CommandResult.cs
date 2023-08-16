@@ -21,7 +21,8 @@ public sealed class CommandResult
         {
             throw new ArgumentException(
                 "Cannot create NotValid command result if no validation errors have occurred.",
-                nameof(validationResult));
+                nameof(validationResult)
+            );
         }
 
         return new(validationResult.Errors);

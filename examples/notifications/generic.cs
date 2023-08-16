@@ -12,7 +12,10 @@ public class Topic3 : ITopic, IProduceNotification<Notification2<DateTimeOffset,
 
 public class Topic4 : ITopic, IProduceNotification<Dictionary<int, DTO2<int>>> { }
 
-public class Topic5 : ITopic, IProduceNotification<Notification1<int>>, IProduceNotification<Notification2<byte, TimeSpan>> { }
+public class Topic5
+    : ITopic,
+        IProduceNotification<Notification1<int>>,
+        IProduceNotification<Notification2<byte, TimeSpan>> { }
 
 public class Notification1<T> { }
 
