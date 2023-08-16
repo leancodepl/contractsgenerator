@@ -1,4 +1,5 @@
 using LeanCode.ContractsGenerator.Compilation.MSBuild;
+using Microsoft.Build.Logging;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.MSBuild;
@@ -7,15 +8,8 @@ namespace LeanCode.ContractsGenerator.Compilation;
 
 public sealed class ProjectLoader : IDisposable
 {
-    private readonly CSharpCompilationOptions options;
-
     private readonly MSBuildWorkspace msbuildWorkspace = MSBuildHelper.CreateWorkspace();
     private readonly List<Project> projects = new();
-
-    public ProjectLoader(CSharpCompilationOptions options)
-    {
-        this.options = options;
-    }
 
     public async Task LoadProjectsAsync(IEnumerable<string> projectPaths)
     {
@@ -93,10 +87,7 @@ public sealed class ProjectLoader : IDisposable
 
         if (project is not null)
         {
-            var compilation = await project
-                .WithCompilationOptions(options)
-                .AddUniqueMetadataReferences(ContractsCompiler.DefaultAssemblies)
-                .GetCompilationAsync();
+            var compilation = await project.GetCompilationAsync();
 
             if (compilation is CSharpCompilation cs)
             {
