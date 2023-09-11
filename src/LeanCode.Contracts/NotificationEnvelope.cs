@@ -5,12 +5,10 @@ namespace LeanCode.Contracts;
 public sealed class NotificationEnvelope
 {
     public Guid Id { get; private init; }
-    public string TopicType { get; private init; } = default!;
-    public string NotificationType { get; private init; } = default!;
-    public object Topic { get; private init; } = default!;
-    public object Notification { get; private init; } = default!;
-
-    private NotificationEnvelope() { }
+    public string TopicType { get; private init; }
+    public string NotificationType { get; private init; }
+    public object Topic { get; private init; }
+    public object Notification { get; private init; }
 
     public NotificationEnvelope(Guid id, ITopic topic, object notification)
     {
@@ -28,18 +26,17 @@ public sealed class NotificationEnvelope
         where TTopic : ITopic, IProduceNotification<TNotification>
         where TNotification : notnull
     {
-        return new()
-        {
-            Id = Guid.NewGuid(),
-            TopicType = typeof(TTopic).FullName!,
-            NotificationType = NotificationTagGenerator.Generate(notification.GetType()),
-            Topic = topic,
-            Notification = notification,
-        };
+        return new(Guid.NewGuid(), topic, notification);
     }
 
     [JsonConstructor]
-    public NotificationEnvelope(Guid id, string topicType, string notificationType, object topic, object notification)
+    public NotificationEnvelope(
+        Guid id,
+        string topicType,
+        string notificationType,
+        object topic,
+        object notification
+    )
     {
         Id = id;
         TopicType = topicType;
