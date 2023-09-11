@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace LeanCode.Contracts;
 
 public sealed class NotificationEnvelope
@@ -34,5 +36,15 @@ public sealed class NotificationEnvelope
             Topic = topic,
             Notification = notification,
         };
+    }
+
+    [JsonConstructor]
+    public NotificationEnvelope(Guid id, string topicType, string notificationType, object topic, object notification)
+    {
+        Id = id;
+        TopicType = topicType;
+        NotificationType = notificationType;
+        Topic = topic;
+        Notification = notification;
     }
 }
