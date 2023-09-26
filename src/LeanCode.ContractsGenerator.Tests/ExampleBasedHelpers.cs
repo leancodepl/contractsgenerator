@@ -24,6 +24,9 @@ public static class ExampleBasedHelpers
 
     public static AssertedExport ProjectCompiles(this string path)
     {
+        // See `/examples/Directory.Build.targets` for an explanation why we need to set the variable
+        Environment.SetEnvironmentVariable("UseTestBuildOfContracts", "true");
+
         return ProjectsCompile(path);
     }
 
