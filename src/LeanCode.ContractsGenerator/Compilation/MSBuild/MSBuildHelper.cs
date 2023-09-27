@@ -50,9 +50,10 @@ public static class MSBuildHelper
         }
     }
 
-    public static MSBuildWorkspace CreateWorkspace()
+    public static MSBuildWorkspace CreateWorkspace(ImmutableDictionary<string, string> properties)
     {
-        return MSBuildWorkspace.Create(GlobalProperties);
+        var finalProps = properties.AddRange(GlobalProperties);
+        return MSBuildWorkspace.Create(finalProps);
     }
 
     public static int RestoreProjects(IReadOnlyCollection<string> projectPaths)

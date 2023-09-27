@@ -1,5 +1,5 @@
+using System.Collections.Immutable;
 using LeanCode.ContractsGenerator.Compilation.MSBuild;
-using Microsoft.Build.Logging;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.MSBuild;
@@ -8,8 +8,13 @@ namespace LeanCode.ContractsGenerator.Compilation;
 
 public sealed class ProjectLoader : IDisposable
 {
-    private readonly MSBuildWorkspace msbuildWorkspace = MSBuildHelper.CreateWorkspace();
     private readonly List<Project> projects = new();
+    private readonly MSBuildWorkspace msbuildWorkspace;
+
+    public ProjectLoader(ImmutableDictionary<string, string> properties)
+    {
+        msbuildWorkspace = MSBuildHelper.CreateWorkspace(properties);
+    }
 
     public async Task LoadProjectsAsync(IEnumerable<string> projectPaths)
     {

@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using LeanCode.ContractsGenerator.Compilation;
 using Microsoft.Extensions.FileSystemGlobbing;
 
@@ -5,6 +6,15 @@ namespace LeanCode.ContractsGenerator.Tests;
 
 public static class ExampleBasedHelpers
 {
+    private static readonly ImmutableDictionary<string, string> TestProjectProperties =
+        ImmutableDictionary.CreateRange(
+            new Dictionary<string, string>
+            {
+                // See `/examples/project/Directory.Build.targets` for an explanation why we need to set the variable
+                ["UseTestBuildOfContracts"] = "true",
+            }
+        );
+
     public static AssertedExport Compiles(this string path)
     {
         var code = File.ReadAllText(Path.Join("examples", path));
@@ -32,7 +42,7 @@ public static class ExampleBasedHelpers
         var projectPaths = paths.Select(p => Path.Join("examples", p));
         // HACK: The sync execution results in much cleaner tests
         var (compiled, external) = ContractsCompiler
-            .CompileProjectsAsync(projectPaths)
+            .CompileProjectsAsync(projectPaths, TestProjectProperties)
             .GetAwaiter()
             .GetResult();
         return new(

@@ -10,7 +10,7 @@
   </Target>
 
   <ItemGroup>
-    <PackageReference Include="LeanCode.Contracts" Version="9.9.9.9-internal" />
+    <PackageReference Include="LeanCode.Contracts" />
     <PackageReference Include="embedded" Version="8.8.8.8-internal" />
   </ItemGroup>
 
