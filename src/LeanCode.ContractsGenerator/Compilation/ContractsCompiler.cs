@@ -80,12 +80,22 @@ public static class ContractsCompiler
             .Select(path => MetadataReference.CreateFromFile(path))
             .ToImmutableList();
 
+    public static Task<(CompiledContracts Compiled, List<Export> External)> CompileProjectsAsync(
+        IEnumerable<string> projectPaths
+    )
+    {
+        return CompileProjectsAsync(projectPaths, ImmutableDictionary<string, string>.Empty);
+    }
+
     public static async Task<(
         CompiledContracts Compiled,
         List<Export> External
-    )> CompileProjectsAsync(IEnumerable<string> projectPaths)
+    )> CompileProjectsAsync(
+        IEnumerable<string> projectPaths,
+        ImmutableDictionary<string, string> properties
+    )
     {
-        using var loader = new ProjectLoader();
+        using var loader = new ProjectLoader(properties);
         await loader.LoadProjectsAsync(projectPaths);
         var compilations = await loader.CompileAsync();
         var compiledContracts = Compile(
