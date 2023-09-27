@@ -124,14 +124,8 @@ internal class Program
         catch (CompilationFailedException ex)
         {
             await Console.Error.WriteLineAsync(
-                "Cannot compile contracts. There were errors during project compilation:"
+                $"Cannot compile contracts. There were errors during project compilation: {ex.Message}"
             );
-            foreach (var d in ex.Diagnostics)
-            {
-                await Console.Error.WriteLineAsync(
-                    $"[{d.Severity}] {d.GetMessage()} at {FormatLocation(d.Location)}"
-                );
-            }
 
             return 3;
         }
