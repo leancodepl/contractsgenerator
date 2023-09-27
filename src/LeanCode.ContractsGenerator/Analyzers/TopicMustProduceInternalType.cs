@@ -14,7 +14,7 @@ public class TopicMustProduceInternalType : BaseAnalyzer
             {
                 yield return new AnalyzeError(
                     AnalyzerCodes.TopicMustProduceInternalType,
-                    $"Topic `{stmt.Name}` produces `{notification.Type}` which is not internal type. Topics must procude internal types only.",
+                    $"Topic `{stmt.Name}` produces `{notification.Type}` which is not internal type. Topics must produce internal types only.",
                     context
                 );
             }
