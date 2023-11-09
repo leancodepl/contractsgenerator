@@ -35,7 +35,7 @@ jobs:
         run: dotnet restore
       - name: Generate Protobuf
         working-directory: src/LeanCode.Contracts.Admin
-        run: SERVER_VERSION=2.0.0-alpha.4 ../../tools/generate.sh project --project=LeanCode.Contracts.Admin.csproj -o LeanCode.Contracts.pb
+        run: SERVER_VERSION=2.0.0 ../../tools/generate.sh project --project=LeanCode.Contracts.Admin.csproj -o LeanCode.Contracts.pb
       - name: Build
         env:
           BUILD_VERSION: ${{ steps.version.outputs.version }}
