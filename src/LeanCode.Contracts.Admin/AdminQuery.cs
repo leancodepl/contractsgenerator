@@ -5,14 +5,8 @@ public abstract class AdminQuery<TResult> : IQuery<AdminQueryResult<TResult>>
     public int Page { get; set; }
     public int PageSize { get; set; }
 
-    public SortOrderDTO? SortOrder { get; set; }
+    public bool? SortDescending { get; set; }
     public string? SortBy { get; set; }
-}
-
-public enum SortOrderDTO
-{
-    Descending = 0,
-    Ascending = 1
 }
 
 public class AdminQueryResult<TResult>
