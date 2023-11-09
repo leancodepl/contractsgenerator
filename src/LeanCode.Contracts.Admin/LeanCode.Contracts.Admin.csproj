@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <AssemblyName>LeanCode.Contracts.Admin</AssemblyName>
+    <Nullable>annotations</Nullable>
+    <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
+    <Description>Package with base contracts for LeanCode's Admin App Generator Contracts.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="LeanCode.Contracts.pb">
+      <LogicalName>%(Filename)%(Extension)</LogicalName>
+    </EmbeddedResource>
+
+    <PackageReference Include="LeanCode.Contracts" Version="1.1.1" />
+  </ItemGroup>
+</Project>

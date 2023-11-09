@@ -1,0 +1,54 @@
+name: Build & Push Contracts
+
+on:
+  push:
+    tags: ["contracts-admin-v*.*.*"]
+
+jobs:
+  release:
+    name: Build & Push Contracts
+    runs-on: ubuntu-latest
+    env:
+      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+      DOTNET_CLI_TELEMETRY_OPTOUT: 1
+    steps:
+      - name: Version
+        id: version
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/contracts-admin-v}
+          if ! [[ ${VERSION} =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9\.]+)?$ ]]
+          then
+            echo 1>&2 "Invalid version: ${VERSION}"
+            exit 1
+          fi
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 7.0.x
+      - name: Restore
+        working-directory: src/LeanCode.Contracts.Admin
+        run: dotnet restore
+      - name: Generate Protobuf
+        working-directory: src/LeanCode.Contracts.Admin
+        run: SERVER_VERSION=2.0.0 ../../tools/generate.sh project --project=LeanCode.Contracts.Admin.csproj -o LeanCode.Contracts.pb
+      - name: Build
+        env:
+          BUILD_VERSION: ${{ steps.version.outputs.version }}
+        working-directory: src/LeanCode.Contracts.Admin
+        run: dotnet build --no-restore -c Release
+      - name: Pack
+        env:
+          BUILD_VERSION: ${{ steps.version.outputs.version }}
+        working-directory: src/LeanCode.Contracts.Admin
+        run: dotnet pack --no-build -c Release
+      - name: Push
+        env:
+          BUILD_VERSION: ${{ steps.version.outputs.version }}
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+        working-directory: src/LeanCode.Contracts.Admin
+        run: dotnet nuget push "bin/Release/LeanCode.Contracts.Admin.${BUILD_VERSION}.nupkg" -k "${NUGET_API_KEY}" -s 'https://api.nuget.org/v3/index.json' -n
