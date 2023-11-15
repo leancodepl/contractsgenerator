@@ -2,7 +2,7 @@
 
 public abstract class AdminQuery<TResult> : IQuery<AdminQueryResult<TResult>>
 {
-    /// <remarks>1-based</remarks>
+    /// <remarks>0-based</remarks>
     public int Page { get; set; }
     public int PageSize { get; set; }
 
