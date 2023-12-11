@@ -247,8 +247,8 @@ public sealed class ContractTypes
     public bool IsRecordEqualityContract(IPropertySymbol i)
     {
         return i.ContainingType is INamedTypeSymbol ns
-            && i.Name == RecordEqualityContractPropertyName
             && ns.IsRecord
+            && i.Name == RecordEqualityContractPropertyName
             && Type.Contains(i.Type);
     }
 }
