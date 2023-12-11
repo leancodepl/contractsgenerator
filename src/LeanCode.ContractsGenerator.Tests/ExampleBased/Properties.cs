@@ -72,7 +72,11 @@ public class Properties
     [Fact]
     public void Properties_inside_record_types()
     {
-        "properties/record.cs".Compiles().WithDto("DTO").WithProperty("A", Known(KnownType.Int32));
+        "properties/record.cs"
+            .Compiles()
+            .WithDto("DTO")
+            .WithProperty("A", Known(KnownType.Int32))
+            .WithoutProperty("EqualityContract");
     }
 
     [Fact]

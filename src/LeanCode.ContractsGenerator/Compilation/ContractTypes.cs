@@ -29,7 +29,6 @@ public sealed class ContractTypes
     private HashSet<INamedTypeSymbol> Dictionary { get; }
 
     private HashSet<INamedTypeSymbol> Equatable { get; }
-    private HashSet<INamedTypeSymbol> Type { get; }
 
     public ContractTypes(IReadOnlyCollection<CSharpCompilation> compilations)
     {
@@ -58,7 +57,6 @@ public sealed class ContractTypes
         Dictionary = GetUnboundTypeSymbols(compilations, typeof(IDictionary<,>));
 
         Equatable = GetUnboundTypeSymbols(compilations, typeof(IEquatable<>));
-        Type = GetTypeSymbols<Type>(compilations);
     }
 
     private static HashSet<INamedTypeSymbol> GetTypeSymbols<T>(
@@ -235,20 +233,15 @@ public sealed class ContractTypes
     {
         return i is INamedTypeSymbol ns
             && ns.IsGenericType
-            && ns.TypeArguments.FirstOrDefault() is INamedTypeSymbol namedType
+            && ns.TypeArguments is [INamedTypeSymbol namedType]
             && namedType.IsRecord
             && Equatable.Contains(ns.ConstructUnboundGenericType());
     }
 
-    /// <remarks>
-    /// `ContainingType` is not accessible from an `ITypeSymbol`.
-    /// Hence, passing the `IPropertySymbol`.
-    /// </remarks>
     public bool IsRecordEqualityContract(IPropertySymbol i)
     {
         return i.ContainingType is INamedTypeSymbol ns
             && ns.IsRecord
-            && i.Name == RecordEqualityContractPropertyName
-            && Type.Contains(i.Type);
+            && i.Name == RecordEqualityContractPropertyName;
     }
 }
