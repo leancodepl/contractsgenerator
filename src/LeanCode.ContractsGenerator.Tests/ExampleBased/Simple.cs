@@ -65,6 +65,24 @@ public class Simple
     }
 
     [Fact]
+    public void Simple_Record()
+    {
+        "simple/record.cs".Compiles().WithSingle().Dto("DTO");
+    }
+
+    [Fact]
+    public void Record_Struct()
+    {
+        "simple/record_struct.cs".Compiles().WithSingle().Dto("DTO");
+    }
+
+    [Fact]
+    public void Record_Class()
+    {
+        "simple/record_class.cs".Compiles().WithSingle().Dto("DTO");
+    }
+
+    [Fact]
     public void Simple_Enum()
     {
         "simple/enum.cs"
@@ -88,7 +106,12 @@ public class Simple
             .WithDto("C")
             .WithProperty("PropC", Known(KnownType.Int32))
             .WithoutProperty("PropA")
-            .WithoutProperty("PropB");
+            .WithoutProperty("PropB")
+            .WithDto("D")
+            .WithProperty("PropD", Known(KnownType.Int32))
+            .WithDto("E")
+            .WithProperty("PropE", Known(KnownType.Int32))
+            .WithoutProperty("PropD");
     }
 
     [Fact]

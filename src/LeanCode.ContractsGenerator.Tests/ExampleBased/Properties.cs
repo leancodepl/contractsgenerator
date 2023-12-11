@@ -68,4 +68,20 @@ public class Properties
             .WithProperty("A", TypeRefExtensions.Internal("InnerDTO"))
             .WithProperty("B", TypeRefExtensions.Internal("InnerDTO").Nullable());
     }
+
+    [Fact]
+    public void Properties_inside_record_types()
+    {
+        "properties/record.cs".Compiles().WithDto("DTO").WithProperty("A", Known(KnownType.Int32));
+    }
+
+    [Fact]
+    public void Properties_with_record_types()
+    {
+        "properties/inner_record.cs"
+            .Compiles()
+            .WithDto("DTO")
+            .WithProperty("A", TypeRefExtensions.Internal("InnerDTO"))
+            .WithProperty("B", TypeRefExtensions.Internal("InnerDTO").Nullable());
+    }
 }
