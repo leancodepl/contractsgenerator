@@ -176,14 +176,16 @@ public class ContractsGenerator
             || symbol.SpecialType == SpecialType.System_Enum
             || ErrorCodes.IsErrorCode(symbol)
             || contracts.Types.IsProduceNotificationType(symbol)
-            || contracts.Types.IsAttributeUsageType(symbol);
+            || contracts.Types.IsAttributeUsageType(symbol)
+            || contracts.Types.IsRecordEquatable(symbol);
     }
 
     private bool IsExcluded(ISymbol symbol)
     {
-        return symbol
-            .GetAttributes()
-            .Any(a => contracts.Types.IsExcludeFromContractsGenerationType(a.AttributeClass));
+        return (symbol is IPropertySymbol ps && contracts.Types.IsRecordEqualityContract(ps))
+            || symbol
+                .GetAttributes()
+                .Any(a => contracts.Types.IsExcludeFromContractsGenerationType(a.AttributeClass));
     }
 
     private static HashSet<string> GatherBaseProperties(INamedTypeSymbol ns)

@@ -9,6 +9,8 @@ namespace LeanCode.ContractsGenerator.Compilation;
 
 public sealed class ContractTypes
 {
+    private const string RecordEqualityContractPropertyName = "EqualityContract";
+
     private HashSet<INamedTypeSymbol> QueryType { get; }
     private HashSet<INamedTypeSymbol> CommandType { get; }
     private HashSet<INamedTypeSymbol> OperationType { get; }
@@ -25,6 +27,9 @@ public sealed class ContractTypes
     private HashSet<INamedTypeSymbol> AttributeUsageAttribute { get; }
     private HashSet<INamedTypeSymbol> ReadOnlyDictionary { get; }
     private HashSet<INamedTypeSymbol> Dictionary { get; }
+
+    private HashSet<INamedTypeSymbol> Equatable { get; }
+    private HashSet<INamedTypeSymbol> Type { get; }
 
     public ContractTypes(IReadOnlyCollection<CSharpCompilation> compilations)
     {
@@ -51,6 +56,9 @@ public sealed class ContractTypes
         AttributeUsageAttribute = GetTypeSymbols<AttributeUsageAttribute>(compilations);
         ReadOnlyDictionary = GetUnboundTypeSymbols(compilations, typeof(IReadOnlyDictionary<,>));
         Dictionary = GetUnboundTypeSymbols(compilations, typeof(IDictionary<,>));
+
+        Equatable = GetUnboundTypeSymbols(compilations, typeof(IEquatable<>));
+        Type = GetTypeSymbols<Type>(compilations);
     }
 
     private static HashSet<INamedTypeSymbol> GetTypeSymbols<T>(
@@ -221,5 +229,26 @@ public sealed class ContractTypes
                 ReadOnlyDictionary.Contains(ns.ConstructUnboundGenericType())
                 || Dictionary.Contains(ns.ConstructUnboundGenericType())
             );
+    }
+
+    public bool IsRecordEquatable(ITypeSymbol i)
+    {
+        return i is INamedTypeSymbol ns
+            && ns.IsGenericType
+            && ns.TypeArguments.FirstOrDefault() is INamedTypeSymbol namedType
+            && namedType.IsRecord
+            && Equatable.Contains(ns.ConstructUnboundGenericType());
+    }
+
+    /// <remarks>
+    /// `ContainingType` is not accessible from an `ITypeSymbol`.
+    /// Hence, passing the `IPropertySymbol`.
+    /// </remarks>
+    public bool IsRecordEqualityContract(IPropertySymbol i)
+    {
+        return i.ContainingType is INamedTypeSymbol ns
+            && i.Name == RecordEqualityContractPropertyName
+            && ns.IsRecord
+            && Type.Contains(i.Type);
     }
 }
