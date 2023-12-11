@@ -7,11 +7,6 @@
 The properties are generated as-is, even if they don't have getter/setter or if getter/setter is not public. Using
 anything else results in C#/contracts mismatch because client types _will_ have public getters and setters.
 
-### Do not use records
-
-Records introduce logic (structural equality) to your code, which cannot be translated. This might lead to broken
-contracts usage.
-
 ### Prefer `List` over array
 
 ### Prefer concrete types instead of interfaces
