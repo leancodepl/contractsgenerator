@@ -179,9 +179,9 @@ public class SupportedUseCases
     }
 
     [Fact]
-    public void Records_in_cqrs()
+    public void Records_as_cqrs()
     {
-        "supported_use_cases/records_in_cqrs.cs"
+        "supported_use_cases/records_as_cqrs.cs"
             .Compiles()
             .WithDto("DTO1")
             .WithDto("DTO2")
