@@ -1,6 +1,7 @@
 using LeanCode.Contracts;
 
 public record DTO1(int Property);
+
 public record DTO2(string Property);
 
 public class Command : ICommand
