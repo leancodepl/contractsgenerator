@@ -11,7 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 #### Added
 
-- `ITopic` and `IProduceNotification<>` interfaces and their support in the generator.
+- `ITopic` and `IProduceNotification<>` interfaces and their support in the generator,
+- Support for `records`.
 
 #### Breaking changes
 
