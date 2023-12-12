@@ -182,7 +182,7 @@ public class ContractsGenerator
 
     private bool IsExcluded(ISymbol symbol)
     {
-        return (symbol is IPropertySymbol ps && contracts.Types.IsRecordEqualityContract(ps))
+        return (symbol is IPropertySymbol ps && ContractTypes.IsRecordEqualityContract(ps))
             || symbol
                 .GetAttributes()
                 .Any(a => contracts.Types.IsExcludeFromContractsGenerationType(a.AttributeClass));

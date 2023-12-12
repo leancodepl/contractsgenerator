@@ -238,7 +238,7 @@ public sealed class ContractTypes
             && Equatable.Contains(ns.ConstructUnboundGenericType());
     }
 
-    public bool IsRecordEqualityContract(IPropertySymbol i)
+    public static bool IsRecordEqualityContract(IPropertySymbol i)
     {
         return i.ContainingType is INamedTypeSymbol ns
             && ns.IsRecord
