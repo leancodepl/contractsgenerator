@@ -177,4 +177,16 @@ public class SupportedUseCases
                 )
             );
     }
+
+    [Fact]
+    public void Records_in_cqrs()
+    {
+        "supported_use_cases/records_in_cqrs.cs"
+            .Compiles()
+            .WithDto("DTO1")
+            .WithDto("DTO2")
+            .WithQuery("Query")
+            .WithCommand("Command")
+            .WithOperation("Operation");
+    }
 }
