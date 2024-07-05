@@ -82,6 +82,7 @@ public static class MSBuildHelper
                 DisableInProcNode = true,
                 // don't ask the user for anything
                 Interactive = false,
+                Loggers = [new Microsoft.Build.Logging.ConsoleLogger(Microsoft.Build.Framework.LoggerVerbosity.Diagnostic)]
             }
         );
 
