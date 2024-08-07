@@ -3,6 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
+    <RollForward>Major</RollForward>
     <PreserveCompilationContext>true</PreserveCompilationContext>
     <RootNamespace>LeanCode.ContractsGenerator</RootNamespace>
   </PropertyGroup>
