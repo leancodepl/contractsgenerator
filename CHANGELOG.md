@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## LeanCode.ContractsGenerator
 
-### 3.0.0 (unreleased)
+### [3.0.0]
 
 #### Added
 
@@ -53,7 +53,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## LeanCode.Contracts
 
-### 2.0.0 (unreleased)
+### 2.0.0
 
 - Added LeanPipe contracts.
 
@@ -82,4 +82,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Initial contracts definition.
 
 [1.0.0]: https://github.com/leancodepl/contractsgenerator/compare/v0.1.0-alpha11...v1.0.0
-[2.0.0]: https://github.com/leancodepl/contractsgenerator/compare/v1.0.0...v2.0.0-alpha.1
+[2.0.0]: https://github.com/leancodepl/contractsgenerator/compare/v1.0.0...v2.0.0
+[3.0.0]: https://github.com/leancodepl/contractsgenerator/compare/v2.0.0...v3.0.0
