@@ -89,6 +89,7 @@ public class Simple
             .Compiles()
             .WithSingle()
             .Enum("SimpleEnum")
+            .WithMember("Z", -1)
             .WithMember("A", 0)
             .WithMember("B", 1)
             .WithMember("C", 10);
