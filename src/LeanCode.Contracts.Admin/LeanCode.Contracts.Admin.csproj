@@ -3,7 +3,7 @@
   <PropertyGroup>
     <AssemblyName>LeanCode.Contracts.Admin</AssemblyName>
     <Nullable>annotations</Nullable>
-    <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
+    <TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
     <Description>Package with base contracts for LeanCode's Admin App Generator Contracts.</Description>
   </PropertyGroup>
 

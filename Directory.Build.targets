@@ -34,6 +34,17 @@
     <PackageReference Update="System.Reflection.MetadataLoadContext" Version="7.0.0" />
   </ItemGroup>
 
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net8.0' ">
+    <PackageReference Update="Microsoft.Build" Version="17.9.5" />
+    <PackageReference Update="Microsoft.Build.Framework" Version="17.9.5" />
+
+    <PackageReference Update="Microsoft.CodeAnalysis.CSharp" Version="4.4.0" />
+    <PackageReference Update="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.4.0" />
+    <PackageReference Update="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="4.4.0" />
+
+    <PackageReference Update="System.Reflection.MetadataLoadContext" Version="8.0.0" />
+  </ItemGroup>
+
   <ItemGroup>
     <!-- Use latest NuGet.Frameworks available at build time for tests
          to make sure we don't reference anything older than what current MSBuild uses -->
