@@ -33,7 +33,7 @@ jobs:
       - name: Build
         run: dotnet build --framework net${{ matrix.dotnet }}
       - name: Test
-        run: dotnet test --collect "XPlat Code Coverage" --settings coverlet.runsettings --logger trx --framework net${{ matrix.dotnet }}
+        run: dotnet test --no-build --collect "XPlat Code Coverage" --settings coverlet.runsettings --logger trx --framework net${{ matrix.dotnet }}
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
         with:

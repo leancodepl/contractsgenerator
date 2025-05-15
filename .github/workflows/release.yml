@@ -35,7 +35,7 @@ jobs:
       - name: Test
         env:
           BUILD_VERSION: ${{ steps.get_version.outputs.version }}
-        run: dotnet test --configuration Release
+        run: dotnet test --no-build --configuration Release
       - name: Publish
         env:
           BUILD_VERSION: ${{ steps.get_version.outputs.version }}
