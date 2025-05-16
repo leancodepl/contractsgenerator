@@ -1,10 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFrameworks Condition="$([MSBuild]::VersionGreaterThanOrEquals('$(NETCoreSdkVersion)', '8.0'))">net8.0</TargetFrameworks>
-    <TargetFrameworks Condition="$([MSBuild]::VersionGreaterThanOrEquals('$(NETCoreSdkVersion)', '9.0'))">net8.0;net9.0</TargetFrameworks>
-  </PropertyGroup>
-
   <ItemGroup>
     <EmbeddedResource Include="LeanCode.Contracts.pb">
       <LogicalName>%(Filename)%(Extension)</LogicalName>

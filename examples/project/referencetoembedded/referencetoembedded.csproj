@@ -1,10 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFrameworks Condition="$([MSBuild]::VersionGreaterThanOrEquals('$(NETCoreSdkVersion)', '8.0'))">net8.0</TargetFrameworks>
-    <TargetFrameworks Condition="$([MSBuild]::VersionGreaterThanOrEquals('$(NETCoreSdkVersion)', '9.0'))">net8.0;net9.0</TargetFrameworks>
-  </PropertyGroup>
-
   <Target Name="BuildDependencies" BeforeTargets="Restore">
     <MSBuild Projects="../embedded/embedded.csproj" Properties="Configuration=Debug;Version=8.8.8.8-internal" RemoveProperties="TargetFramework" Targets="Restore" />
     <MSBuild Projects="../embedded/embedded.csproj" Properties="Configuration=Debug;Version=8.8.8.8-internal" RemoveProperties="TargetFramework" Targets="Build;Pack" />

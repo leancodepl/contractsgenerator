@@ -1,5 +1,9 @@
 <Project>
 
+  <PropertyGroup Condition="'$(NETCoreAppMaximumVersion)' != ''">
+    <TargetFrameworks Condition="$([MSBuild]::VersionLessThan('$(NETCoreAppMaximumVersion)', '9.0'))">net8.0</TargetFrameworks>
+  </PropertyGroup>
+
   <!--
     To enable out-of-this-repository tests, we need to rely on internally-built contracts only during our tests.
     If anyone else wants to run these, they should be able to do so with a public NuGet package.
