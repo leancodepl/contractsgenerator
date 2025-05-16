@@ -5,10 +5,7 @@ using static LeanCode.ContractsGenerator.Tests.TypeRefExtensions;
 namespace LeanCode.ContractsGenerator.Tests.ExampleBased;
 
 [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1711", Justification = "We don't care.")]
-[CollectionDefinition(
-    nameof(MSBuildTestCurrentDirectoryWorkaroundCollection),
-    DisableParallelization = true
-)]
+[CollectionDefinition(nameof(MSBuildTestCurrentDirectoryWorkaroundCollection), DisableParallelization = true)]
 public class MSBuildTestCurrentDirectoryWorkaroundCollection { }
 
 [Collection(nameof(MSBuildTestCurrentDirectoryWorkaroundCollection))]
@@ -29,10 +26,7 @@ public class Project
             .WithQuery("B.Query")
             .WithTopic("C.Topic")
             .WithNotification(
-                NotificationTypeRefExtensions.WithTag(
-                    TypeRefExtensions.Internal("C.Notification"),
-                    "C.Notification"
-                )
+                NotificationTypeRefExtensions.WithTag(TypeRefExtensions.Internal("C.Notification"), "C.Notification")
             );
     }
 
@@ -48,10 +42,7 @@ public class Project
             .WithQuery("B.Query")
             .WithTopic("C.Topic")
             .WithNotification(
-                NotificationTypeRefExtensions.WithTag(
-                    TypeRefExtensions.Internal("C.Notification"),
-                    "C.Notification"
-                )
+                NotificationTypeRefExtensions.WithTag(TypeRefExtensions.Internal("C.Notification"), "C.Notification")
             );
     }
 
@@ -77,10 +68,7 @@ public class Project
             .WithQuery("B.Query")
             .WithTopic("C.Topic")
             .WithNotification(
-                NotificationTypeRefExtensions.WithTag(
-                    TypeRefExtensions.Internal("C.Notification"),
-                    "C.Notification"
-                )
+                NotificationTypeRefExtensions.WithTag(TypeRefExtensions.Internal("C.Notification"), "C.Notification")
             );
 
         ProjectsCompile(
@@ -93,10 +81,7 @@ public class Project
             .WithQuery("B.Query")
             .WithTopic("C.Topic")
             .WithNotification(
-                NotificationTypeRefExtensions.WithTag(
-                    TypeRefExtensions.Internal("C.Notification"),
-                    "C.Notification"
-                )
+                NotificationTypeRefExtensions.WithTag(TypeRefExtensions.Internal("C.Notification"), "C.Notification")
             );
     }
 

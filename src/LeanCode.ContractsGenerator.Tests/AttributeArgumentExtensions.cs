@@ -8,7 +8,7 @@ public static class AttributeArgumentExtensions
     {
         return new()
         {
-            Named = new() { Name = name, Value = value.ToValueRef(), },
+            Named = new() { Name = name, Value = value.ToValueRef() },
         };
     }
 
@@ -16,7 +16,7 @@ public static class AttributeArgumentExtensions
     {
         return new()
         {
-            Positional = new() { Position = pos, Value = value.ToValueRef(), },
+            Positional = new() { Position = pos, Value = value.ToValueRef() },
         };
     }
 }

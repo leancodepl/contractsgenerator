@@ -11,22 +11,21 @@ namespace LeanCode.ContractsGenerator.Compilation;
 
 public static class ContractsCompiler
 {
-    public static readonly ImmutableHashSet<string> ReferenceAssemblyNames =
-        ImmutableHashSet<string>.Empty;
-    public static readonly ImmutableHashSet<string> DefaultAssemblyNames =
-        ImmutableHashSet.CreateRange(
-            new string[]
-            {
-                "System.Collections",
-                "System.Linq",
-                "System.Net.Http",
-                "System.Runtime",
-                "System.Runtime.Extensions",
-            }
-        );
+    public static readonly ImmutableHashSet<string> ReferenceAssemblyNames = ImmutableHashSet<string>.Empty;
+    public static readonly ImmutableHashSet<string> DefaultAssemblyNames = ImmutableHashSet.CreateRange(
+        new string[]
+        {
+            "System.Collections",
+            "System.Linq",
+            "System.Net.Http",
+            "System.Runtime",
+            "System.Runtime.Extensions",
+        }
+    );
 
-    public static readonly ImmutableHashSet<string> LeanCodeAssemblyNames =
-        ImmutableHashSet.CreateRange(new[] { "LeanCode.Contracts", });
+    public static readonly ImmutableHashSet<string> LeanCodeAssemblyNames = ImmutableHashSet.CreateRange(
+        new[] { "LeanCode.Contracts" }
+    );
 
     private static bool IsWantedReferenceAssembly(CompilationLibrary cl)
     {
@@ -46,21 +45,18 @@ public static class ContractsCompiler
 
     private static readonly Assembly ExecutingAssembly = Assembly.GetExecutingAssembly();
 
-    private static readonly AppBaseCompilationAssemblyResolver Resolver =
-        new(Path.GetDirectoryName(ExecutingAssembly.Location)!);
+    private static readonly AppBaseCompilationAssemblyResolver Resolver = new(
+        Path.GetDirectoryName(ExecutingAssembly.Location)!
+    );
 
-    public static readonly ImmutableList<PortableExecutableReference> DefaultAssemblies =
-        DependencyContext
-            .Load(ExecutingAssembly)!
-            .CompileLibraries.Where(
-                cl =>
-                    IsWantedReferenceAssembly(cl)
-                    || IsWantedLeanCodeAssembly(cl)
-                    || IsWantedDefaultAssembly(cl)
-            )
-            .SelectMany(cl => cl.ResolveReferencePaths(Resolver))
-            .Select(path => MetadataReference.CreateFromFile(path))
-            .ToImmutableList();
+    public static readonly ImmutableList<PortableExecutableReference> DefaultAssemblies = DependencyContext
+        .Load(ExecutingAssembly)!
+        .CompileLibraries.Where(cl =>
+            IsWantedReferenceAssembly(cl) || IsWantedLeanCodeAssembly(cl) || IsWantedDefaultAssembly(cl)
+        )
+        .SelectMany(cl => cl.ResolveReferencePaths(Resolver))
+        .Select(path => MetadataReference.CreateFromFile(path))
+        .ToImmutableList();
 
     public static Task<(CompiledContracts Compiled, List<Export> External)> CompileProjectsAsync(
         IEnumerable<string> projectPaths
@@ -69,10 +65,7 @@ public static class ContractsCompiler
         return CompileProjectsAsync(projectPaths, ImmutableDictionary<string, string>.Empty);
     }
 
-    public static async Task<(
-        CompiledContracts Compiled,
-        List<Export> External
-    )> CompileProjectsAsync(
+    public static async Task<(CompiledContracts Compiled, List<Export> External)> CompileProjectsAsync(
         IEnumerable<string> projectPaths,
         ImmutableDictionary<string, string> properties
     )
@@ -80,10 +73,7 @@ public static class ContractsCompiler
         using var loader = new ProjectLoader(properties);
         await loader.LoadProjectsAsync(projectPaths);
         var compilations = await loader.CompileAsync();
-        var compiledContracts = Compile(
-            compilations,
-            compilations.First().AssemblyName ?? string.Empty
-        );
+        var compiledContracts = Compile(compilations, compilations.First().AssemblyName ?? string.Empty);
         var externalContracts = TryLoadEmbeddedContracts(compilations);
         return (compiledContracts, externalContracts);
     }
@@ -113,10 +103,7 @@ public static class ContractsCompiler
         return CompileCode(content, filename);
     }
 
-    public static async Task<CompiledContracts> CompileGlobAsync(
-        Matcher matcher,
-        DirectoryInfo directory
-    )
+    public static async Task<CompiledContracts> CompileGlobAsync(Matcher matcher, DirectoryInfo directory)
     {
         var dir = new DirectoryInfoWrapper(directory);
         var result = matcher.Execute(dir);
@@ -162,9 +149,7 @@ public static class ContractsCompiler
         "CA1031",
         Justification = "Failure to extract embedded contracts from some assemblies should not interrupt the operation."
     )]
-    private static List<Export> TryLoadEmbeddedContracts(
-        IReadOnlyCollection<CSharpCompilation> compilations
-    )
+    private static List<Export> TryLoadEmbeddedContracts(IReadOnlyCollection<CSharpCompilation> compilations)
     {
         var externalReferences = compilations
             .SelectMany(c => c.ExternalReferences)
@@ -193,9 +178,7 @@ public static class ContractsCompiler
             }
             catch (Exception e)
             {
-                Console.Error.WriteLine(
-                    $"Failed to search assembly at {assemblyPath} for embedded contracts."
-                );
+                Console.Error.WriteLine($"Failed to search assembly at {assemblyPath} for embedded contracts.");
                 Console.Error.WriteLine(e.ToString());
             }
         }
@@ -208,19 +191,14 @@ public static class ContractsCompiler
         return Compile(new List<CSharpCompilation> { compilation }, name);
     }
 
-    private static CompiledContracts Compile(
-        IReadOnlyCollection<CSharpCompilation> compilations,
-        string name
-    )
+    private static CompiledContracts Compile(IReadOnlyCollection<CSharpCompilation> compilations, string name)
     {
         foreach (var compilation in compilations)
         {
             var diags = compilation.GetDiagnostics();
             if (diags.Any(d => d.Severity == DiagnosticSeverity.Error))
             {
-                var errors = diags
-                    .Where(d => d.Severity == DiagnosticSeverity.Error)
-                    .ToImmutableArray();
+                var errors = diags.Where(d => d.Severity == DiagnosticSeverity.Error).ToImmutableArray();
                 throw new CompilationFailedException(errors);
             }
         }

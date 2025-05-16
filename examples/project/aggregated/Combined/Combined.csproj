@@ -1,9 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <ItemGroup>
     <ProjectReference Include="../A/A.csproj" />
     <ProjectReference Include="../B/B.csproj" />
     <ProjectReference Include="../C/C.csproj" />
   </ItemGroup>
-
 </Project>

@@ -36,21 +36,12 @@ public sealed class ContractTypes
         CommandType = GetTypeSymbols<ICommand>(compilations);
         OperationType = GetUnboundTypeSymbols(compilations, typeof(IOperation<>));
         TopicType = GetTypeSymbols<ITopic>(compilations);
-        ProduceNotificationType = GetUnboundTypeSymbols(
-            compilations,
-            typeof(IProduceNotification<>)
-        );
+        ProduceNotificationType = GetUnboundTypeSymbols(compilations, typeof(IProduceNotification<>));
 
         AuthorizeWhenAttribute = GetTypeSymbols<AuthorizeWhenAttribute>(compilations);
-        GenericAuthorizeWhenAttribute = GetUnboundTypeSymbols(
-            compilations,
-            typeof(AuthorizeWhenAttribute<>)
-        );
-        AuthorizeWhenHasAnyOfAttribute = GetTypeSymbols<AuthorizeWhenHasAnyOfAttribute>(
-            compilations
-        );
-        ExcludeFromContractsGenerationAttribute =
-            GetTypeSymbols<ExcludeFromContractsGenerationAttribute>(compilations);
+        GenericAuthorizeWhenAttribute = GetUnboundTypeSymbols(compilations, typeof(AuthorizeWhenAttribute<>));
+        AuthorizeWhenHasAnyOfAttribute = GetTypeSymbols<AuthorizeWhenHasAnyOfAttribute>(compilations);
+        ExcludeFromContractsGenerationAttribute = GetTypeSymbols<ExcludeFromContractsGenerationAttribute>(compilations);
         Attribute = GetTypeSymbols<Attribute>(compilations);
         AttributeUsageAttribute = GetTypeSymbols<AttributeUsageAttribute>(compilations);
         ReadOnlyDictionary = GetUnboundTypeSymbols(compilations, typeof(IReadOnlyDictionary<,>));
@@ -59,9 +50,7 @@ public sealed class ContractTypes
         Equatable = GetUnboundTypeSymbols(compilations, typeof(IEquatable<>));
     }
 
-    private static HashSet<INamedTypeSymbol> GetTypeSymbols<T>(
-        IReadOnlyCollection<CSharpCompilation> compilations
-    )
+    private static HashSet<INamedTypeSymbol> GetTypeSymbols<T>(IReadOnlyCollection<CSharpCompilation> compilations)
     {
         var name = typeof(T).FullName!;
         var result = new HashSet<INamedTypeSymbol>(SymbolEqualityComparer.Default);
@@ -177,22 +166,16 @@ public sealed class ContractTypes
             throw new ArgumentException($"The symbol `{symbol}` is not a topic type.");
         }
 
-        return symbol.AllInterfaces
-            .Where(IsProduceNotificationType)
-            .Select(i => i.TypeArguments[0]);
+        return symbol.AllInterfaces.Where(IsProduceNotificationType).Select(i => i.TypeArguments[0]);
     }
 
     public bool IsQueryType(ITypeSymbol i) =>
-        i is INamedTypeSymbol ns
-        && ns.IsGenericType
-        && QueryType.Contains(ns.ConstructUnboundGenericType());
+        i is INamedTypeSymbol ns && ns.IsGenericType && QueryType.Contains(ns.ConstructUnboundGenericType());
 
     public bool IsCommandType(ITypeSymbol i) => CommandType.Contains(i);
 
     public bool IsOperationType(ITypeSymbol i) =>
-        i is INamedTypeSymbol ns
-        && ns.IsGenericType
-        && OperationType.Contains(ns.ConstructUnboundGenericType());
+        i is INamedTypeSymbol ns && ns.IsGenericType && OperationType.Contains(ns.ConstructUnboundGenericType());
 
     public bool IsTopicType(ITypeSymbol i) => TopicType.Contains(i);
 
@@ -209,8 +192,7 @@ public sealed class ContractTypes
             && GenericAuthorizeWhenAttribute.Contains(ns.ConstructUnboundGenericType())
         );
 
-    public bool IsAuthorizeWhenHasAnyOfType(ITypeSymbol i) =>
-        AuthorizeWhenHasAnyOfAttribute.Contains(i);
+    public bool IsAuthorizeWhenHasAnyOfType(ITypeSymbol i) => AuthorizeWhenHasAnyOfAttribute.Contains(i);
 
     public bool IsExcludeFromContractsGenerationType(ITypeSymbol? i) =>
         ExcludeFromContractsGenerationAttribute.Contains(i);
@@ -240,8 +222,6 @@ public sealed class ContractTypes
 
     public static bool IsRecordEqualityContract(IPropertySymbol i)
     {
-        return i.ContainingType is INamedTypeSymbol ns
-            && ns.IsRecord
-            && i.Name == RecordEqualityContractPropertyName;
+        return i.ContainingType is INamedTypeSymbol ns && ns.IsRecord && i.Name == RecordEqualityContractPropertyName;
     }
 }

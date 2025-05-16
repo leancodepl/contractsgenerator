@@ -16,8 +16,8 @@ public static class NotificationTagGenerator
         {
             { Internal: TypeRef.Types.Internal i } => $"{i.Name}{GetArgumentsString(i.Arguments)}",
             { Generic: TypeRef.Types.Generic g } => g.Name,
-            { Known: TypeRef.Types.Known k }
-                => $"{LeanCode.Contracts.NotificationTagGenerator.KnownTypePrefix}{k.Type}{GetArgumentsString(k.Arguments)}",
+            { Known: TypeRef.Types.Known k } =>
+                $"{LeanCode.Contracts.NotificationTagGenerator.KnownTypePrefix}{k.Type}{GetArgumentsString(k.Arguments)}",
             _ => throw new InvalidOperationException($"Unknown TypeRef: {typeRef}."),
         };
     }

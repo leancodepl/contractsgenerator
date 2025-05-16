@@ -11,24 +11,24 @@ public class SubscriptionEnvelopeSerializationTests
 {
     private const string SubscriptionId = "4d3b45e6-a2c1-4d6a-9e23-94e0d9f8ca01";
 
-    private static readonly Topic SampleTopic =
-        new()
-        {
-            EntityIds = new() { "Entity1", "Entity2" },
-        };
+    private static readonly Topic SampleTopic = new()
+    {
+        EntityIds = new() { "Entity1", "Entity2" },
+    };
 
-    private static readonly SubscriptionEnvelope SampleSubscriptionEnvelope =
-        new()
-        {
-            Id = Guid.Parse(SubscriptionId),
-            TopicType = typeof(Topic).FullName!,
-            Topic = JsonSerializer.SerializeToDocument(SampleTopic),
-        };
+    private static readonly SubscriptionEnvelope SampleSubscriptionEnvelope = new()
+    {
+        Id = Guid.Parse(SubscriptionId),
+        TopicType = typeof(Topic).FullName!,
+        Topic = JsonSerializer.SerializeToDocument(SampleTopic),
+    };
 
     private const string Json = $$"""
         {
           "{{nameof(SubscriptionEnvelope.Id)}}": "{{SubscriptionId}}",
-          "{{nameof(SubscriptionEnvelope.TopicType)}}": "LeanCode.ContractsGenerator.Tests.Serialization.SubscriptionEnvelopeSerializationTests\u002BTopic",
+          "{{nameof(
+            SubscriptionEnvelope.TopicType
+        )}}": "LeanCode.ContractsGenerator.Tests.Serialization.SubscriptionEnvelopeSerializationTests\u002BTopic",
           "{{nameof(SubscriptionEnvelope.Topic)}}": {
             "{{nameof(Topic.EntityIds)}}": [
               "Entity1",
@@ -56,9 +56,7 @@ public class SubscriptionEnvelopeSerializationTests
 
         var deserialized = JsonSerializer.Deserialize<SubscriptionEnvelope>(Json);
 
-        deserialized
-            .Should()
-            .BeEquivalentTo(SampleSubscriptionEnvelope, opts => opts.Excluding(e => e.Topic));
+        deserialized.Should().BeEquivalentTo(SampleSubscriptionEnvelope, opts => opts.Excluding(e => e.Topic));
 
         var deserializedTopic = deserialized!.Topic.Deserialize<Topic>();
 

@@ -12,10 +12,7 @@ public class Attributes
         "attributes/property.cs"
             .Compiles()
             .WithCommand("A")
-            .WithProperty(
-                "Prop",
-                p => p.WithAttribute("System.ObsoleteAttribute", Positional(0, "Msg"))
-            );
+            .WithProperty("Prop", p => p.WithAttribute("System.ObsoleteAttribute", Positional(0, "Msg")));
     }
 
     [Fact]

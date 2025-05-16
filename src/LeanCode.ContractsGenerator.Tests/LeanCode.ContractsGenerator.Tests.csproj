@@ -1,11 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
     <PreserveCompilationContext>true</PreserveCompilationContext>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
-
   <Target Name="PackDependenciesForTests" BeforeTargets="AfterBuild">
     <Message Text="Packing the LeanCode.Contracts" Importance="high" />
     <MSBuild
@@ -13,13 +11,12 @@
       Projects="../LeanCode.Contracts/LeanCode.Contracts.csproj"
       Properties="Version=9.9.9.9-internal"
       RemoveProperties="TargetFramework"
-      Targets="Restore;Build;Pack" />
+      Targets="Restore;Build;Pack"
+    />
   </Target>
-
   <ItemGroup>
     <Compile Include="../../examples/notifications/**/*.cs" />
   </ItemGroup>
-
   <ItemGroup>
     <Content Include="../../examples/**/*">
       <Link>examples/%(RecursiveDir)%(Filename)%(Extension)</Link>
@@ -30,10 +27,8 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
-
     <PackageReference Include="xunit" />
     <PackageReference Include="xunit.analyzers" />
     <PackageReference Include="xunit.runner.visualstudio">
@@ -45,13 +40,10 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-
     <!-- workaround for MSBuild trying to load multiple versions of this package into the process -->
     <PackageReference Include="NuGet.Frameworks" PrivateAssets="all" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="../LeanCode.ContractsGenerator/LeanCode.ContractsGenerator.csproj" />
   </ItemGroup>
-
 </Project>

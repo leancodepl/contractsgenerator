@@ -8,11 +8,7 @@ public class Simple
     [Fact]
     public void Simple_command()
     {
-        "simple/command.cs"
-            .Compiles()
-            .WithSingle()
-            .Command("Command")
-            .ThatExtends(Known(KnownType.Command));
+        "simple/command.cs".Compiles().WithSingle().Command("Command").ThatExtends(Known(KnownType.Command));
     }
 
     [Fact]
@@ -51,10 +47,7 @@ public class Simple
             .WithDto("Notification")
             .WithTopic("Topic")
             .WithNotification(
-                NotificationTypeRefExtensions.WithTag(
-                    TypeRefExtensions.Internal("Notification"),
-                    "Notification"
-                )
+                NotificationTypeRefExtensions.WithTag(TypeRefExtensions.Internal("Notification"), "Notification")
             );
     }
 

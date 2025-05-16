@@ -1,13 +1,20 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <Target Name="BuildDependencies" BeforeTargets="Restore">
-    <MSBuild Projects="../embedded/embedded.csproj" Properties="Configuration=Debug;Version=8.8.8.8-internal" RemoveProperties="TargetFramework" Targets="Restore" />
-    <MSBuild Projects="../embedded/embedded.csproj" Properties="Configuration=Debug;Version=8.8.8.8-internal" RemoveProperties="TargetFramework" Targets="Build;Pack" />
+    <MSBuild
+      Projects="../embedded/embedded.csproj"
+      Properties="Configuration=Debug;Version=8.8.8.8-internal"
+      RemoveProperties="TargetFramework"
+      Targets="Restore"
+    />
+    <MSBuild
+      Projects="../embedded/embedded.csproj"
+      Properties="Configuration=Debug;Version=8.8.8.8-internal"
+      RemoveProperties="TargetFramework"
+      Targets="Build;Pack"
+    />
   </Target>
-
   <ItemGroup>
     <PackageReference Include="LeanCode.Contracts" />
     <PackageReference Include="embedded" Version="8.8.8.8-internal" />
   </ItemGroup>
-
 </Project>

@@ -59,10 +59,7 @@ public class SupportedUseCases
             .WithTopic("Topic")
             .WithProperty("Key", Known(KnownType.String))
             .WithNotification(
-                NotificationTypeRefExtensions.WithTag(
-                    TypeRefExtensions.Internal("Notification"),
-                    "Notification"
-                )
+                NotificationTypeRefExtensions.WithTag(TypeRefExtensions.Internal("Notification"), "Notification")
             );
     }
 
@@ -98,10 +95,7 @@ public class SupportedUseCases
             .WithTopic("Topic")
             .ThatExtends(TypeRefExtensions.Internal("TopicBase"))
             .WithNotification(
-                NotificationTypeRefExtensions.WithTag(
-                    TypeRefExtensions.Internal("Notification"),
-                    "Notification"
-                )
+                NotificationTypeRefExtensions.WithTag(TypeRefExtensions.Internal("Notification"), "Notification")
             );
     }
 
@@ -113,17 +107,11 @@ public class SupportedUseCases
             .WithDto("Notification")
             .WithTopic("TopicBase")
             .WithNotification(
-                NotificationTypeRefExtensions.WithTag(
-                    TypeRefExtensions.Internal("Notification"),
-                    "Notification"
-                )
+                NotificationTypeRefExtensions.WithTag(TypeRefExtensions.Internal("Notification"), "Notification")
             )
             .WithTopic("Topic")
             .WithNotification(
-                NotificationTypeRefExtensions.WithTag(
-                    TypeRefExtensions.Internal("Notification"),
-                    "Notification"
-                )
+                NotificationTypeRefExtensions.WithTag(TypeRefExtensions.Internal("Notification"), "Notification")
             );
     }
 
@@ -137,10 +125,7 @@ public class SupportedUseCases
             .WithTopic("Topic")
             .ThatExtends(TypeRefExtensions.Internal("ITopicBase"))
             .WithNotification(
-                NotificationTypeRefExtensions.WithTag(
-                    TypeRefExtensions.Internal("Notification"),
-                    "Notification"
-                )
+                NotificationTypeRefExtensions.WithTag(TypeRefExtensions.Internal("Notification"), "Notification")
             );
     }
 
@@ -154,10 +139,7 @@ public class SupportedUseCases
             .WithTopic("Topic")
             .ThatExtends(TypeRefExtensions.Internal("IProducer"))
             .WithNotification(
-                NotificationTypeRefExtensions.WithTag(
-                    TypeRefExtensions.Internal("Notification"),
-                    "Notification"
-                )
+                NotificationTypeRefExtensions.WithTag(TypeRefExtensions.Internal("Notification"), "Notification")
             );
     }
 
@@ -171,10 +153,7 @@ public class SupportedUseCases
             .WithTopic("Topic")
             .ThatExtends(TypeRefExtensions.Internal("Producer"))
             .WithNotification(
-                NotificationTypeRefExtensions.WithTag(
-                    TypeRefExtensions.Internal("Notification"),
-                    "Notification"
-                )
+                NotificationTypeRefExtensions.WithTag(TypeRefExtensions.Internal("Notification"), "Notification")
             );
     }
 

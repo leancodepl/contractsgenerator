@@ -10,8 +10,7 @@ public class NotificationTagGenerators
 {
     private readonly string class1Name = $"{typeof(Class1).FullName}";
     private readonly string class2Name = $"{typeof(Class2<>).Namespace}.{nameof(Class2<object>)}";
-    private readonly string class3Name =
-        $"{typeof(Class3<,>).Namespace}.{nameof(Class3<object, object>)}";
+    private readonly string class3Name = $"{typeof(Class3<,>).Namespace}.{nameof(Class3<object, object>)}";
     private readonly string listName = $"{typeof(List<>).Namespace}.{nameof(List<object>)}";
     private readonly string dto1Name = $"{typeof(DTO1).FullName}";
     private readonly string otherNamespaceDto1Name = $"{typeof(OtherNamespaceDTO1).FullName}";
@@ -143,18 +142,12 @@ public class NotificationTagGenerators
 
     private static void CheckIfTagsAreDifferent(Type type1, Type type2)
     {
-        Assert.NotEqual(
-            ContractsTagGenerator.Generate(type1),
-            ContractsTagGenerator.Generate(type2)
-        );
+        Assert.NotEqual(ContractsTagGenerator.Generate(type1), ContractsTagGenerator.Generate(type2));
     }
 
     private static void CheckIfTagsAreDifferent(TypeRef typeRef1, TypeRef typeRef2)
     {
-        Assert.NotEqual(
-            CompilationTagGenerator.Generate(typeRef1),
-            CompilationTagGenerator.Generate(typeRef2)
-        );
+        Assert.NotEqual(CompilationTagGenerator.Generate(typeRef1), CompilationTagGenerator.Generate(typeRef2));
     }
 }
 

@@ -11,14 +11,11 @@ public class ErrorCodesUniqueness : BaseAnalyzer
             .SelectMany(Flatten)
             .GroupBy(e => e.Code)
             .Where(g => g.Count() > 1)
-            .Select(
-                g =>
-                    new AnalyzeError(
-                        AnalyzerCodes.DuplicateErrorCodes,
-                        $"Duplicate error codes: {string.Join(", ", g.Select(c => c.Name))}",
-                        context
-                    )
-            );
+            .Select(g => new AnalyzeError(
+                AnalyzerCodes.DuplicateErrorCodes,
+                $"Duplicate error codes: {string.Join(", ", g.Select(c => c.Name))}",
+                context
+            ));
 
         static IEnumerable<ErrorCode.Types.Single> Flatten(ErrorCode errCode)
         {
@@ -49,10 +46,7 @@ public class ErrorCodesUniqueness : BaseAnalyzer
         return AnalyzeErrorCodes(context.ErrorCodes(), command.ErrorCodes);
     }
 
-    public override IEnumerable<AnalyzeError> AnalyzeStatement(
-        AnalyzerContext context,
-        Statement stmt
-    )
+    public override IEnumerable<AnalyzeError> AnalyzeStatement(AnalyzerContext context, Statement stmt)
     {
         if (stmt.Command is Statement.Types.Command cmd)
         {
