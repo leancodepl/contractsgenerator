@@ -14,7 +14,7 @@ namespace LeanCode.ContractsGenerator.Compilation.MSBuild;
 
 public static class MSBuildHelper
 {
-    private static readonly string[] RestoreTarget = new string[] { "Restore" };
+    private static readonly string[] RestoreTarget = ["Restore"];
 
     private static readonly ImmutableDictionary<string, string> GlobalProperties = ImmutableDictionary.CreateRange(
         new Dictionary<string, string>
@@ -108,7 +108,7 @@ public static class MSBuildHelper
                         {
                             if (bs.BuildResult.OverallResult != BuildResultCode.Success)
                             {
-                                Interlocked.Increment(ref failed);
+                                _ = Interlocked.Increment(ref failed);
                             }
                         },
                         context: null

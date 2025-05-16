@@ -2,9 +2,8 @@ namespace LeanCode.ContractsGenerator.Generation;
 
 public static class ObjectExtensions
 {
-    public static ValueRef ToValueRef(this object? val)
-    {
-        return val switch
+    public static ValueRef ToValueRef(this object? val) =>
+        val switch
         {
             null => new() { Null = new() },
             byte v => new ValueRef { Number = new() { Value = v } },
@@ -21,5 +20,4 @@ public static class ObjectExtensions
             bool v => new ValueRef { Bool = new() { Value = v } },
             _ => throw new NotSupportedException($"Cannot generate contracts for constant of type {val.GetType()}."),
         };
-    }
 }

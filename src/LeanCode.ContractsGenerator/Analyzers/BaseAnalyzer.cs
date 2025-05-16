@@ -5,47 +5,33 @@ public class BaseAnalyzer : IAnalyzer
     public virtual IEnumerable<AnalyzeError> Analyze(Export export)
     {
         var context = AnalyzerContext.Empty;
-        return export.Statements.SelectMany(s => AnalyzeStatement(context.Descend(s), s)).ToList();
+        return [.. export.Statements.SelectMany(s => AnalyzeStatement(context.Descend(s), s))];
     }
 
-    public virtual IEnumerable<AnalyzeError> AnalyzeKnownType(AnalyzerContext context, KnownType knownType)
-    {
-        return Enumerable.Empty<AnalyzeError>();
-    }
+    public virtual IEnumerable<AnalyzeError> AnalyzeKnownType(AnalyzerContext context, KnownType knownType) => [];
 
-    public virtual IEnumerable<AnalyzeError> AnalyzeValueRef(AnalyzerContext context, ValueRef valueRef)
-    {
-        return Enumerable.Empty<AnalyzeError>();
-    }
+    public virtual IEnumerable<AnalyzeError> AnalyzeValueRef(AnalyzerContext context, ValueRef valueRef) => [];
 
     public virtual IEnumerable<AnalyzeError> AnalyzeGenericTypeRef(
         AnalyzerContext context,
         TypeRef typeRef,
         TypeRef.Types.Generic g
-    )
-    {
-        return Enumerable.Empty<AnalyzeError>();
-    }
+    ) => [];
 
     public virtual IEnumerable<AnalyzeError> AnalyzeInternalTypeRef(
         AnalyzerContext context,
         TypeRef typeRef,
         TypeRef.Types.Internal i
-    )
-    {
-        return i.Arguments.SelectMany((a, i) => AnalyzeTypeRef(context.Argument(i, a), a));
-    }
+    ) => i.Arguments.SelectMany((a, i) => AnalyzeTypeRef(context.Argument(i, a), a));
 
     public virtual IEnumerable<AnalyzeError> AnalyzeKnownTypeRef(
         AnalyzerContext context,
         TypeRef typeRef,
         TypeRef.Types.Known k
-    )
-    {
-        return k
+    ) =>
+        k
             .Arguments.SelectMany((a, i) => AnalyzeTypeRef(context.Argument(i, a), a))
             .Concat(AnalyzeKnownType(context, k.Type));
-    }
 
     public virtual IEnumerable<AnalyzeError> AnalyzeTypeRef(AnalyzerContext context, TypeRef typeRef)
     {
@@ -63,35 +49,26 @@ public class BaseAnalyzer : IAnalyzer
         }
         else
         {
-            return Enumerable.Empty<AnalyzeError>();
+            return [];
         }
     }
 
     public virtual IEnumerable<AnalyzeError> AnalyzeGenericParameter(
         AnalyzerContext context,
         GenericParameter genericParam
-    )
-    {
-        return Enumerable.Empty<AnalyzeError>();
-    }
+    ) => [];
 
     public virtual IEnumerable<AnalyzeError> AnalyzePositionalAttributeArgument(
         AnalyzerContext context,
         AttributeArgument arg,
         AttributeArgument.Types.Positional p
-    )
-    {
-        return AnalyzeValueRef(context, p.Value);
-    }
+    ) => AnalyzeValueRef(context, p.Value);
 
     public virtual IEnumerable<AnalyzeError> AnalyzeNamedAttributeArgument(
         AnalyzerContext context,
         AttributeArgument arg,
         AttributeArgument.Types.Named n
-    )
-    {
-        return AnalyzeValueRef(context, n.Value);
-    }
+    ) => AnalyzeValueRef(context, n.Value);
 
     public virtual IEnumerable<AnalyzeError> AnalyzeAttributeArgument(AnalyzerContext context, AttributeArgument arg)
     {
@@ -105,48 +82,33 @@ public class BaseAnalyzer : IAnalyzer
         }
         else
         {
-            return Enumerable.Empty<AnalyzeError>();
+            return [];
         }
     }
 
-    public virtual IEnumerable<AnalyzeError> AnalyzeAttributeRef(AnalyzerContext context, AttributeRef attrRef)
-    {
-        return attrRef.Argument.SelectMany(a => AnalyzeAttributeArgument(context.Argument(a), a));
-    }
+    public virtual IEnumerable<AnalyzeError> AnalyzeAttributeRef(AnalyzerContext context, AttributeRef attrRef) =>
+        attrRef.Argument.SelectMany(a => AnalyzeAttributeArgument(context.Argument(a), a));
 
-    public virtual IEnumerable<AnalyzeError> AnalyzePropertyRef(AnalyzerContext context, PropertyRef propRef)
-    {
-        return AnalyzeTypeRef(context, propRef.Type)
+    public virtual IEnumerable<AnalyzeError> AnalyzePropertyRef(AnalyzerContext context, PropertyRef propRef) =>
+        AnalyzeTypeRef(context, propRef.Type)
             .Concat(propRef.Attributes.SelectMany(a => AnalyzeAttributeRef(context.Attribute(a), a)));
-    }
 
-    public virtual IEnumerable<AnalyzeError> AnalyzeConstantRef(AnalyzerContext context, ConstantRef constant)
-    {
-        return AnalyzeValueRef(context, constant.Value);
-    }
+    public virtual IEnumerable<AnalyzeError> AnalyzeConstantRef(AnalyzerContext context, ConstantRef constant) =>
+        AnalyzeValueRef(context, constant.Value);
 
-    public virtual IEnumerable<AnalyzeError> AnalyzeEnumValue(AnalyzerContext context, EnumValue enumVal)
-    {
-        return Enumerable.Empty<AnalyzeError>();
-    }
+    public virtual IEnumerable<AnalyzeError> AnalyzeEnumValue(AnalyzerContext context, EnumValue enumVal) => [];
 
     public virtual IEnumerable<AnalyzeError> AnalyzeGroupErrorCode(
         AnalyzerContext context,
         ErrorCode errCode,
         ErrorCode.Types.Group g
-    )
-    {
-        return AnalyzeErrorCodes(context, g.InnerCodes);
-    }
+    ) => AnalyzeErrorCodes(context, g.InnerCodes);
 
     public virtual IEnumerable<AnalyzeError> AnalyzeSingleErrorCode(
         AnalyzerContext context,
         ErrorCode errCode,
         ErrorCode.Types.Single s
-    )
-    {
-        return Enumerable.Empty<AnalyzeError>();
-    }
+    ) => [];
 
     public virtual IEnumerable<AnalyzeError> AnalyzeErrorCode(AnalyzerContext context, ErrorCode errCode)
     {
@@ -160,32 +122,29 @@ public class BaseAnalyzer : IAnalyzer
         }
         else
         {
-            return Enumerable.Empty<AnalyzeError>();
+            return [];
         }
     }
 
-    public virtual IEnumerable<AnalyzeError> AnalyzeErrorCodes(AnalyzerContext context, IEnumerable<ErrorCode> errCodes)
-    {
-        return errCodes.SelectMany(e => AnalyzeErrorCode(context.Descend(e), e));
-    }
+    public virtual IEnumerable<AnalyzeError> AnalyzeErrorCodes(
+        AnalyzerContext context,
+        IEnumerable<ErrorCode> errCodes
+    ) => errCodes.SelectMany(e => AnalyzeErrorCode(context.Descend(e), e));
 
-    public virtual IEnumerable<AnalyzeError> AnalyzeTypeDescriptor(AnalyzerContext context, TypeDescriptor descr)
-    {
-        return descr
+    public virtual IEnumerable<AnalyzeError> AnalyzeTypeDescriptor(AnalyzerContext context, TypeDescriptor descr) =>
+        descr
             .Extends.SelectMany(t => AnalyzeTypeRef(context.Extends(t), t))
             .Concat(
                 descr.GenericParameters.SelectMany((g, i) => AnalyzeGenericParameter(context.GenericParameter(i, g), g))
             )
             .Concat(descr.Properties.SelectMany(p => AnalyzePropertyRef(context.Descend(p), p)))
             .Concat(descr.Constants.SelectMany(c => AnalyzeConstantRef(context.Descend(c), c)));
-    }
 
     public virtual IEnumerable<AnalyzeError> AnalyzeTypeDescriptorForQuery(
         AnalyzerContext context,
         TypeDescriptor descr
-    )
-    {
-        return descr
+    ) =>
+        descr
             .Extends.Where(e => e.Known is null || e.Known.Type != KnownType.Query) // Exclude `Query` type, as it will be checked by the `Return` check
             .SelectMany(t => AnalyzeTypeRef(context.Extends(t), t))
             .Concat(
@@ -193,14 +152,12 @@ public class BaseAnalyzer : IAnalyzer
             )
             .Concat(descr.Properties.SelectMany(p => AnalyzePropertyRef(context.Descend(p), p)))
             .Concat(descr.Constants.SelectMany(c => AnalyzeConstantRef(context.Descend(c), c)));
-    }
 
     public virtual IEnumerable<AnalyzeError> AnalyzeTypeDescriptorForOperation(
         AnalyzerContext context,
         TypeDescriptor descr
-    )
-    {
-        return descr
+    ) =>
+        descr
             .Extends.Where(e => e.Known is null || e.Known.Type != KnownType.Operation) // Exclude `Operation` type, as it will be checked by the `Return` check
             .SelectMany(t => AnalyzeTypeRef(context.Extends(t), t))
             .Concat(
@@ -208,77 +165,60 @@ public class BaseAnalyzer : IAnalyzer
             )
             .Concat(descr.Properties.SelectMany(p => AnalyzePropertyRef(context.Descend(p), p)))
             .Concat(descr.Constants.SelectMany(c => AnalyzeConstantRef(context.Descend(c), c)));
-    }
 
     public virtual IEnumerable<AnalyzeError> AnalyzeTypeDescriptorForTopic(
         AnalyzerContext context,
         TypeDescriptor descr
-    )
-    {
-        return descr
+    ) =>
+        descr
             .Extends.Where(e => e.Known is null || e.Known.Type != KnownType.Topic)
             .SelectMany(t => AnalyzeTypeRef(context.Extends(t), t))
             .Concat(descr.Properties.SelectMany(p => AnalyzePropertyRef(context.Descend(p), p)))
             .Concat(descr.Constants.SelectMany(c => AnalyzeConstantRef(context.Descend(c), c)));
-    }
 
     public virtual IEnumerable<AnalyzeError> AnalyzeDTO(
         AnalyzerContext context,
         Statement stmt,
         Statement.Types.DTO dto
-    )
-    {
-        return AnalyzeTypeDescriptor(context, dto.TypeDescriptor);
-    }
+    ) => AnalyzeTypeDescriptor(context, dto.TypeDescriptor);
 
     public virtual IEnumerable<AnalyzeError> AnalyzeEnum(
         AnalyzerContext context,
         Statement stmt,
         Statement.Types.Enum @enum
-    )
-    {
-        return @enum.Members.SelectMany(m => AnalyzeEnumValue(context.Descend(m), m));
-    }
+    ) => @enum.Members.SelectMany(m => AnalyzeEnumValue(context.Descend(m), m));
 
     public virtual IEnumerable<AnalyzeError> AnalyzeQuery(
         AnalyzerContext context,
         Statement stmt,
         Statement.Types.Query query
-    )
-    {
-        return AnalyzeTypeDescriptorForQuery(context, query.TypeDescriptor)
+    ) =>
+        AnalyzeTypeDescriptorForQuery(context, query.TypeDescriptor)
             .Concat(AnalyzeTypeRef(context.Returns(query.ReturnType), query.ReturnType));
-    }
 
     public virtual IEnumerable<AnalyzeError> AnalyzeCommand(
         AnalyzerContext context,
         Statement stmt,
         Statement.Types.Command command
-    )
-    {
-        return AnalyzeTypeDescriptor(context, command.TypeDescriptor)
+    ) =>
+        AnalyzeTypeDescriptor(context, command.TypeDescriptor)
             .Concat(AnalyzeErrorCodes(context.ErrorCodes(), command.ErrorCodes));
-    }
 
     public virtual IEnumerable<AnalyzeError> AnalyzeOperation(
         AnalyzerContext context,
         Statement stmt,
         Statement.Types.Operation operation
-    )
-    {
-        return AnalyzeTypeDescriptorForOperation(context, operation.TypeDescriptor)
+    ) =>
+        AnalyzeTypeDescriptorForOperation(context, operation.TypeDescriptor)
             .Concat(AnalyzeTypeRef(context.Returns(operation.ReturnType), operation.ReturnType));
-    }
 
     public virtual IEnumerable<AnalyzeError> AnalyzeTopic(
         AnalyzerContext context,
         Statement stmt,
         Statement.Types.Topic topic
-    )
-    {
-        return AnalyzeTypeDescriptorForTopic(context, topic.TypeDescriptor)
+    ) =>
+        AnalyzeTypeDescriptorForTopic(context, topic.TypeDescriptor)
             .Concat(topic.Notifications.SelectMany(n => AnalyzeTypeRef(context.Returns(n.Type), n.Type)));
-    }
 
     public virtual IEnumerable<AnalyzeError> AnalyzeStatement(AnalyzerContext context, Statement stmt)
     {
@@ -313,7 +253,7 @@ public class BaseAnalyzer : IAnalyzer
             }
             else
             {
-                return Enumerable.Empty<AnalyzeError>();
+                return [];
             }
         }
     }

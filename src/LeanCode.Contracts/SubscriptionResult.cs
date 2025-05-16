@@ -1,17 +1,10 @@
 namespace LeanCode.Contracts;
 
-public sealed class SubscriptionResult
+public sealed class SubscriptionResult(Guid subscriptionId, SubscriptionStatus status, OperationType type)
 {
-    public Guid SubscriptionId { get; private init; }
-    public SubscriptionStatus Status { get; private init; }
-    public OperationType Type { get; private init; }
-
-    public SubscriptionResult(Guid subscriptionId, SubscriptionStatus status, OperationType type)
-    {
-        SubscriptionId = subscriptionId;
-        Status = status;
-        Type = type;
-    }
+    public Guid SubscriptionId { get; private init; } = subscriptionId;
+    public SubscriptionStatus Status { get; private init; } = status;
+    public OperationType Type { get; private init; } = type;
 }
 
 public enum SubscriptionStatus

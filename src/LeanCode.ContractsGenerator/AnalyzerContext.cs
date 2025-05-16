@@ -58,10 +58,7 @@ public readonly record struct AnalyzerContext(string Path)
         }
     }
 
-    private AnalyzerContext Append(string nextName)
-    {
-        return new($"{Path}{nextName}");
-    }
+    private AnalyzerContext Append(string nextName) => new($"{Path}{nextName}");
 
     private static string NameOf(TypeRef typeRef)
     {

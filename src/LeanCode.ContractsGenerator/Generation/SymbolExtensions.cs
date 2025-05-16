@@ -23,7 +23,7 @@ public static class SymbolExtensions
                 Construct(symbol.ContainingType, sb);
             }
 
-            sb.Append(symbol.Name).Append('.');
+            _ = sb.Append(symbol.Name).Append('.');
         }
 
         static void ConstructNS(INamespaceSymbol symbol, StringBuilder sb)
@@ -31,7 +31,7 @@ public static class SymbolExtensions
             if (!symbol.IsGlobalNamespace)
             {
                 ConstructNS(symbol.ContainingNamespace, sb);
-                sb.Append(symbol.Name).Append('.');
+                _ = sb.Append(symbol.Name).Append('.');
             }
         }
     }
@@ -66,7 +66,7 @@ public static class SymbolExtensions
                 var sb = new StringBuilder();
                 foreach (var t in FlattenAllNodes(doc.DocumentElement))
                 {
-                    sb.AppendLine(t.InnerText.Trim());
+                    _ = sb.AppendLine(t.InnerText.Trim());
                 }
 
                 return sb.ToString().TrimEnd();
