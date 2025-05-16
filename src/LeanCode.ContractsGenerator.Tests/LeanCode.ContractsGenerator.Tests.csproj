@@ -1,21 +1,18 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
+    <TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
     <PreserveCompilationContext>true</PreserveCompilationContext>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
-
-  <ItemGroup>
-    <FxToCompile Include="$(TargetFrameworks)" />
-  </ItemGroup>
 
   <Target Name="PackDependenciesForTests" BeforeTargets="AfterBuild">
     <Message Text="Packing the LeanCode.Contracts" Importance="high" />
     <MSBuild
       StopOnFirstFailure="true"
       Projects="../LeanCode.Contracts/LeanCode.Contracts.csproj"
-      Properties="Configuration=Debug;TargetFramework=net6.0;TargetFrameworks=net6.0;Version=9.9.9.9-internal"
+      Properties="Version=9.9.9.9-internal"
+      RemoveProperties="TargetFramework"
       Targets="Restore;Build;Pack" />
   </Target>
 
@@ -28,7 +25,7 @@
       <Link>examples/%(RecursiveDir)%(Filename)%(Extension)</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="../LeanCode.Contracts/bin/Debug/LeanCode.Contracts.*.nupkg">
+    <Content Include="../LeanCode.Contracts/bin/$(Configuration)/LeanCode.Contracts.*.nupkg">
       <Link>examples/%(Filename)%(Extension)</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

@@ -9,7 +9,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/src/LeanCode.ContractsGenerator/bin/Debug/net7.0/LeanCode.ContractsGenerator.dll",
+            "program": "${workspaceFolder}/src/LeanCode.ContractsGenerator/bin/Debug/net8.0/LeanCode.ContractsGenerator.dll",
             "args": [],
             "cwd": "${workspaceFolder}",
             "console": "internalConsole",

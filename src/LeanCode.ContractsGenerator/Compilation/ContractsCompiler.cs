@@ -39,6 +39,20 @@ public static class ContractsCompiler
                 "System.Runtime.Extensions",
             }
         );
+#elif NET8_0
+    public static readonly ImmutableHashSet<string> ReferenceAssemblyNames =
+        ImmutableHashSet<string>.Empty;
+    public static readonly ImmutableHashSet<string> DefaultAssemblyNames =
+        ImmutableHashSet.CreateRange(
+            new string[]
+            {
+                "System.Collections",
+                "System.Linq",
+                "System.Net.Http",
+                "System.Runtime",
+                "System.Runtime.Extensions",
+            }
+        );
 #else
 #error TargetFramework property mismatch between project and code.
 #endif
