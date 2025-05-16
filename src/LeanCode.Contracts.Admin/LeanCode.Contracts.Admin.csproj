@@ -9,6 +9,6 @@
     <EmbeddedResource Include="LeanCode.Contracts.pb">
       <LogicalName>%(Filename)%(Extension)</LogicalName>
     </EmbeddedResource>
-    <PackageReference Include="LeanCode.Contracts" Version="1.1.1" />
+    <PackageReference Include="LeanCode.Contracts" Version="2.0.0" />
   </ItemGroup>
 </Project>
