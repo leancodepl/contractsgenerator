@@ -30,7 +30,9 @@ public sealed class ContractTypes
 
     private HashSet<INamedTypeSymbol> Equatable { get; }
 
+#pragma warning disable IDE0290 // Use primary constructor
     public ContractTypes(IReadOnlyCollection<CSharpCompilation> compilations)
+#pragma warning restore IDE0290 // Use primary constructor
     {
         QueryType = GetUnboundTypeSymbols(compilations, typeof(IQuery<>));
         CommandType = GetTypeSymbols<ICommand>(compilations);
@@ -54,16 +56,14 @@ public sealed class ContractTypes
     {
         var name = typeof(T).FullName!;
         var result = new HashSet<INamedTypeSymbol>(SymbolEqualityComparer.Default);
+
         foreach (var c in compilations)
         {
-            var type = c.GetTypeByMetadataName(name);
-            if (type is null)
-            {
-                throw new CompilationFailedException(
+            var type =
+                c.GetTypeByMetadataName(name)
+                ?? throw new CompilationFailedException(
                     $"Cannot locate type {name} in compilation unit `{c.AssemblyName ?? "UNKNOWN"}`."
                 );
-            }
-
             result.Add(type);
         }
 
@@ -77,53 +77,43 @@ public sealed class ContractTypes
     {
         var name = type.FullName!;
         var result = new HashSet<INamedTypeSymbol>(SymbolEqualityComparer.Default);
+
         foreach (var c in compilations)
         {
-            var t = c.GetTypeByMetadataName(name)?.ConstructUnboundGenericType();
-            if (t is null)
-            {
-                throw new CompilationFailedException(
+            var t =
+                (c.GetTypeByMetadataName(name)?.ConstructUnboundGenericType())
+                ?? throw new CompilationFailedException(
                     $"Cannot locate generic type {name} in compilation unit `{c.AssemblyName ?? "UNKNOWN"}`."
                 );
-            }
-
             result.Add(t);
         }
 
         return result;
     }
 
-    public bool IsQuery(ITypeSymbol symbol)
-    {
-        return symbol is INamedTypeSymbol ns
-            && !ns.IsUnboundGenericType
-            && !ns.IsAbstract
-            && ns.AllInterfaces.Any(IsQueryType);
-    }
+    public bool IsQuery(ITypeSymbol symbol) =>
+        symbol is INamedTypeSymbol ns
+        && !ns.IsUnboundGenericType
+        && !ns.IsAbstract
+        && ns.AllInterfaces.Any(IsQueryType);
 
-    public bool IsCommand(ITypeSymbol symbol)
-    {
-        return symbol is INamedTypeSymbol ns
-            && !ns.IsUnboundGenericType
-            && !ns.IsAbstract
-            && ns.AllInterfaces.Any(IsCommandType);
-    }
+    public bool IsCommand(ITypeSymbol symbol) =>
+        symbol is INamedTypeSymbol ns
+        && !ns.IsUnboundGenericType
+        && !ns.IsAbstract
+        && ns.AllInterfaces.Any(IsCommandType);
 
-    public bool IsOperation(ITypeSymbol symbol)
-    {
-        return symbol is INamedTypeSymbol ns
-            && !ns.IsUnboundGenericType
-            && !ns.IsAbstract
-            && ns.AllInterfaces.Any(IsOperationType);
-    }
+    public bool IsOperation(ITypeSymbol symbol) =>
+        symbol is INamedTypeSymbol ns
+        && !ns.IsUnboundGenericType
+        && !ns.IsAbstract
+        && ns.AllInterfaces.Any(IsOperationType);
 
-    public bool IsTopic(ITypeSymbol symbol)
-    {
-        return symbol is INamedTypeSymbol ns
-            && !ns.IsUnboundGenericType
-            && !ns.IsAbstract
-            && ns.AllInterfaces.Any(IsTopicType);
-    }
+    public bool IsTopic(ITypeSymbol symbol) =>
+        symbol is INamedTypeSymbol ns
+        && !ns.IsUnboundGenericType
+        && !ns.IsAbstract
+        && ns.AllInterfaces.Any(IsTopicType);
 
     public ITypeSymbol ExtractQueryResult(ITypeSymbol symbol)
     {
@@ -201,27 +191,21 @@ public sealed class ContractTypes
 
     public bool IsAttributeUsageType(ITypeSymbol i) => AttributeUsageAttribute.Contains(i);
 
-    public bool IsReadOnlyDictionary(ITypeSymbol i)
-    {
-        return i is INamedTypeSymbol ns
-            && ns.IsGenericType
-            && (
-                ReadOnlyDictionary.Contains(ns.ConstructUnboundGenericType())
-                || Dictionary.Contains(ns.ConstructUnboundGenericType())
-            );
-    }
+    public bool IsReadOnlyDictionary(ITypeSymbol i) =>
+        i is INamedTypeSymbol ns
+        && ns.IsGenericType
+        && (
+            ReadOnlyDictionary.Contains(ns.ConstructUnboundGenericType())
+            || Dictionary.Contains(ns.ConstructUnboundGenericType())
+        );
 
-    public bool IsRecordEquatable(ITypeSymbol i)
-    {
-        return i is INamedTypeSymbol ns
-            && ns.IsGenericType
-            && ns.TypeArguments is [INamedTypeSymbol namedType]
-            && namedType.IsRecord
-            && Equatable.Contains(ns.ConstructUnboundGenericType());
-    }
+    public bool IsRecordEquatable(ITypeSymbol i) =>
+        i is INamedTypeSymbol ns
+        && ns.IsGenericType
+        && ns.TypeArguments is [INamedTypeSymbol namedType]
+        && namedType.IsRecord
+        && Equatable.Contains(ns.ConstructUnboundGenericType());
 
-    public static bool IsRecordEqualityContract(IPropertySymbol i)
-    {
-        return i.ContainingType is INamedTypeSymbol ns && ns.IsRecord && i.Name == RecordEqualityContractPropertyName;
-    }
+    public static bool IsRecordEqualityContract(IPropertySymbol i) =>
+        i.ContainingType is INamedTypeSymbol ns && ns.IsRecord && i.Name == RecordEqualityContractPropertyName;
 }

@@ -12,16 +12,15 @@ public class ObjectExtensionsTests
         Assert.NotNull(vr.Null);
     }
 
-#pragma warning disable SA1139
     [Theory]
     [InlineData((byte)10)]
     [InlineData((sbyte)10)]
-    [InlineData((int)10)]
-    [InlineData((long)10)]
     [InlineData((short)10)]
-    [InlineData((uint)10)]
-    [InlineData((ulong)10)]
     [InlineData((ushort)10)]
+    [InlineData(10)]
+    [InlineData(10L)]
+    [InlineData(10U)]
+    [InlineData(10UL)]
     public void Number_is_converted(object value)
     {
         var vr = value.ToValueRef();
@@ -30,15 +29,14 @@ public class ObjectExtensionsTests
     }
 
     [Theory]
-    [InlineData((float)10.015000343322754)]
-    [InlineData((double)10.015000343322754)]
+    [InlineData(10.015000343322754f)]
+    [InlineData(10.015000343322754d)]
     public void FloatingPoint_is_converted(object value)
     {
         var vr = value.ToValueRef();
         Assert.NotNull(vr.FloatingPoint);
         Assert.Equal(10.015000343322754, vr.FloatingPoint.Value);
     }
-#pragma warning restore
 
     [Fact]
     public void String_is_converted()

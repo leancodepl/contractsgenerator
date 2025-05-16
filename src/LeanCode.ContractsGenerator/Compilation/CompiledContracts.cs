@@ -4,24 +4,15 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace LeanCode.ContractsGenerator.Compilation;
 
-public sealed class CompiledContracts
+public sealed class CompiledContracts(IReadOnlyCollection<CSharpCompilation> compilations, string projectName)
 {
-    private readonly IReadOnlyCollection<CSharpCompilation> compilations;
+    private readonly IReadOnlyCollection<CSharpCompilation> compilations = compilations;
 
-    public ContractTypes Types { get; }
-    public string ProjectName { get; }
+    public ContractTypes Types { get; } = new(compilations);
+    public string ProjectName { get; } = projectName;
 
-    public CompiledContracts(IReadOnlyCollection<CSharpCompilation> compilations, string projectName)
-    {
-        this.compilations = compilations;
-        ProjectName = projectName;
-
-        Types = new(compilations);
-    }
-
-    public IEnumerable<INamedTypeSymbol> ListAllTypes()
-    {
-        return compilations.SelectMany(c =>
+    public IEnumerable<INamedTypeSymbol> ListAllTypes() =>
+        compilations.SelectMany(c =>
             c.SyntaxTrees.SelectMany(t =>
             {
                 var model = c.GetSemanticModel(t);
@@ -33,5 +24,4 @@ public sealed class CompiledContracts
                     .OfType<INamedTypeSymbol>();
             })
         );
-    }
 }

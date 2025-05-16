@@ -8,7 +8,7 @@ public class Glob
     [Fact]
     public void Globbing_finds_necessary_files()
     {
-        GlobCompiles(includes: new[] { "project/globs/**/*.cs" }, excludes: Array.Empty<string>())
+        GlobCompiles(includes: ["project/globs/**/*.cs"], excludes: [])
             .WithCommand("A.Command")
             .WithQuery("B.Query")
             .WithDto("A.Dto");
@@ -17,7 +17,7 @@ public class Glob
     [Fact]
     public void Globbing_includes_correct_files()
     {
-        GlobCompiles(includes: new[] { "project/globs/A/*" }, excludes: Array.Empty<string>())
+        GlobCompiles(includes: ["project/globs/A/*"], excludes: [])
             .WithCommand("A.Command")
             .WithDto("A.Dto")
             .Without("B.Query");
@@ -26,7 +26,7 @@ public class Glob
     [Fact]
     public void Globbing_excludes_correct_files()
     {
-        GlobCompiles(includes: new[] { "project/globs/**" }, excludes: new[] { "**/Dto.cs" })
+        GlobCompiles(includes: ["project/globs/**"], excludes: ["**/Dto.cs"])
             .WithCommand("A.Command")
             .Without("A.Dto")
             .WithQuery("B.Query");

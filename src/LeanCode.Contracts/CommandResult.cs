@@ -3,17 +3,12 @@ using LeanCode.Contracts.Validation;
 
 namespace LeanCode.Contracts;
 
-public sealed class CommandResult
+public sealed class CommandResult(ImmutableList<ValidationError> validationErrors)
 {
-    public ImmutableList<ValidationError> ValidationErrors { get; }
+    public ImmutableList<ValidationError> ValidationErrors { get; } = validationErrors;
     public bool WasSuccessful => ValidationErrors.Count == 0;
 
-    public CommandResult(ImmutableList<ValidationError> validationErrors)
-    {
-        ValidationErrors = validationErrors;
-    }
-
-    public static CommandResult Success { get; } = new(ImmutableList.Create<ValidationError>());
+    public static CommandResult Success { get; } = new([]);
 
     public static CommandResult NotValid(ValidationResult validationResult)
     {
