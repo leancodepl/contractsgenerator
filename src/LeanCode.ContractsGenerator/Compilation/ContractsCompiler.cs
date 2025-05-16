@@ -11,21 +11,6 @@ namespace LeanCode.ContractsGenerator.Compilation;
 
 public static class ContractsCompiler
 {
-#if NET6_0
-    public static readonly ImmutableHashSet<string> ReferenceAssemblyNames =
-        ImmutableHashSet.CreateRange(
-            new[]
-            {
-                "System.Collections.Reference",
-                "System.Linq.Reference",
-                "System.Net.Http.Reference",
-                "System.Runtime.Reference",
-                "System.Runtime.Extensions.Reference",
-            }
-        );
-    public static readonly ImmutableHashSet<string> DefaultAssemblyNames =
-        ImmutableHashSet<string>.Empty;
-#elif NET7_0
     public static readonly ImmutableHashSet<string> ReferenceAssemblyNames =
         ImmutableHashSet<string>.Empty;
     public static readonly ImmutableHashSet<string> DefaultAssemblyNames =
@@ -39,23 +24,6 @@ public static class ContractsCompiler
                 "System.Runtime.Extensions",
             }
         );
-#elif NET8_0
-    public static readonly ImmutableHashSet<string> ReferenceAssemblyNames =
-        ImmutableHashSet<string>.Empty;
-    public static readonly ImmutableHashSet<string> DefaultAssemblyNames =
-        ImmutableHashSet.CreateRange(
-            new string[]
-            {
-                "System.Collections",
-                "System.Linq",
-                "System.Net.Http",
-                "System.Runtime",
-                "System.Runtime.Extensions",
-            }
-        );
-#else
-#error TargetFramework property mismatch between project and code.
-#endif
 
     public static readonly ImmutableHashSet<string> LeanCodeAssemblyNames =
         ImmutableHashSet.CreateRange(new[] { "LeanCode.Contracts", });

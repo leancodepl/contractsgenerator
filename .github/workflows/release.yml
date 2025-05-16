@@ -23,9 +23,8 @@ jobs:
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: |
-            6.0.x
-            7.0.x
             8.0.x
+            9.0.x
       - name: Restore
         run: dotnet restore
       - name: Build
@@ -40,7 +39,7 @@ jobs:
         env:
           BUILD_VERSION: ${{ steps.get_version.outputs.version }}
         working-directory: src/LeanCode.ContractsGenerator
-        run: dotnet publish --output ./publish --no-self-contained --no-build --configuration Release --framework net8.0
+        run: dotnet publish --output ./publish --no-self-contained --no-build --configuration Release --framework net9.0
       - name: Pack
         env:
           BUILD_VERSION: ${{ steps.get_version.outputs.version }}

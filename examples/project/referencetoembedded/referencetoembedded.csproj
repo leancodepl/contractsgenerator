@@ -1,9 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks Condition="$([MSBuild]::VersionGreaterThanOrEquals('$(NETCoreSdkVersion)', '6.0'))">net6.0</TargetFrameworks>
-    <TargetFrameworks Condition="$([MSBuild]::VersionGreaterThanOrEquals('$(NETCoreSdkVersion)', '7.0'))">net6.0;net7.0</TargetFrameworks>
-    <TargetFrameworks Condition="$([MSBuild]::VersionGreaterThanOrEquals('$(NETCoreSdkVersion)', '8.0'))">net6.0;net7.0;net8.0</TargetFrameworks>
+    <TargetFrameworks Condition="$([MSBuild]::VersionGreaterThanOrEquals('$(NETCoreSdkVersion)', '8.0'))">net8.0</TargetFrameworks>
+    <TargetFrameworks Condition="$([MSBuild]::VersionGreaterThanOrEquals('$(NETCoreSdkVersion)', '9.0'))">net8.0;net9.0</TargetFrameworks>
   </PropertyGroup>
 
   <Target Name="BuildDependencies" BeforeTargets="Restore">
