@@ -3,11 +3,7 @@ using System.Reflection;
 
 namespace LeanCode.Contracts.Security;
 
-[AttributeUsage(
-    AttributeTargets.Class | AttributeTargets.Interface,
-    AllowMultiple = true,
-    Inherited = true
-)]
+[AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface, AllowMultiple = true, Inherited = true)]
 public abstract class AuthorizeWhenAttribute : Attribute
 {
     private readonly Type authorizerType;
@@ -19,14 +15,11 @@ public abstract class AuthorizeWhenAttribute : Attribute
         this.customData = customData;
     }
 
-    public static List<AuthorizerDefinition> GetCustomAuthorizers<T>() =>
-        GetCustomAuthorizers(typeof(T));
+    public static List<AuthorizerDefinition> GetCustomAuthorizers<T>() => GetCustomAuthorizers(typeof(T));
 
     public static List<AuthorizerDefinition> GetCustomAuthorizers(Type type)
     {
-        return type.GetCustomAttributes<AuthorizeWhenAttribute>()
-            .Select(AuthorizerDefinition.Create)
-            .ToList();
+        return type.GetCustomAttributes<AuthorizeWhenAttribute>().Select(AuthorizerDefinition.Create).ToList();
     }
 
     [SuppressMessage("?", "CA1034", Justification = "Deliberate nesting.")]
@@ -45,17 +38,12 @@ public abstract class AuthorizeWhenAttribute : Attribute
     }
 }
 
-[AttributeUsage(
-    AttributeTargets.Class | AttributeTargets.Interface,
-    AllowMultiple = true,
-    Inherited = true
-)]
+[AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface, AllowMultiple = true, Inherited = true)]
 public abstract class AuthorizeWhenAttribute<T> : AuthorizeWhenAttribute
 {
     protected AuthorizeWhenAttribute(object? customData = null)
         : base(typeof(T), customData) { }
 
     [SuppressMessage("?", "CA1000", Justification = "Alternative method also exists.")]
-    public static List<AuthorizerDefinition> GetCustomAuthorizers() =>
-        GetCustomAuthorizers(typeof(T));
+    public static List<AuthorizerDefinition> GetCustomAuthorizers() => GetCustomAuthorizers(typeof(T));
 }

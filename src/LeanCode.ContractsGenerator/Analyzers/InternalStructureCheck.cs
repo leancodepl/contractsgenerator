@@ -4,10 +4,7 @@ public class InternalStructureCheck : BaseAnalyzer
 {
     public const string Code = AnalyzerCodes.InternalStructureIsWrong;
 
-    public override IEnumerable<AnalyzeError> AnalyzeTypeRef(
-        AnalyzerContext context,
-        TypeRef typeRef
-    )
+    public override IEnumerable<AnalyzeError> AnalyzeTypeRef(AnalyzerContext context, TypeRef typeRef)
     {
         if (typeRef.Generic is null && typeRef.Internal is null && typeRef.Known is null)
         {
@@ -15,10 +12,7 @@ public class InternalStructureCheck : BaseAnalyzer
         }
     }
 
-    public override IEnumerable<AnalyzeError> AnalyzeValueRef(
-        AnalyzerContext context,
-        ValueRef valueRef
-    )
+    public override IEnumerable<AnalyzeError> AnalyzeValueRef(AnalyzerContext context, ValueRef valueRef)
     {
         if (
             valueRef.Null is null
@@ -32,25 +26,15 @@ public class InternalStructureCheck : BaseAnalyzer
         }
     }
 
-    public override IEnumerable<AnalyzeError> AnalyzeAttributeArgument(
-        AnalyzerContext context,
-        AttributeArgument arg
-    )
+    public override IEnumerable<AnalyzeError> AnalyzeAttributeArgument(AnalyzerContext context, AttributeArgument arg)
     {
         if (arg.Positional is null && arg.Named is null)
         {
-            yield return new(
-                Code,
-                $"`{nameof(AttributeArgument)}` type is unknown: {arg}.",
-                context
-            );
+            yield return new(Code, $"`{nameof(AttributeArgument)}` type is unknown: {arg}.", context);
         }
     }
 
-    public override IEnumerable<AnalyzeError> AnalyzeErrorCode(
-        AnalyzerContext context,
-        ErrorCode errCode
-    )
+    public override IEnumerable<AnalyzeError> AnalyzeErrorCode(AnalyzerContext context, ErrorCode errCode)
     {
         if (errCode.Single is null && errCode.Group is null)
         {
@@ -58,10 +42,7 @@ public class InternalStructureCheck : BaseAnalyzer
         }
     }
 
-    public override IEnumerable<AnalyzeError> AnalyzeStatement(
-        AnalyzerContext context,
-        Statement stmt
-    )
+    public override IEnumerable<AnalyzeError> AnalyzeStatement(AnalyzerContext context, Statement stmt)
     {
         if (
             stmt.Dto is null

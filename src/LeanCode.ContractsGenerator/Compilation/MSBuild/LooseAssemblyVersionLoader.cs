@@ -10,8 +10,7 @@ namespace LeanCode.ContractsGenerator.Compilation.MSBuild;
 
 internal static class LooseVersionAssemblyLoader
 {
-    private static readonly Dictionary<string, Assembly> PathsToAssemblies =
-        new(StringComparer.OrdinalIgnoreCase);
+    private static readonly Dictionary<string, Assembly> PathsToAssemblies = new(StringComparer.OrdinalIgnoreCase);
     private static readonly Dictionary<string, Assembly> NamesToAssemblies = new();
 
     private static readonly object Guard = new();
@@ -22,10 +21,7 @@ internal static class LooseVersionAssemblyLoader
     /// </summary>
     public static void Register(string searchPath)
     {
-        AssemblyLoadContext.Default.Resolving += (
-            AssemblyLoadContext context,
-            AssemblyName assemblyName
-        ) =>
+        AssemblyLoadContext.Default.Resolving += (AssemblyLoadContext context, AssemblyName assemblyName) =>
         {
             lock (Guard)
             {
@@ -58,11 +54,7 @@ internal static class LooseVersionAssemblyLoader
         {
             foreach (var extension in Extensions)
             {
-                var candidatePath = Path.Combine(
-                    searchPath,
-                    cultureSubfolder,
-                    $"{assemblyName.Name}.{extension}"
-                );
+                var candidatePath = Path.Combine(searchPath, cultureSubfolder, $"{assemblyName.Name}.{extension}");
 
                 var isAssemblyLoaded = PathsToAssemblies.ContainsKey(candidatePath);
                 if (isAssemblyLoaded || !File.Exists(candidatePath))

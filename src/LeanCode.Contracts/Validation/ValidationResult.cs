@@ -9,8 +9,6 @@ public class ValidationResult
 
     public ValidationResult(IReadOnlyList<ValidationError>? errors)
     {
-        Errors = errors is null
-            ? ImmutableList.Create<ValidationError>()
-            : errors.ToImmutableList();
+        Errors = errors is null ? ImmutableList.Create<ValidationError>() : errors.ToImmutableList();
     }
 }

@@ -19,10 +19,7 @@ public sealed class NotificationEnvelope
         Notification = notification;
     }
 
-    public static NotificationEnvelope Create<TTopic, TNotification>(
-        TTopic topic,
-        TNotification notification
-    )
+    public static NotificationEnvelope Create<TTopic, TNotification>(TTopic topic, TNotification notification)
         where TTopic : ITopic, IProduceNotification<TNotification>
         where TNotification : notnull
     {
@@ -30,13 +27,7 @@ public sealed class NotificationEnvelope
     }
 
     [JsonConstructor]
-    public NotificationEnvelope(
-        Guid id,
-        string topicType,
-        string notificationType,
-        object topic,
-        object notification
-    )
+    public NotificationEnvelope(Guid id, string topicType, string notificationType, object topic, object notification)
     {
         Id = id;
         TopicType = topicType;

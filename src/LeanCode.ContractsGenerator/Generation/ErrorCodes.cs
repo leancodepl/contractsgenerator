@@ -9,8 +9,7 @@ public static class ErrorCodes
 
     public static bool IsErrorCode(ISymbol? sym)
     {
-        return sym?.Name == ErrorCodesName
-            || (sym?.ContainingSymbol is not null && IsErrorCode(sym.ContainingSymbol));
+        return sym?.Name == ErrorCodesName || (sym?.ContainingSymbol is not null && IsErrorCode(sym.ContainingSymbol));
     }
 
     public static IEnumerable<ErrorCode> Extract(INamedTypeSymbol symbol)
@@ -47,11 +46,7 @@ public static class ErrorCodes
 
             return new()
             {
-                Single = new()
-                {
-                    Name = f.Name,
-                    Code = Convert.ToInt32(f.ConstantValue, CultureInfo.InvariantCulture),
-                },
+                Single = new() { Name = f.Name, Code = Convert.ToInt32(f.ConstantValue, CultureInfo.InvariantCulture) },
             };
         }
 
@@ -64,23 +59,15 @@ public static class ErrorCodes
                 );
             }
 
-            var g = new ErrorCode.Types.Group
-            {
-                Name = ns.Name,
-                GroupId = ns.BaseType.ToFullName(),
-            };
+            var g = new ErrorCode.Types.Group { Name = ns.Name, GroupId = ns.BaseType.ToFullName() };
             MapCodes(ns.BaseType).SaveToRepeatedField(g.InnerCodes);
             return new() { Group = g };
         }
     }
 
-    public static IEnumerable<ErrorCode.Types.Group> ListKnownGroups(
-        IEnumerable<Statement> statements
-    )
+    public static IEnumerable<ErrorCode.Types.Group> ListKnownGroups(IEnumerable<Statement> statements)
     {
-        return statements
-            .Where(s => s.Command is not null)
-            .SelectMany(c => ListGroups(c.Command.ErrorCodes));
+        return statements.Where(s => s.Command is not null).SelectMany(c => ListGroups(c.Command.ErrorCodes));
 
         static IEnumerable<ErrorCode.Types.Group> ListGroups(IEnumerable<ErrorCode> gs)
         {

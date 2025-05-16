@@ -6,14 +6,13 @@ namespace LeanCode.ContractsGenerator.Tests;
 
 public static class ExampleBasedHelpers
 {
-    private static readonly ImmutableDictionary<string, string> TestProjectProperties =
-        ImmutableDictionary.CreateRange(
-            new Dictionary<string, string>
-            {
-                // See `/examples/project/Directory.Build.targets` for an explanation why we need to set the variable
-                ["UseTestBuildOfContracts"] = "true",
-            }
-        );
+    private static readonly ImmutableDictionary<string, string> TestProjectProperties = ImmutableDictionary.CreateRange(
+        new Dictionary<string, string>
+        {
+            // See `/examples/project/Directory.Build.targets` for an explanation why we need to set the variable
+            ["UseTestBuildOfContracts"] = "true",
+        }
+    );
 
     public static AssertedExport Compiles(this string path)
     {
@@ -26,8 +25,8 @@ public static class ExampleBasedHelpers
     {
         var code = File.ReadAllText(Path.Join("examples", path));
         var compiled = ContractsCompiler.CompileCode(code, "test");
-        var ex = Xunit.Assert.Throws<AnalyzeFailedException>(
-            () => new ContractsGenerator.Generation.ContractsGenerator(compiled).Generate()
+        var ex = Xunit.Assert.Throws<AnalyzeFailedException>(() =>
+            new ContractsGenerator.Generation.ContractsGenerator(compiled).Generate()
         );
         return new(ex.Errors);
     }
@@ -45,9 +44,7 @@ public static class ExampleBasedHelpers
             .CompileProjectsAsync(projectPaths, TestProjectProperties)
             .GetAwaiter()
             .GetResult();
-        return new(
-            new ContractsGenerator.Generation.ContractsGenerator(compiled).Generate(external, false)
-        );
+        return new(new ContractsGenerator.Generation.ContractsGenerator(compiled).Generate(external, false));
     }
 
     public static AssertedExport GlobCompiles(string[] includes, string[] excludes)

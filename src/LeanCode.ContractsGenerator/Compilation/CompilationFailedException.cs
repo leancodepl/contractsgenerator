@@ -44,11 +44,7 @@ public class CompilationFailedException : Exception
         }
         else if (location.IsInSource)
         {
-            return location.Kind
-                + "("
-                + location.SourceTree?.FilePath
-                + location.SourceSpan.ToString()
-                + ")";
+            return location.Kind + "(" + location.SourceTree?.FilePath + location.SourceSpan.ToString() + ")";
         }
         else if (location.IsInMetadata && location.MetadataModule is not null)
         {

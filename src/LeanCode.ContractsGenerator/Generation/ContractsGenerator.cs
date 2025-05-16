@@ -76,7 +76,7 @@ public class ContractsGenerator
             return null;
         }
 
-        var result = new Statement { Name = symbol.ToFullName(), Comment = symbol.GetComments(), };
+        var result = new Statement { Name = symbol.ToFullName(), Comment = symbol.GetComments() };
         MapType(symbol, result);
         GetAttributes(symbol, result.Attributes);
         return result;
@@ -93,7 +93,7 @@ public class ContractsGenerator
             }
             else if (contracts.Types.IsCommand(symbol))
             {
-                result.Command = new() { TypeDescriptor = MapTypeDescriptor(symbol), };
+                result.Command = new() { TypeDescriptor = MapTypeDescriptor(symbol) };
                 ErrorCodes.Extract(symbol).SaveToRepeatedField(result.Command.ErrorCodes);
             }
             else if (contracts.Types.IsOperation(symbol))
@@ -106,9 +106,9 @@ public class ContractsGenerator
             }
             else if (contracts.Types.IsTopic(symbol))
             {
-                result.Topic = new() { TypeDescriptor = MapTypeDescriptor(symbol), };
-                contracts.Types
-                    .ExtractTopicNotifications(symbol)
+                result.Topic = new() { TypeDescriptor = MapTypeDescriptor(symbol) };
+                contracts
+                    .Types.ExtractTopicNotifications(symbol)
                     .Select(typeRef.FromNotification)
                     .SaveToRepeatedField(result.Topic.Notifications);
             }
@@ -124,7 +124,7 @@ public class ContractsGenerator
             }
             else
             {
-                result.Dto = new() { TypeDescriptor = MapTypeDescriptor(symbol), };
+                result.Dto = new() { TypeDescriptor = MapTypeDescriptor(symbol) };
             }
         }
     }
@@ -133,8 +133,8 @@ public class ContractsGenerator
     {
         var descriptor = new TypeDescriptor();
         symbol.TypeParameters.Select(ToParam).SaveToRepeatedField(descriptor.GenericParameters);
-        symbol.Interfaces
-            .Append(symbol.BaseType)
+        symbol
+            .Interfaces.Append(symbol.BaseType)
             .Where(IsNotIgnored)
             .Select(typeRef.From!)
             .SaveToRepeatedField(descriptor.Extends);
@@ -159,16 +159,12 @@ public class ContractsGenerator
         }
     }
 
-    private bool IsNotIgnored(
-        [System.Diagnostics.CodeAnalysis.NotNullWhen(true)] INamedTypeSymbol? symbol
-    )
+    private bool IsNotIgnored([System.Diagnostics.CodeAnalysis.NotNullWhen(true)] INamedTypeSymbol? symbol)
     {
         return !IsIgnored(symbol);
     }
 
-    private bool IsIgnored(
-        [System.Diagnostics.CodeAnalysis.NotNullWhen(false)] INamedTypeSymbol? symbol
-    )
+    private bool IsIgnored([System.Diagnostics.CodeAnalysis.NotNullWhen(false)] INamedTypeSymbol? symbol)
     {
         return symbol is null
             || symbol.SpecialType == SpecialType.System_Object
@@ -183,15 +179,13 @@ public class ContractsGenerator
     private bool IsExcluded(ISymbol symbol)
     {
         return (symbol is IPropertySymbol ps && ContractTypes.IsRecordEqualityContract(ps))
-            || symbol
-                .GetAttributes()
-                .Any(a => contracts.Types.IsExcludeFromContractsGenerationType(a.AttributeClass));
+            || symbol.GetAttributes().Any(a => contracts.Types.IsExcludeFromContractsGenerationType(a.AttributeClass));
     }
 
     private static HashSet<string> GatherBaseProperties(INamedTypeSymbol ns)
     {
-        return ns.AllInterfaces
-            .SelectMany(i => i.GetMembers())
+        return ns
+            .AllInterfaces.SelectMany(i => i.GetMembers())
             .OfType<IPropertySymbol>()
             .Select(p => p.Name)
             .ToHashSet();
@@ -258,12 +252,12 @@ public class ContractsGenerator
             }
 
             var type = a.AttributeClass.ToFullName();
-            var positional = a.ConstructorArguments
-                .SelectMany(FlattenPositionalArray)
+            var positional = a
+                .ConstructorArguments.SelectMany(FlattenPositionalArray)
                 .Select(ToPositionalArgument)
                 .Cast<AttributeArgument>();
-            var named = a.NamedArguments
-                .SelectMany(FlattenNamedArray)
+            var named = a
+                .NamedArguments.SelectMany(FlattenNamedArray)
                 .Select(ToNamedArgument)
                 .Cast<AttributeArgument>();
             var result = new AttributeRef { AttributeName = type };
@@ -274,7 +268,7 @@ public class ContractsGenerator
             {
                 return new()
                 {
-                    Named = new() { Name = v.Key, Value = v.Value.ToValueRef(), },
+                    Named = new() { Name = v.Key, Value = v.Value.ToValueRef() },
                 };
             }
 
@@ -282,20 +276,16 @@ public class ContractsGenerator
             {
                 return new()
                 {
-                    Positional = new() { Position = i, Value = v.ToValueRef(), },
+                    Positional = new() { Position = i, Value = v.ToValueRef() },
                 };
             }
 
             static IEnumerable<object?> FlattenPositionalArray(TypedConstant a)
             {
-                return a.Kind == TypedConstantKind.Array
-                    ? a.Values.Select(v => v.Value)
-                    : new[] { a.Value };
+                return a.Kind == TypedConstantKind.Array ? a.Values.Select(v => v.Value) : new[] { a.Value };
             }
 
-            static IEnumerable<(string Key, object? Value)> FlattenNamedArray(
-                KeyValuePair<string, TypedConstant> a
-            )
+            static IEnumerable<(string Key, object? Value)> FlattenNamedArray(KeyValuePair<string, TypedConstant> a)
             {
                 if (a.Value.Kind == TypedConstantKind.Array)
                 {

@@ -1,8 +1,8 @@
 using LeanCode.Contracts;
 using Notifications.Generic;
 using Xunit;
-using static LeanCode.ContractsGenerator.Tests.TypeRefExtensions;
 using static LeanCode.ContractsGenerator.Tests.NotificationTypeRefExtensions;
+using static LeanCode.ContractsGenerator.Tests.TypeRefExtensions;
 
 namespace LeanCode.ContractsGenerator.Tests.ExampleBased.Notifications;
 
@@ -62,9 +62,7 @@ public class Generic
                                 .Internal("Notifications.Generic.DTO2")
                                 .WithArguments(Known(KnownType.Int32))
                         ),
-                    NotificationTagGenerator.Generate(
-                        typeof(Notification2<DateTimeOffset, DTO2<int>>)
-                    )
+                    NotificationTagGenerator.Generate(typeof(Notification2<DateTimeOffset, DTO2<int>>))
                 )
             );
     }

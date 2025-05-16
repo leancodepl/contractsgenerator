@@ -30,7 +30,7 @@ public class ExternalTypeCheck : BaseAnalyzer
                     AnalyzerCodes.InternalTypeIsNotKnown,
                     $"Internal type `{i.Name}` is not known.",
                     context
-                )
+                ),
             };
         }
     }

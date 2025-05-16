@@ -15,10 +15,7 @@ public class Context
             .WithError(AnalyzerCodes.InternalTypeIsNotKnown, "Dto3:System.IDisposable")
             .WithError(AnalyzerCodes.InternalTypeIsNotKnown, "Dto4:System.IDisposable")
             .WithError(AnalyzerCodes.InternalTypeIsNotKnown, "Dto5:Inner<0: System.Decimal>")
-            .WithError(
-                AnalyzerCodes.InternalTypeIsNotKnown,
-                "Dto6:Inner<0: Inner><0: System.Decimal>"
-            )
+            .WithError(AnalyzerCodes.InternalTypeIsNotKnown, "Dto6:Inner<0: Inner><0: System.Decimal>")
             .WithError(AnalyzerCodes.InternalTypeIsNotKnown, "Query1->System.Decimal")
             .WithError(AnalyzerCodes.InternalTypeIsNotKnown, "Query2->Inner<0: System.Decimal>");
     }

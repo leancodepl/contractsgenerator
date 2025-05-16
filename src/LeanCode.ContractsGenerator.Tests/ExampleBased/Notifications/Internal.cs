@@ -1,6 +1,6 @@
+using LeanCode.Contracts;
 using Notifications.Internal;
 using Xunit;
-using LeanCode.Contracts;
 using static LeanCode.ContractsGenerator.Tests.NotificationTypeRefExtensions;
 
 namespace LeanCode.ContractsGenerator.Tests.ExampleBased.Notifications;

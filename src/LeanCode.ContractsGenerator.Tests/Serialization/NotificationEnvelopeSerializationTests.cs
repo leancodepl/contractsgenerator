@@ -11,22 +11,28 @@ public class NotificationEnvelopeSerializationTests
 {
     private const string NotificationId = "4d3b45e6-a2c1-4d6a-9e23-94e0d9f8ca01";
 
-    private static readonly Topic SampleTopic =
-        new()
-        {
-            EntityIds = new() { "Entity1", "Entity2" },
-        };
+    private static readonly Topic SampleTopic = new()
+    {
+        EntityIds = new() { "Entity1", "Entity2" },
+    };
 
     private static readonly Notification SampleNotification = new() { EntityId = "Entity1" };
 
-    private static readonly NotificationEnvelope SampleNotificationEnvelope =
-        new(Guid.Parse(NotificationId), SampleTopic, SampleNotification);
+    private static readonly NotificationEnvelope SampleNotificationEnvelope = new(
+        Guid.Parse(NotificationId),
+        SampleTopic,
+        SampleNotification
+    );
 
     private const string Json = $$"""
         {
           "{{nameof(NotificationEnvelope.Id)}}": "{{NotificationId}}",
-          "{{nameof(NotificationEnvelope.TopicType)}}": "LeanCode.ContractsGenerator.Tests.Serialization.NotificationEnvelopeSerializationTests\u002BTopic",
-          "{{nameof(NotificationEnvelope.NotificationType)}}": "LeanCode.ContractsGenerator.Tests.Serialization.NotificationEnvelopeSerializationTests\u002BNotification",
+          "{{nameof(
+            NotificationEnvelope.TopicType
+        )}}": "LeanCode.ContractsGenerator.Tests.Serialization.NotificationEnvelopeSerializationTests\u002BTopic",
+          "{{nameof(
+            NotificationEnvelope.NotificationType
+        )}}": "LeanCode.ContractsGenerator.Tests.Serialization.NotificationEnvelopeSerializationTests\u002BNotification",
           "{{nameof(NotificationEnvelope.Topic)}}": {
             "{{nameof(Topic.EntityIds)}}": [
               "Entity1",
@@ -68,9 +74,7 @@ public class NotificationEnvelopeSerializationTests
 
         deserializedTopic.Should().BeEquivalentTo(SampleTopic);
 
-        var deserializedNotification = (
-            (JsonElement)deserialized!.Notification
-        ).Deserialize<Notification>();
+        var deserializedNotification = ((JsonElement)deserialized!.Notification).Deserialize<Notification>();
 
         deserializedNotification.Should().BeEquivalentTo(SampleNotification);
     }

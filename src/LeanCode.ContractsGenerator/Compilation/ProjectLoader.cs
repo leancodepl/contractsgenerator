@@ -30,8 +30,8 @@ public sealed class ProjectLoader : IDisposable
         foreach (var projectPath in projectPathsList)
         {
             if (
-                msbuildWorkspace.CurrentSolution.Projects
-                    .Select(p => p.FilePath)
+                msbuildWorkspace
+                    .CurrentSolution.Projects.Select(p => p.FilePath)
                     .OfType<string>()
                     .Select(ResolveCanonicalPath)
                     .Contains(projectPath)
@@ -112,9 +112,7 @@ public sealed class ProjectLoader : IDisposable
         }
         else
         {
-            throw new InvalidProjectException(
-                $"Cannot compile project - the project {id} cannot be located."
-            );
+            throw new InvalidProjectException($"Cannot compile project - the project {id} cannot be located.");
         }
     }
 
@@ -128,8 +126,8 @@ public static class ProjectExtensions
         IEnumerable<MetadataReference> metadataReferences
     )
     {
-        var existingMetadataReferences = project.MetadataReferences
-            .Select(mr => Path.GetFileName(mr.Display))
+        var existingMetadataReferences = project
+            .MetadataReferences.Select(mr => Path.GetFileName(mr.Display))
             .ToHashSet();
 
         var newMetadataReferences = metadataReferences

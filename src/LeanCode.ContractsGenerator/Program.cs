@@ -20,11 +20,7 @@ public interface IOptions
     )]
     public string OutputFile { get; set; }
 
-    [Option(
-        "check-only",
-        HelpText = "Check the contracts only. Do not generate output.",
-        Group = "output"
-    )]
+    [Option("check-only", HelpText = "Check the contracts only. Do not generate output.", Group = "output")]
     public bool CheckOnly { get; set; }
 }
 
@@ -96,17 +92,13 @@ public class PathOptions : IOptions
 
 internal class Program
 {
-    [System.Diagnostics.CodeAnalysis.SuppressMessage(
-        "?",
-        "CA1031",
-        Justification = "Exception boundary."
-    )]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1031", Justification = "Exception boundary.")]
     private static async Task<int> Main(string[] args)
     {
         try
         {
-            return await Parser.Default
-                .ParseArguments<ProjectOptions, FileOptions, PathOptions>(args)
+            return await Parser
+                .Default.ParseArguments<ProjectOptions, FileOptions, PathOptions>(args)
                 .MapResult(
                     (ProjectOptions p) => HandleProjectAsync(p),
                     (FileOptions f) => HandleFileAsync(f),
@@ -151,9 +143,7 @@ internal class Program
         }
         catch (Exception ex)
         {
-            await Console.Error.WriteLineAsync(
-                $"Cannot compile project or generate contracts: {ex.Message}"
-            );
+            await Console.Error.WriteLineAsync($"Cannot compile project or generate contracts: {ex.Message}");
             await Console.Error.WriteLineAsync("At");
             await Console.Error.WriteLineAsync(ex.StackTrace);
             return 6;
@@ -163,13 +153,7 @@ internal class Program
     private static async Task<int> HandleProjectAsync(ProjectOptions p)
     {
         var (compiled, external) = await ContractsCompiler.CompileProjectsAsync(p.ProjectFiles);
-        return await WriteAsync(
-            p,
-            compiled,
-            external,
-            p.ExcludeExternalContractsFromOutput,
-            p.OutputFile
-        );
+        return await WriteAsync(p, compiled, external, p.ExcludeExternalContractsFromOutput, p.OutputFile);
     }
 
     private static async Task<int> HandleFileAsync(FileOptions f)
@@ -188,11 +172,7 @@ internal class Program
         return await WriteAsync(p, contracts, p.OutputFile);
     }
 
-    private static async Task<int> WriteAsync(
-        IOptions opts,
-        CompiledContracts contracts,
-        string output
-    )
+    private static async Task<int> WriteAsync(IOptions opts, CompiledContracts contracts, string output)
     {
         var generated = new Generation.ContractsGenerator(contracts).Generate();
         if (!opts.CheckOnly)
@@ -265,11 +245,7 @@ internal class Program
         }
         else if (location.IsInSource)
         {
-            return location.Kind
-                + "("
-                + location.SourceTree?.FilePath
-                + location.SourceSpan.ToString()
-                + ")";
+            return location.Kind + "(" + location.SourceTree?.FilePath + location.SourceSpan.ToString() + ")";
         }
         else if (location.IsInMetadata && location.MetadataModule is not null)
         {

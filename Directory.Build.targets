@@ -1,68 +1,41 @@
 <Project>
-
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net8.0'">
+    <MsbVer>17.8.3</MsbVer>
+    <CscVer>4.8.0-3.final</CscVer>
+    <ExtsVer>8.0.0</ExtsVer>
+    <LncdCaVer>8.1.2496</LncdCaVer>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net9.0'">
+    <MsbVer>17.12.6</MsbVer>
+    <CscVer>4.12.0-3.final</CscVer>
+    <ExtsVer>9.0.0</ExtsVer>
+    <LncdCaVer>8.1.2496</LncdCaVer>
+  </PropertyGroup>
   <ItemGroup>
-    <PackageReference Update="Google.Protobuf" Version="3.24.0" />
-    <PackageReference Update="Grpc.Tools" Version="2.56.2" />
+    <PackageReference Update="Google.Protobuf" Version="3.31.0" />
+    <PackageReference Update="Grpc.Tools" Version="2.72.0" />
     <PackageReference Update="CommandLineParser" Version="2.9.1" />
-    <PackageReference Update="Microsoft.SourceLink.GitHub" Version="1.1.1" />
-
-    <PackageReference Update="Microsoft.Extensions.DependencyModel" Version="7.0.0" />
-    <PackageReference Update="Microsoft.Extensions.FileSystemGlobbing" Version="7.0.0" />
-
-    <PackageReference Update="Microsoft.Build.Locator" Version="1.5.5" />
+    <PackageReference Update="Microsoft.SourceLink.GitHub" Version="8.0.0" />
+    <PackageReference Update="Microsoft.Build.Locator" Version="1.9.1" />
+    <PackageReference Update="Microsoft.Build" Version="$(MsbVer)" />
+    <PackageReference Update="Microsoft.Build.Framework" Version="$(MsbVer)" />
+    <PackageReference Update="Microsoft.CodeAnalysis.CSharp" Version="$(CscVer)" />
+    <PackageReference Update="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="$(CscVer)" />
+    <PackageReference Update="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="$(CscVer)" />
+    <PackageReference Update="Microsoft.Extensions.DependencyModel" Version="$(ExtsVer)" />
+    <PackageReference Update="Microsoft.Extensions.FileSystemGlobbing" Version="$(ExtsVer)" />
+    <PackageReference Update="System.Reflection.MetadataLoadContext" Version="$(ExtsVer)" />
+    <PackageReference Include="LeanCode.CodeAnalysis" Version="$(LncdCaVer)" PrivateAssets="all" />
   </ItemGroup>
-
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
-    <PackageReference Update="Microsoft.Build" Version="17.3.2" />
-    <PackageReference Update="Microsoft.Build.Framework" Version="17.3.2" />
-
-    <PackageReference Update="Microsoft.CodeAnalysis.CSharp" Version="4.2.0" />
-    <PackageReference Update="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.2.0" />
-    <PackageReference Update="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="4.2.0" />
-
-    <PackageReference Update="System.Reflection.MetadataLoadContext" Version="6.0.0" />
-  </ItemGroup>
-
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net7.0' ">
-    <PackageReference Update="Microsoft.Build" Version="17.4.0" />
-    <PackageReference Update="Microsoft.Build.Framework" Version="17.4.0" />
-
-    <PackageReference Update="Microsoft.CodeAnalysis.CSharp" Version="4.4.0" />
-    <PackageReference Update="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.4.0" />
-    <PackageReference Update="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="4.4.0" />
-
-    <PackageReference Update="System.Reflection.MetadataLoadContext" Version="7.0.0" />
-  </ItemGroup>
-
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net8.0' ">
-    <PackageReference Update="Microsoft.Build" Version="17.9.5" />
-    <PackageReference Update="Microsoft.Build.Framework" Version="17.9.5" />
-
-    <PackageReference Update="Microsoft.CodeAnalysis.CSharp" Version="4.4.0" />
-    <PackageReference Update="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.4.0" />
-    <PackageReference Update="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="4.4.0" />
-
-    <PackageReference Update="System.Reflection.MetadataLoadContext" Version="8.0.0" />
-  </ItemGroup>
-
   <ItemGroup>
+    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="17.13.0" />
+    <PackageReference Update="xunit" Version="2.9.3" />
+    <PackageReference Update="xunit.analyzers" Version="1.21.0" />
+    <PackageReference Update="xunit.runner.visualstudio" Version="3.1.0" />
+    <PackageReference Update="FluentAssertions" Version="7.2.0" />
+    <PackageReference Update="coverlet.collector" Version="6.0.4" />
     <!-- Use latest NuGet.Frameworks available at build time for tests
          to make sure we don't reference anything older than what current MSBuild uses -->
     <PackageReference Update="NuGet.Frameworks" Version="*" />
   </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="17.7.0" />
-    <PackageReference Update="xunit.analyzers" Version="1.2.0" />
-    <PackageReference Update="xunit.runner.visualstudio" Version="2.5.0" />
-    <PackageReference Update="xunit" Version="2.5.0" />
-    <PackageReference Update="FluentAssertions" Version="6.12.0" />
-
-    <PackageReference Update="coverlet.collector" Version="6.0.0" />
-  </ItemGroup>
-
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net8.0' ">
-    <PackageReference Include="LeanCode.CodeAnalysis" Version="8.1.2496" PrivateAssets="all" />
-  </ItemGroup>
-
 </Project>

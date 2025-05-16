@@ -1,26 +1,21 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
+    <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
     <PreserveCompilationContext>true</PreserveCompilationContext>
     <RootNamespace>LeanCode.ContractsGenerator</RootNamespace>
   </PropertyGroup>
-
   <PropertyGroup>
     <PackageID Condition="'$(PackAsGlobalTool)' == 'true'">dotnet-contracts-generate</PackageID>
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>dotnet-contracts-generate</ToolCommandName>
   </PropertyGroup>
-
   <ItemGroup>
     <Protobuf Include="../../contracts.proto" GrpcServices="None" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="../LeanCode.Contracts/LeanCode.Contracts.csproj" />
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="CommandLineParser" />
     <PackageReference Include="Google.Protobuf" />
@@ -28,19 +23,14 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-
     <PackageReference Include="Microsoft.Build" ExcludeAssets="runtime" PrivateAssets="all" />
     <PackageReference Include="Microsoft.Build.Framework" ExcludeAssets="runtime" PrivateAssets="all" />
     <PackageReference Include="Microsoft.Build.Locator" />
-
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" />
     <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" />
-
     <PackageReference Include="Microsoft.Extensions.DependencyModel" />
     <PackageReference Include="Microsoft.Extensions.FileSystemGlobbing" />
-
     <PackageReference Include="System.Reflection.MetadataLoadContext" />
   </ItemGroup>
-
 </Project>

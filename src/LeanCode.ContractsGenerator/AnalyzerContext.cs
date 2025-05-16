@@ -22,8 +22,7 @@ public readonly record struct AnalyzerContext(string Path)
 
     public AnalyzerContext Attribute(AttributeRef attr) => Append($"[{attr.AttributeName}]");
 
-    public AnalyzerContext GenericParameter(int pos, GenericParameter p) =>
-        Append($"<{pos}: {p.Name}>");
+    public AnalyzerContext GenericParameter(int pos, GenericParameter p) => Append($"<{pos}: {p.Name}>");
 
     public AnalyzerContext Extends(TypeRef t) => Append($":{NameOf(t)}");
 

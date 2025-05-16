@@ -2,10 +2,7 @@ namespace LeanCode.ContractsGenerator.Analyzers;
 
 public class InvalidTypeCheck : BaseAnalyzer
 {
-    public static readonly IReadOnlyDictionary<string, string> InvalidTypes = new Dictionary<
-        string,
-        string
-    >
+    public static readonly IReadOnlyDictionary<string, string> InvalidTypes = new Dictionary<string, string>
     {
         ["System.DateTime"] = "Use `DateTimeOffset` with zero offset instead.",
     };
@@ -20,11 +17,7 @@ public class InvalidTypeCheck : BaseAnalyzer
         {
             return new[]
             {
-                new AnalyzeError(
-                    AnalyzerCodes.UnsupportedType,
-                    $"Type `{i.Name}` is unsupported. {msg}",
-                    context
-                )
+                new AnalyzeError(AnalyzerCodes.UnsupportedType, $"Type `{i.Name}` is unsupported. {msg}", context),
             };
         }
         else
