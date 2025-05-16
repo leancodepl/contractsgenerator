@@ -6,15 +6,10 @@ using Microsoft.CodeAnalysis.MSBuild;
 
 namespace LeanCode.ContractsGenerator.Compilation;
 
-public sealed class ProjectLoader : IDisposable
+public sealed class ProjectLoader(ImmutableDictionary<string, string> properties) : IDisposable
 {
-    private readonly List<Project> projects = new();
-    private readonly MSBuildWorkspace msbuildWorkspace;
-
-    public ProjectLoader(ImmutableDictionary<string, string> properties)
-    {
-        msbuildWorkspace = MSBuildHelper.CreateWorkspace(properties);
-    }
+    private readonly MSBuildWorkspace msbuildWorkspace = MSBuildHelper.CreateWorkspace(properties);
+    private readonly List<Project> projects = [];
 
     public async Task LoadProjectsAsync(IEnumerable<string> projectPaths)
     {

@@ -4,7 +4,7 @@ namespace LeanCode.ContractsGenerator.Analyzers;
 
 public class ExternalTypeCheck : BaseAnalyzer
 {
-    private ImmutableHashSet<string> knownTypes = ImmutableHashSet<string>.Empty;
+    private ImmutableHashSet<string> knownTypes = [];
 
     public override IEnumerable<AnalyzeError> Analyze(Export export)
     {
@@ -24,19 +24,16 @@ public class ExternalTypeCheck : BaseAnalyzer
         }
         else
         {
-            return new[]
-            {
+            return
+            [
                 new AnalyzeError(
                     AnalyzerCodes.InternalTypeIsNotKnown,
                     $"Internal type `{i.Name}` is not known.",
                     context
                 ),
-            };
+            ];
         }
     }
 
-    private static ImmutableHashSet<string> GatherTypes(Export export)
-    {
-        return export.Statements.Select(s => s.Name).ToImmutableHashSet();
-    }
+    private static ImmutableHashSet<string> GatherTypes(Export export) => [.. export.Statements.Select(s => s.Name)];
 }

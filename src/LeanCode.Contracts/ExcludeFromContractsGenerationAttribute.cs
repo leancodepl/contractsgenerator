@@ -7,4 +7,4 @@ namespace LeanCode.Contracts;
     AllowMultiple = false,
     Inherited = false
 )]
-public sealed class ExcludeFromContractsGenerationAttribute : Attribute { }
+public sealed class ExcludeFromContractsGenerationAttribute : Attribute;

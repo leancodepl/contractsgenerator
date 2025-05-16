@@ -2,13 +2,8 @@ using System.Collections.Immutable;
 
 namespace LeanCode.Contracts.Validation;
 
-public class ValidationResult
+public class ValidationResult(IReadOnlyList<ValidationError>? errors)
 {
-    public ImmutableList<ValidationError> Errors { get; }
+    public ImmutableList<ValidationError> Errors { get; } = errors is null ? [] : [.. errors];
     public bool IsValid => Errors.Count == 0;
-
-    public ValidationResult(IReadOnlyList<ValidationError>? errors)
-    {
-        Errors = errors is null ? ImmutableList.Create<ValidationError>() : errors.ToImmutableList();
-    }
 }

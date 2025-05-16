@@ -15,10 +15,7 @@ public class InvalidTypeCheck : BaseAnalyzer
     {
         if (InvalidTypes.TryGetValue(i.Name, out var msg))
         {
-            return new[]
-            {
-                new AnalyzeError(AnalyzerCodes.UnsupportedType, $"Type `{i.Name}` is unsupported. {msg}", context),
-            };
+            return [new AnalyzeError(AnalyzerCodes.UnsupportedType, $"Type `{i.Name}` is unsupported. {msg}", context)];
         }
         else
         {

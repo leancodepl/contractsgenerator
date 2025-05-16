@@ -14,7 +14,7 @@ namespace LeanCode.ContractsGenerator.Compilation.MSBuild;
 
 public static class MSBuildHelper
 {
-    private static readonly string[] RestoreTarget = new string[] { "Restore" };
+    private static readonly string[] RestoreTarget = ["Restore"];
 
     private static readonly ImmutableDictionary<string, string> GlobalProperties = ImmutableDictionary.CreateRange(
         new Dictionary<string, string>

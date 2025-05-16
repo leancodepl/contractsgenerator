@@ -24,6 +24,7 @@
     <PackageReference Update="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="$(CscVer)" />
     <PackageReference Update="Microsoft.Extensions.DependencyModel" Version="$(ExtsVer)" />
     <PackageReference Update="Microsoft.Extensions.FileSystemGlobbing" Version="$(ExtsVer)" />
+    <PackageReference Update="System.Collections.Immutable" Version="9.0.0" />
     <PackageReference Update="System.Reflection.MetadataLoadContext" Version="$(ExtsVer)" />
     <PackageReference Include="LeanCode.CodeAnalysis" Version="$(LncdCaVer)" PrivateAssets="all" />
   </ItemGroup>
