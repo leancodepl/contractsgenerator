@@ -23,25 +23,13 @@ public class AdminFilterRange<T>
 }
 
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
-public class AdminFilterFor : Attribute
-{
-    public AdminFilterFor(string name) { }
-}
+public class AdminFilterForAttribute(string name) : Attribute;
 
 [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
-public class AdminLabel : Attribute
-{
-    public AdminLabel(string label) { }
-}
+public class AdminLabelAttribute(string label) : Attribute;
 
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
-public class AdminColumn : Attribute
-{
-    public AdminColumn(string? name) { }
-}
+public class AdminColumnAttribute(string? name) : Attribute;
 
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
-public class AdminSortable : Attribute
-{
-    public AdminSortable() { }
-}
+public class AdminSortableAttribute : Attribute;

@@ -7,25 +7,20 @@ public static class ErrorCodes
 {
     private const string ErrorCodesName = "ErrorCodes";
 
-    public static bool IsErrorCode(ISymbol? sym)
-    {
-        return sym?.Name == ErrorCodesName || (sym?.ContainingSymbol is not null && IsErrorCode(sym.ContainingSymbol));
-    }
+    public static bool IsErrorCode(ISymbol? sym) =>
+        sym?.Name == ErrorCodesName || (sym?.ContainingSymbol is not null && IsErrorCode(sym.ContainingSymbol));
 
     public static IEnumerable<ErrorCode> Extract(INamedTypeSymbol symbol)
     {
-        var errCodes = symbol
-            .GetMembers()
-            .OfType<INamedTypeSymbol>()
-            .Where(s => s.Name == ErrorCodesName)
-            .SingleOrDefault();
+        var errCodes = symbol.GetMembers().OfType<INamedTypeSymbol>().SingleOrDefault(s => s.Name == ErrorCodesName);
+
         if (errCodes is not null)
         {
             return MapCodes(errCodes);
         }
         else
         {
-            return Enumerable.Empty<ErrorCode>();
+            return [];
         }
 
         static IEnumerable<ErrorCode> MapCodes(INamedTypeSymbol errCodes)

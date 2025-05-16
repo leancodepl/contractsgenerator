@@ -19,14 +19,7 @@ public class ErrorCodesUniqueness : BaseAnalyzer
 
         static IEnumerable<ErrorCode.Types.Single> Flatten(ErrorCode errCode)
         {
-            if (errCode.Single is ErrorCode.Types.Single s)
-            {
-                return new[] { s };
-            }
-            else
-            {
-                return errCode.Group.InnerCodes.SelectMany(Flatten);
-            }
+            return errCode.Single is ErrorCode.Types.Single s ? [s] : errCode.Group.InnerCodes.SelectMany(Flatten);
         }
     }
 
@@ -34,27 +27,15 @@ public class ErrorCodesUniqueness : BaseAnalyzer
     {
         var context = AnalyzerContext.Empty;
 
-        return export.Statements.SelectMany(s => AnalyzeStatement(context.Descend(s), s)).ToList();
+        return [.. export.Statements.SelectMany(s => AnalyzeStatement(context.Descend(s), s))];
     }
 
     public override IEnumerable<AnalyzeError> AnalyzeCommand(
         AnalyzerContext context,
         Statement stmt,
         Statement.Types.Command command
-    )
-    {
-        return AnalyzeErrorCodes(context.ErrorCodes(), command.ErrorCodes);
-    }
+    ) => AnalyzeErrorCodes(context.ErrorCodes(), command.ErrorCodes);
 
-    public override IEnumerable<AnalyzeError> AnalyzeStatement(AnalyzerContext context, Statement stmt)
-    {
-        if (stmt.Command is Statement.Types.Command cmd)
-        {
-            return AnalyzeCommand(context, stmt, cmd);
-        }
-        else
-        {
-            return Enumerable.Empty<AnalyzeError>();
-        }
-    }
+    public override IEnumerable<AnalyzeError> AnalyzeStatement(AnalyzerContext context, Statement stmt) =>
+        stmt.Command is Statement.Types.Command cmd ? AnalyzeCommand(context, stmt, cmd) : [];
 }

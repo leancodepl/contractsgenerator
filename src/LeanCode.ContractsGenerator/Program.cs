@@ -2,7 +2,6 @@ using CommandLine;
 using Google.Protobuf;
 using LeanCode.ContractsGenerator.Compilation;
 using LeanCode.ContractsGenerator.Generation;
-using Microsoft.CodeAnalysis;
 using Microsoft.Extensions.FileSystemGlobbing;
 
 namespace LeanCode.ContractsGenerator;
@@ -44,7 +43,7 @@ public class ProjectOptions : IOptions
         MetaValue = "FILE",
         HelpText = "The project file with contracts. To pass multiple projects, separate the values with space."
     )]
-    public IEnumerable<string> ProjectFiles { get; set; } = Array.Empty<string>();
+    public IEnumerable<string> ProjectFiles { get; set; } = [];
 }
 
 [Verb("file", HelpText = "Generate contracts from a single file.")]
@@ -70,7 +69,7 @@ public class PathOptions : IOptions
         MetaValue = "PATTERN",
         HelpText = "Include files from glob pattern. To pass multiple patterns, separate them with space."
     )]
-    public IEnumerable<string> Include { get; set; } = Array.Empty<string>();
+    public IEnumerable<string> Include { get; set; } = [];
 
     [Option(
         'e',
@@ -79,7 +78,7 @@ public class PathOptions : IOptions
         MetaValue = "PATTERN",
         HelpText = "Exclude files from glob pattern. Has higher precedence than includes. To pass multiple patterns, separate them with space."
     )]
-    public IEnumerable<string> Exclude { get; set; } = Array.Empty<string>();
+    public IEnumerable<string> Exclude { get; set; } = [];
 
     [Option(
         'd',
@@ -227,33 +226,8 @@ internal class Program
 
     private static async Task WriteToStdoutAsync(Export generated)
     {
-        await using var outputStream = System.Console.OpenStandardOutput();
+        await using var outputStream = Console.OpenStandardOutput();
         using var codedOutput = new CodedOutputStream(outputStream, true);
         generated.WriteTo(codedOutput);
-    }
-
-    private static string FormatLocation(Location location)
-    {
-        var lineSpan = location.GetMappedLineSpan();
-        if (lineSpan.Path is not null)
-        {
-            return lineSpan.Path
-                + "@"
-                + (lineSpan.StartLinePosition.Line + 1)
-                + ":"
-                + (lineSpan.StartLinePosition.Character + 1);
-        }
-        else if (location.IsInSource)
-        {
-            return location.Kind + "(" + location.SourceTree?.FilePath + location.SourceSpan.ToString() + ")";
-        }
-        else if (location.IsInMetadata && location.MetadataModule is not null)
-        {
-            return location.Kind + "(" + location.MetadataModule.Name + ")";
-        }
-        else
-        {
-            return location.Kind.ToString();
-        }
     }
 }

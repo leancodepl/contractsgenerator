@@ -1,9 +1,7 @@
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 
 namespace LeanCode.ContractsGenerator;
 
-[SuppressMessage("?", "SA1313", Justification = "False positive.")]
 public readonly record struct AnalyzerContext(string Path)
 {
     public static readonly AnalyzerContext Empty = new("");
@@ -58,10 +56,7 @@ public readonly record struct AnalyzerContext(string Path)
         }
     }
 
-    private AnalyzerContext Append(string nextName)
-    {
-        return new($"{Path}{nextName}");
-    }
+    private AnalyzerContext Append(string nextName) => new($"{Path}{nextName}");
 
     private static string NameOf(TypeRef typeRef)
     {

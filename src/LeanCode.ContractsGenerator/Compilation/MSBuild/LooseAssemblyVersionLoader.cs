@@ -11,16 +11,19 @@ namespace LeanCode.ContractsGenerator.Compilation.MSBuild;
 internal static class LooseVersionAssemblyLoader
 {
     private static readonly Dictionary<string, Assembly> PathsToAssemblies = new(StringComparer.OrdinalIgnoreCase);
-    private static readonly Dictionary<string, Assembly> NamesToAssemblies = new();
+    private static readonly Dictionary<string, Assembly> NamesToAssemblies = [];
 
+#if NET9_0_OR_GREATER
+    private static readonly Lock Guard = new();
+#else
     private static readonly object Guard = new();
-    private static readonly string[] Extensions = new[] { "ni.dll", "ni.exe", "dll", "exe" };
+#endif
+    private static readonly IReadOnlyCollection<string> Extensions = ["ni.dll", "ni.exe", "dll", "exe"];
 
     /// <summary>
     /// Register an assembly loader that will load assemblies with higher version than what was requested.
     /// </summary>
-    public static void Register(string searchPath)
-    {
+    public static void Register(string searchPath) =>
         AssemblyLoadContext.Default.Resolving += (AssemblyLoadContext context, AssemblyName assemblyName) =>
         {
             lock (Guard)
@@ -33,7 +36,6 @@ internal static class LooseVersionAssemblyLoader
                 return TryResolveAssemblyFromPaths_NoLock(context, assemblyName, searchPath);
             }
         };
-    }
 
     private static Assembly TryResolveAssemblyFromPaths_NoLock(
         AssemblyLoadContext context,
@@ -41,16 +43,16 @@ internal static class LooseVersionAssemblyLoader
         string searchPath
     )
     {
-        foreach (
-            var cultureSubfolder in string.IsNullOrEmpty(assemblyName.CultureName)
-                // If no culture is specified, attempt to load directly from
-                // the known dependency paths.
-                ? new[] { string.Empty }
-                // Search for satellite assemblies in culture subdirectories
-                // of the assembly search directories, but fall back to the
-                // bare search directory if that fails.
-                : new[] { assemblyName.CultureName, string.Empty }
-        )
+        Span<string> cultureSubfolders = string.IsNullOrEmpty(assemblyName.CultureName)
+            // If no culture is specified, attempt to load directly from
+            // the known dependency paths.
+            ? [string.Empty]
+            // Search for satellite assemblies in culture subdirectories
+            // of the assembly search directories, but fall back to the
+            // bare search directory if that fails.
+            : [assemblyName.CultureName, string.Empty];
+
+        foreach (var cultureSubfolder in cultureSubfolders)
         {
             foreach (var extension in Extensions)
             {
