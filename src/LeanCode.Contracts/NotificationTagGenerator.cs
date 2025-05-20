@@ -1,5 +1,3 @@
-using System.Text;
-
 namespace LeanCode.Contracts;
 
 public static class NotificationTagGenerator
@@ -12,9 +10,8 @@ public static class NotificationTagGenerator
     /// `LeanCode.ContractsGenerator.Generation.NotificationTagGenerator` that generates a tag based on `TypeRef`.
     /// Both methods generate the same tags.
     /// </summary>
-    public static string Generate(Type type)
-    {
-        return type switch
+    public static string Generate(Type type) =>
+        type switch
         {
             _ when TryKnownType(type) is string name => type.GetElementType() is Type t
                 ? $"{KnownTypePrefix}{name}{GetArgumentsString(t)}"
@@ -22,12 +19,11 @@ public static class NotificationTagGenerator
             _ when type.IsGenericType => $"{type.GetSimpleName()}{GetArgumentsString(type.GetGenericArguments())}",
             _ => type.FullName!,
         };
-    }
 
     private static string GetSimpleName(this Type type)
     {
         var typeName = type.FullName!;
-        var backtickIndex = typeName.IndexOf('`');
+        var backtickIndex = typeName.IndexOf('`', StringComparison.Ordinal);
 
         if (backtickIndex > 0)
         {
@@ -37,34 +33,11 @@ public static class NotificationTagGenerator
         return typeName;
     }
 
-    private static string GetArgumentsString(params Type[] args)
-    {
-        var argsBuilder = new StringBuilder();
+    private static string GetArgumentsString(params Type[] args) =>
+        args.Length > 0 ? $"[{string.Join(',', args.Select(Generate))}]" : string.Empty;
 
-        if (args.Any())
-        {
-            argsBuilder.Append('[');
-
-            foreach (var arg in args)
-            {
-                if (argsBuilder.Length > 1)
-                {
-                    argsBuilder.Append(',');
-                }
-
-                var argName = Generate(arg);
-                argsBuilder.Append(argName);
-            }
-
-            argsBuilder.Append(']');
-        }
-
-        return argsBuilder.ToString();
-    }
-
-    private static string? TryKnownType(Type type)
-    {
-        return type switch
+    private static string? TryKnownType(Type type) =>
+        type switch
         {
             _ when type == typeof(object) => "Object",
             _ when type == typeof(string) => "String",
@@ -111,5 +84,4 @@ public static class NotificationTagGenerator
             _ when type.IsArray => "Array",
             _ => null,
         };
-    }
 }

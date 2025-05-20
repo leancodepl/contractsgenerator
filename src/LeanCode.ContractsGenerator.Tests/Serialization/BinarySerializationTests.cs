@@ -8,7 +8,7 @@ public class BinarySerializationTests
 {
     private sealed record class BinaryDTO(Binary? Null, Binary? NullableValue, Binary Value);
 
-    private static readonly byte[] Hello = { 0x68, 0x65, 0x6c, 0x6c, 0x6f };
+    private static readonly byte[] Hello = [.. "hello"u8];
 
     private static readonly BinaryDTO DTO = new(null, Hello?.AsBinary(), Hello!.AsBinary());
 

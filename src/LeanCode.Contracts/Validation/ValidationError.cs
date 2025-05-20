@@ -1,15 +1,8 @@
 namespace LeanCode.Contracts.Validation;
 
-public class ValidationError
+public class ValidationError(string propertyName, string errorMessage, int errorCode)
 {
-    public string PropertyName { get; }
-    public string ErrorMessage { get; }
-    public int ErrorCode { get; }
-
-    public ValidationError(string propertyName, string errorMessage, int errorCode)
-    {
-        PropertyName = propertyName;
-        ErrorMessage = errorMessage;
-        ErrorCode = errorCode;
-    }
+    public string PropertyName { get; } = propertyName;
+    public string ErrorMessage { get; } = errorMessage;
+    public int ErrorCode { get; } = errorCode;
 }

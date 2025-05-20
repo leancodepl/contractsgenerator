@@ -17,12 +17,13 @@ public class CompilationFailedException : Exception
     public CompilationFailedException(string message)
         : base(message)
     {
-        Diagnostics = ImmutableArray<Diagnostic>.Empty;
+        Diagnostics = [];
     }
 
     private static string GetDiagnosticsMessage(ImmutableArray<Diagnostic> diagnostics)
     {
         var sb = new StringBuilder();
+
         foreach (var d in diagnostics)
         {
             sb.AppendLine($"[{d.Severity}] {d.GetMessage()} at {FormatLocation(d.Location)}");
