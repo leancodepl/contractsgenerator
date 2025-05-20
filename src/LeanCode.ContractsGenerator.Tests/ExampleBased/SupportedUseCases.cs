@@ -38,6 +38,8 @@ public class SupportedUseCases
             .Compiles()
             .WithStatements(2)
             .WithDto("Exclusions.IncludedDTO")
+            .WithConstant("IncludedConstant", 1001)
+            .WithoutConstant("ExcludedConstant")
             .WithProperty("IncludedProperty", Known(KnownType.Int32))
             .WithoutProperty("ExcludedProperty")
             .WithEnum("Exclusions.IncludedEnum")

@@ -218,6 +218,13 @@ public static class ExampleBasedAsserts
         return stmt.WithConstants(0);
     }
 
+    public static T WithoutConstant<T>(this T stmt, string name)
+        where T : AssertedType
+    {
+        Assert.DoesNotContain(stmt.Descriptor.Constants, p => p.Name == name);
+        return stmt;
+    }
+
     public static T WithProperty<T>(this T stmt, string name, TypeRef type, string comment = "")
         where T : AssertedType
     {
