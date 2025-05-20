@@ -12,13 +12,18 @@ namespace LeanCode.ContractsGenerator.Compilation;
 
 public static class ContractsCompiler
 {
-    public static readonly FrozenSet<string> DefaultAssemblyNames = (
-        (string[])
-            ["System.Collections", "System.Linq", "System.Net.Http", "System.Runtime", "System.Runtime.Extensions"]
-    ).ToFrozenSet(StringComparer.InvariantCultureIgnoreCase);
+    public static readonly FrozenSet<string> DefaultAssemblyNames = FrozenSet.Create(
+        StringComparer.InvariantCultureIgnoreCase,
+        "System.Collections",
+        "System.Linq",
+        "System.Net.Http",
+        "System.Runtime",
+        "System.Runtime.Extensions"
+    );
 
-    public static readonly FrozenSet<string> LeanCodeAssemblyNames = ((string[])["LeanCode.Contracts"]).ToFrozenSet(
-        StringComparer.InvariantCultureIgnoreCase
+    public static readonly FrozenSet<string> LeanCodeAssemblyNames = FrozenSet.Create(
+        StringComparer.InvariantCultureIgnoreCase,
+        "LeanCode.Contracts"
     );
 
     private static bool IsWantedDefaultAssembly(CompilationLibrary cl) => DefaultAssemblyNames.Contains(cl.Name);
