@@ -133,7 +133,7 @@ public class ContractsGenerator(CompiledContracts contracts)
         symbol
             .GetMembers()
             .OfType<IFieldSymbol>()
-            .Where(fs => fs.HasConstantValue)
+            .Where(fs => fs.HasConstantValue && !IsExcluded(fs))
             .Select(ToConstant)
             .SaveToRepeatedField(descriptor.Constants);
         return descriptor;

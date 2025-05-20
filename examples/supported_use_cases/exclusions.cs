@@ -27,6 +27,10 @@ namespace Exclusions
     public class IncludedDTO
     {
         [ExcludeFromContractsGeneration]
+        public const int ExcludedConstant = 1000;
+        public const int IncludedConstant = ExcludedConstant + 1;
+
+        [ExcludeFromContractsGeneration]
         public int ExcludedProperty { get; set; }
         public int IncludedProperty { get; set; }
     }
