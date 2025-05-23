@@ -53,6 +53,7 @@ public static class NotificationTagGenerator
             _ when type == typeof(double) => "Float64",
             _ when type == typeof(bool) => "Boolean",
             _ when type == typeof(DateTimeOffset) => "DateTimeOffset",
+            _ when type == typeof(DateTime) => "DateTime",
             _ when type == typeof(DateOnly) => "DateOnly",
             _ when type == typeof(TimeOnly) => "TimeOnly",
             _ when type == typeof(Guid) => "Guid",

@@ -99,7 +99,7 @@ csharp_preserve_single_line_statements                                   = true
 csharp_preserve_single_line_blocks                                       = true
 
 ###############################
-# Naming Conventions: https://docs.microsoft.com/en-us/visualstudio/ide/editorconfig-naming-conventions
+# Naming Conventions: https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/style-rules/naming-rules
 ###############################
 
 # Style Definitions

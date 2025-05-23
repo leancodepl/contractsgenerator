@@ -63,6 +63,10 @@ Serialized to a JSON string with the format `dd.hh:mm:ss.SSS` with an optional l
 
 TODO: how many days?
 
+### `KnownType::DateTime`
+
+Serialized to a JSON string with the format `yyyy'-'MM'-'dd'T'hh':'mm':'ss.SSS` with an optional trailing `Z`.
+
 ### `KnownType::Array`
 
 Serialized to a JSON array where values are consequent serialized elements.

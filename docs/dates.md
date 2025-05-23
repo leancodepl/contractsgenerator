@@ -13,7 +13,7 @@ Previously, there was also a `DateTime` type but it got removed in v2.0 and is p
 
 `DateTime` represented date and time in UTC. This case is also handled by `DateTimeOffset` with `Offset = 00:00`, so
 having `DateTime` introduced redundancy. There is also a problem with the `DateTime` implementation in supported
-runtimes. Both .NET ([`DateTime` struct](https://docs.microsoft.com/en-us/dotnet/api/system.datetime)) and Dart
+runtimes. Both .NET ([`DateTime` struct](https://learn.microsoft.com/en-us/dotnet/api/system.datetime)) and Dart
 ([`DateTime` class](https://api.dart.dev/stable/2.18.0/dart-core/DateTime-class.html)) provide types that allow handling
 of the `DateTime` contracts type **but** this is not a one-to-one translation.
 
