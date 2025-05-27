@@ -6,7 +6,9 @@
 using System.Collections.Immutable;
 using Microsoft.Build.Evaluation;
 using Microsoft.Build.Execution;
+using Microsoft.Build.Framework;
 using Microsoft.Build.Locator;
+using Microsoft.Build.Logging;
 using Microsoft.CodeAnalysis.MSBuild;
 using static Microsoft.Build.Execution.BuildRequestDataFlags;
 
@@ -15,6 +17,7 @@ namespace LeanCode.ContractsGenerator.Compilation.MSBuild;
 public static class MSBuildHelper
 {
     private static readonly string[] RestoreTarget = ["Restore"];
+    private static readonly string LoggerVerbosity = Environment.GetEnvironmentVariable("LNCD_CG_MSB_LOG");
 
     private static readonly ImmutableDictionary<string, string> GlobalProperties = ImmutableDictionary.CreateRange(
         new Dictionary<string, string>
@@ -78,6 +81,9 @@ public static class MSBuildHelper
                 DisableInProcNode = true,
                 // don't ask the user for anything
                 Interactive = false,
+                Loggers = Enum.TryParse<LoggerVerbosity>(LoggerVerbosity, true, out var verbosity)
+                    ? [new ConsoleLogger(verbosity)]
+                    : [],
             }
         );
 
