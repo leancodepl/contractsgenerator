@@ -64,12 +64,6 @@ public static class MSBuildHelper
 
             var msBuildInstance = msBuildInstances[0];
 
-            // Since we do not inherit msbuild.deps.json when referencing the SDK copy
-            // of MSBuild and because the SDK no longer ships with version matched assemblies, we
-            // register an assembly loader that will load assemblies from the msbuild path with
-            // equal or higher version numbers than requested.
-            LooseVersionAssemblyLoader.Register(msBuildInstance.MSBuildPath);
-
             if (MSBuildLocator.CanRegister)
             {
                 MSBuildLocator.RegisterInstance(msBuildInstance);
