@@ -19,6 +19,8 @@
     <PackageReference Update="Microsoft.Build.Locator" Version="1.9.1" />
     <PackageReference Update="Microsoft.Build" Version="$(MsbVer)" />
     <PackageReference Update="Microsoft.Build.Framework" Version="$(MsbVer)" />
+    <PackageReference Update="Microsoft.Build.Tasks.Core" Version="$(MsbVer)" />
+    <PackageReference Update="Microsoft.Build.Utilities.Core" Version="$(MsbVer)" />
     <PackageReference Update="Microsoft.CodeAnalysis.CSharp" Version="$(CscVer)" />
     <PackageReference Update="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="$(CscVer)" />
     <PackageReference Update="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="$(CscVer)" />
