@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using CommandLine;
 using Google.Protobuf;
 using LeanCode.ContractsGenerator.Compilation;
@@ -98,6 +99,10 @@ internal class Program
         {
             return await Parser
                 .Default.ParseArguments<ProjectOptions, FileOptions, PathOptions>(args)
+                .WithNotParsed(errs =>
+                {
+                    Console.Error.WriteLine($"Running on {RuntimeInformation.FrameworkDescription}");
+                })
                 .MapResult(
                     (ProjectOptions p) => HandleProjectAsync(p),
                     (FileOptions f) => HandleFileAsync(f),
