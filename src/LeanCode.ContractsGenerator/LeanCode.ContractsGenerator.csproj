@@ -11,6 +11,10 @@
     <ToolCommandName>dotnet-contracts-generate</ToolCommandName>
   </PropertyGroup>
   <ItemGroup>
+    <!-- We don't actually ship affected versions, instead the versions from .NET SDK are used. -->
+    <NuGetAuditSuppress Include="https://github.com/advisories/GHSA-h4j7-5rxr-p4wc" />
+  </ItemGroup>
+  <ItemGroup>
     <Protobuf Include="../../contracts.proto" GrpcServices="None" />
   </ItemGroup>
   <ItemGroup>
@@ -25,6 +29,8 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Build" ExcludeAssets="runtime" PrivateAssets="all" />
     <PackageReference Include="Microsoft.Build.Framework" ExcludeAssets="runtime" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.Build.Tasks.Core" ExcludeAssets="runtime" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.Build.Utilities.Core" ExcludeAssets="runtime" PrivateAssets="all" />
     <PackageReference Include="Microsoft.Build.Locator" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" />
