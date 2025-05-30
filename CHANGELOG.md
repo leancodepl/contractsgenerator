@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## LeanCode.ContractsGenerator
 
+### [4.0.0]
+
+#### Added
+
+- Proper multitargeting when packaged as .NET tool,
+- Support for `net8.0` and `net9.0` TFMs,
+- Additional logging around .NET SDK discovery and MSBuild integration,
+- Support for previously-removed `DateTime` for legacy purposes (disabled by default).
+
+#### Fixed
+
+- Constants no longer ignore `[ExcludeFromContractsGenerationAttribute]`.
+
+#### Removed
+
+- Support for TFMs below `net8.0`,
+- `generate.sh` script.
+
 ### [3.0.0]
 
 #### Added
