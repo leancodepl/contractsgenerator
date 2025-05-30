@@ -36,7 +36,7 @@ dotnet_style_prefer_inferred_anonymous_type_member_names                 = true 
 dotnet_style_prefer_auto_properties                                      = true : suggestion
 dotnet_style_prefer_is_null_check_over_reference_equality_method         = true : suggestion
 dotnet_style_prefer_conditional_expression_over_assignment               = true : silent
-dotnet_style_prefer_conditional_expression_over_return                   = true : silent
+dotnet_style_prefer_conditional_expression_over_return                   = true
 
 dotnet_style_coalesce_expression                                         = true : warning
 dotnet_style_null_propagation                                            = true : warning
@@ -176,5 +176,36 @@ dotnet_naming_rule.everything_else_naming.style                    = camel_case_
 dotnet_naming_symbols.everything_else.applicable_kinds             = *
 dotnet_naming_symbols.everything_else.applicable_accessibilities   = *
 
+# CA1040: Avoid empty interfaces
+dotnet_diagnostic.CA1040.severity = none
+
+# CA1812: Avoid uninstantiated internal classes
 dotnet_diagnostic.CA1812.severity = none
+
+# CA1724: Type names should not match namespaces
 dotnet_diagnostic.CA1724.severity = none
+
+# CA1819: Properties should not return arrays
+dotnet_diagnostic.CA1819.severity = none
+
+# CA2225: Provide a method … as an alternate for operator
+dotnet_diagnostic.CA2225.severity = none
+
+# IDE0022: Use expression body for methods
+dotnet_diagnostic.IDE0022.severity = suggestion
+
+# IDE0046: Convert to conditional expression
+dotnet_diagnostic.IDE0046.severity = suggestion
+
+# IDE0055: Fix formatting
+dotnet_diagnostic.IDE0055.severity = none
+
+# IDE0058: Remove unnecessary expression value
+dotnet_diagnostic.IDE0058.severity = none
+
+# IDE0160: Convert to block scoped namespace
+csharp_style_namespace_declarations = file_scoped
+
+# IDE0340: Use unbound generic type
+# To be revised once we are on .NET 10 SDK
+csharp_style_prefer_unbound_generic_type_in_nameof = false

@@ -1,3 +1,4 @@
+using System.Collections.Frozen;
 using System.Collections.Immutable;
 using System.Reflection;
 using Microsoft.CodeAnalysis;
@@ -11,37 +12,23 @@ namespace LeanCode.ContractsGenerator.Compilation;
 
 public static class ContractsCompiler
 {
-    public static readonly ImmutableHashSet<string> ReferenceAssemblyNames = ImmutableHashSet<string>.Empty;
-    public static readonly ImmutableHashSet<string> DefaultAssemblyNames = ImmutableHashSet.CreateRange(
-        new string[]
-        {
-            "System.Collections",
-            "System.Linq",
-            "System.Net.Http",
-            "System.Runtime",
-            "System.Runtime.Extensions",
-        }
+    public static readonly FrozenSet<string> DefaultAssemblyNames = FrozenSet.Create(
+        StringComparer.InvariantCultureIgnoreCase,
+        "System.Collections",
+        "System.Linq",
+        "System.Net.Http",
+        "System.Runtime",
+        "System.Runtime.Extensions"
     );
 
-    public static readonly ImmutableHashSet<string> LeanCodeAssemblyNames = ImmutableHashSet.CreateRange(
-        new[] { "LeanCode.Contracts" }
+    public static readonly FrozenSet<string> LeanCodeAssemblyNames = FrozenSet.Create(
+        StringComparer.InvariantCultureIgnoreCase,
+        "LeanCode.Contracts"
     );
 
-    private static bool IsWantedReferenceAssembly(CompilationLibrary cl)
-    {
-        return cl.Type == "referenceassembly"
-            && ReferenceAssemblyNames.Contains(cl.Name, StringComparer.InvariantCultureIgnoreCase);
-    }
+    private static bool IsWantedDefaultAssembly(CompilationLibrary cl) => DefaultAssemblyNames.Contains(cl.Name);
 
-    private static bool IsWantedLeanCodeAssembly(CompilationLibrary cl)
-    {
-        return LeanCodeAssemblyNames.Contains(cl.Name, StringComparer.InvariantCultureIgnoreCase);
-    }
-
-    private static bool IsWantedDefaultAssembly(CompilationLibrary cl)
-    {
-        return DefaultAssemblyNames.Contains(cl.Name, StringComparer.InvariantCultureIgnoreCase);
-    }
+    private static bool IsWantedLeanCodeAssembly(CompilationLibrary cl) => LeanCodeAssemblyNames.Contains(cl.Name);
 
     private static readonly Assembly ExecutingAssembly = Assembly.GetExecutingAssembly();
 
@@ -49,21 +36,18 @@ public static class ContractsCompiler
         Path.GetDirectoryName(ExecutingAssembly.Location)!
     );
 
-    public static readonly ImmutableList<PortableExecutableReference> DefaultAssemblies = DependencyContext
-        .Load(ExecutingAssembly)!
-        .CompileLibraries.Where(cl =>
-            IsWantedReferenceAssembly(cl) || IsWantedLeanCodeAssembly(cl) || IsWantedDefaultAssembly(cl)
-        )
-        .SelectMany(cl => cl.ResolveReferencePaths(Resolver))
-        .Select(path => MetadataReference.CreateFromFile(path))
-        .ToImmutableList();
+    public static readonly ImmutableList<PortableExecutableReference> DefaultAssemblies =
+    [
+        .. DependencyContext
+            .Load(ExecutingAssembly)!
+            .CompileLibraries.Where(cl => IsWantedDefaultAssembly(cl) || IsWantedLeanCodeAssembly(cl))
+            .SelectMany(cl => cl.ResolveReferencePaths(Resolver))
+            .Select(path => MetadataReference.CreateFromFile(path)),
+    ];
 
     public static Task<(CompiledContracts Compiled, List<Export> External)> CompileProjectsAsync(
         IEnumerable<string> projectPaths
-    )
-    {
-        return CompileProjectsAsync(projectPaths, ImmutableDictionary<string, string>.Empty);
-    }
+    ) => CompileProjectsAsync(projectPaths, ImmutableDictionary<string, string>.Empty);
 
     public static async Task<(CompiledContracts Compiled, List<Export> External)> CompileProjectsAsync(
         IEnumerable<string> projectPaths,
@@ -121,7 +105,7 @@ public static class ContractsCompiler
     public static CompiledContracts CompileCode(string contractText, string name)
     {
         var contractTree = CSharpSyntaxTree.ParseText(contractText);
-        return CompileTrees(new() { contractTree }, name);
+        return CompileTrees([contractTree], name);
     }
 
     private static CompiledContracts CompileTrees(List<SyntaxTree> trees, string name)
@@ -135,14 +119,12 @@ public static class ContractsCompiler
         return Compile(compilation, name);
     }
 
-    private static CSharpCompilationOptions PrepareCompilationOptions()
-    {
-        return new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary)
+    private static CSharpCompilationOptions PrepareCompilationOptions() =>
+        new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary)
             .WithConcurrentBuild(true)
             .WithAllowUnsafe(false)
             .WithNullableContextOptions(NullableContextOptions.Annotations)
             .WithPlatform(Platform.AnyCpu);
-    }
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage(
         "?",
@@ -186,10 +168,8 @@ public static class ContractsCompiler
         return exports;
     }
 
-    private static CompiledContracts Compile(CSharpCompilation compilation, string name)
-    {
-        return Compile(new List<CSharpCompilation> { compilation }, name);
-    }
+    private static CompiledContracts Compile(CSharpCompilation compilation, string name) =>
+        Compile([compilation], name);
 
     private static CompiledContracts Compile(IReadOnlyCollection<CSharpCompilation> compilations, string name)
     {

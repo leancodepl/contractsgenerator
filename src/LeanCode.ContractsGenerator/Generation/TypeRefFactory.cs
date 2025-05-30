@@ -3,15 +3,8 @@ using Microsoft.CodeAnalysis;
 
 namespace LeanCode.ContractsGenerator.Generation;
 
-public sealed class TypeRefFactory
+public sealed class TypeRefFactory(CompiledContracts contracts)
 {
-    private readonly CompiledContracts contracts;
-
-    public TypeRefFactory(CompiledContracts contracts)
-    {
-        this.contracts = contracts;
-    }
-
     public TypeRef From(ITypeSymbol symbol)
     {
         var isNullable = IsNullable(symbol);
@@ -119,7 +112,7 @@ public sealed class TypeRefFactory
                     && ns.Arity == 2
                     && (
                         contracts.Types.IsReadOnlyDictionary(ns)
-                        || ns.Interfaces.Any(i => contracts.Types.IsReadOnlyDictionary(i))
+                        || ns.Interfaces.Any(contracts.Types.IsReadOnlyDictionary)
                     ) => New(KnownType.Map, From(ns.TypeArguments[0]), From(ns.TypeArguments[1])),
 
             _ => null,
@@ -133,8 +126,5 @@ public sealed class TypeRefFactory
         }
     }
 
-    private static bool IsNullable(ITypeSymbol symbol)
-    {
-        return symbol.NullableAnnotation == NullableAnnotation.Annotated;
-    }
+    private static bool IsNullable(ITypeSymbol symbol) => symbol.NullableAnnotation == NullableAnnotation.Annotated;
 }

@@ -5,23 +5,15 @@ using Microsoft.CodeAnalysis;
 
 namespace LeanCode.ContractsGenerator.Generation;
 
-public class ContractsGenerator
+public class ContractsGenerator(CompiledContracts contracts)
 {
-    private readonly CompiledContracts contracts;
-
-    private readonly TypeRefFactory typeRef;
-
-    public ContractsGenerator(CompiledContracts contracts)
-    {
-        this.contracts = contracts;
-
-        typeRef = new(contracts);
-    }
+    private readonly TypeRefFactory typeRef = new(contracts);
 
     public Export Generate()
     {
         var export = GenerateCore();
-        return Analyze(export);
+        Analyze(export);
+        return export;
     }
 
     public Export Generate(List<Export> externalContracts, bool excludeExternalContractsFromOutput)
@@ -56,16 +48,13 @@ public class ContractsGenerator
         return export;
     }
 
-    private static Export Analyze(Export export)
+    private static void Analyze(Export export)
     {
         var errors = new Analyzers.AllAnalyzers().Analyze(export).ToList();
+
         if (errors.Count > 0)
         {
             throw new AnalyzeFailedException(errors);
-        }
-        else
-        {
-            return export;
         }
     }
 
@@ -159,57 +148,38 @@ public class ContractsGenerator
         }
     }
 
-    private bool IsNotIgnored([System.Diagnostics.CodeAnalysis.NotNullWhen(true)] INamedTypeSymbol? symbol)
-    {
-        return !IsIgnored(symbol);
-    }
+    private bool IsNotIgnored([System.Diagnostics.CodeAnalysis.NotNullWhen(true)] INamedTypeSymbol? symbol) =>
+        !IsIgnored(symbol);
 
-    private bool IsIgnored([System.Diagnostics.CodeAnalysis.NotNullWhen(false)] INamedTypeSymbol? symbol)
-    {
-        return symbol is null
-            || symbol.SpecialType == SpecialType.System_Object
-            || symbol.SpecialType == SpecialType.System_ValueType
-            || symbol.SpecialType == SpecialType.System_Enum
-            || ErrorCodes.IsErrorCode(symbol)
-            || contracts.Types.IsProduceNotificationType(symbol)
-            || contracts.Types.IsAttributeUsageType(symbol)
-            || contracts.Types.IsRecordEquatable(symbol);
-    }
+    private bool IsIgnored([System.Diagnostics.CodeAnalysis.NotNullWhen(false)] INamedTypeSymbol? symbol) =>
+        symbol is null
+        || symbol.SpecialType == SpecialType.System_Object
+        || symbol.SpecialType == SpecialType.System_ValueType
+        || symbol.SpecialType == SpecialType.System_Enum
+        || ErrorCodes.IsErrorCode(symbol)
+        || contracts.Types.IsProduceNotificationType(symbol)
+        || contracts.Types.IsAttributeUsageType(symbol)
+        || contracts.Types.IsRecordEquatable(symbol);
 
-    private bool IsExcluded(ISymbol symbol)
-    {
-        return (symbol is IPropertySymbol ps && ContractTypes.IsRecordEqualityContract(ps))
-            || symbol.GetAttributes().Any(a => contracts.Types.IsExcludeFromContractsGenerationType(a.AttributeClass));
-    }
+    private bool IsExcluded(ISymbol symbol) =>
+        (symbol is IPropertySymbol ps && ContractTypes.IsRecordEqualityContract(ps))
+        || symbol.GetAttributes().Any(a => contracts.Types.IsExcludeFromContractsGenerationType(a.AttributeClass));
 
-    private static HashSet<string> GatherBaseProperties(INamedTypeSymbol ns)
-    {
-        return ns
-            .AllInterfaces.SelectMany(i => i.GetMembers())
-            .OfType<IPropertySymbol>()
-            .Select(p => p.Name)
-            .ToHashSet();
-    }
+    private static HashSet<string> GatherBaseProperties(INamedTypeSymbol ns) =>
+        [.. ns.AllInterfaces.SelectMany(i => i.GetMembers()).OfType<IPropertySymbol>().Select(p => p.Name)];
 
-    private static bool AlreadyImplemented(IPropertySymbol prop, HashSet<string> baseProps)
-    {
-        return baseProps.Contains(prop.Name);
-    }
+    private static bool AlreadyImplemented(IPropertySymbol prop, HashSet<string> baseProps) =>
+        baseProps.Contains(prop.Name);
 
-    private GenericParameter ToParam(ITypeParameterSymbol ts)
-    {
-        return new() { Name = ts.Name };
-    }
+    private GenericParameter ToParam(ITypeParameterSymbol ts) => new() { Name = ts.Name };
 
-    private ConstantRef ToConstant(IFieldSymbol fs)
-    {
-        return new()
+    private ConstantRef ToConstant(IFieldSymbol fs) =>
+        new()
         {
             Name = fs.Name,
             Value = fs.ConstantValue.ToValueRef(),
             Comment = fs.GetComments(),
         };
-    }
 
     private PropertyRef ToProperty(IPropertySymbol ps)
     {
@@ -282,7 +252,7 @@ public class ContractsGenerator
 
             static IEnumerable<object?> FlattenPositionalArray(TypedConstant a)
             {
-                return a.Kind == TypedConstantKind.Array ? a.Values.Select(v => v.Value) : new[] { a.Value };
+                return a.Kind == TypedConstantKind.Array ? a.Values.Select(v => v.Value) : [a.Value];
             }
 
             static IEnumerable<(string Key, object? Value)> FlattenNamedArray(KeyValuePair<string, TypedConstant> a)
@@ -293,7 +263,7 @@ public class ContractsGenerator
                 }
                 else
                 {
-                    return new[] { (a.Key, a.Value.Value) };
+                    return [(a.Key, a.Value.Value)];
                 }
             }
         }

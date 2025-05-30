@@ -1,4 +1,6 @@
+#pragma warning disable IDE0005
 using System;
+#pragma warning restore IDE0005
 using LeanCode.Contracts;
 
 namespace Notifications.Generic;

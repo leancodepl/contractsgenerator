@@ -21,10 +21,7 @@ public sealed class NotificationEnvelope
 
     public static NotificationEnvelope Create<TTopic, TNotification>(TTopic topic, TNotification notification)
         where TTopic : ITopic, IProduceNotification<TNotification>
-        where TNotification : notnull
-    {
-        return new(Guid.NewGuid(), topic, notification);
-    }
+        where TNotification : notnull => new(Guid.NewGuid(), topic, notification);
 
     [JsonConstructor]
     public NotificationEnvelope(Guid id, string topicType, string notificationType, object topic, object notification)

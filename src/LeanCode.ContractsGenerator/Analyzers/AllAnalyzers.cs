@@ -2,8 +2,8 @@ namespace LeanCode.ContractsGenerator.Analyzers;
 
 public class AllAnalyzers : IAnalyzer
 {
-    private readonly IReadOnlyList<IAnalyzer> analyzers = new IAnalyzer[]
-    {
+    private readonly IReadOnlyList<IAnalyzer> analyzers =
+    [
         new InternalStructureCheck(),
         new KnownTypeCheck(),
         new ErrorCodesUniqueness(),
@@ -12,10 +12,7 @@ public class AllAnalyzers : IAnalyzer
         new TopicWithoutNotificationCheck(),
         new TopicWithNullableNotificationCheck(),
         new TopicMustProduceInternalType(),
-    };
+    ];
 
-    public IEnumerable<AnalyzeError> Analyze(Export export)
-    {
-        return analyzers.SelectMany(a => a.Analyze(export));
-    }
+    public IEnumerable<AnalyzeError> Analyze(Export export) => analyzers.SelectMany(a => a.Analyze(export));
 }

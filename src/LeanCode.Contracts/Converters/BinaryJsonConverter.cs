@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace LeanCode.Contracts.Converters;
 
-internal class BinaryJsonConverter : JsonConverter<Binary>
+internal sealed class BinaryJsonConverter : JsonConverter<Binary>
 {
     public override bool HandleNull => false;
 
