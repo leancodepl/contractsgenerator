@@ -4,9 +4,12 @@
 #nullable disable
 
 using System.Collections.Immutable;
+using System.Runtime.InteropServices;
 using Microsoft.Build.Evaluation;
 using Microsoft.Build.Execution;
+using Microsoft.Build.Framework;
 using Microsoft.Build.Locator;
+using Microsoft.Build.Logging;
 using Microsoft.CodeAnalysis.MSBuild;
 using static Microsoft.Build.Execution.BuildRequestDataFlags;
 
@@ -15,6 +18,8 @@ namespace LeanCode.ContractsGenerator.Compilation.MSBuild;
 public static class MSBuildHelper
 {
     private static readonly string[] RestoreTarget = ["Restore"];
+    private static readonly string LoggerVerbosity = Environment.GetEnvironmentVariable("LNCD_CG_MSB_LOG");
+    private static readonly bool LogEnabled = LoggerVerbosity is { Length: > 0 };
 
     private static readonly ImmutableDictionary<string, string> GlobalProperties = ImmutableDictionary.CreateRange(
         new Dictionary<string, string>
@@ -30,19 +35,57 @@ public static class MSBuildHelper
 
     static MSBuildHelper()
     {
-        // QueryVisualStudioInstances returns Visual Studio installations on .NET Framework, and .NET Core SDK
-        // installations on .NET Core. We use the one with the most recent version.
-        var msBuildInstance = MSBuildLocator.QueryVisualStudioInstances().OrderByDescending(x => x.Version).First();
-
-        // Since we do not inherit msbuild.deps.json when referencing the SDK copy
-        // of MSBuild and because the SDK no longer ships with version matched assemblies, we
-        // register an assembly loader that will load assemblies from the msbuild path with
-        // equal or higher version numbers than requested.
-        LooseVersionAssemblyLoader.Register(msBuildInstance.MSBuildPath);
-
-        if (MSBuildLocator.CanRegister)
+        try
         {
-            MSBuildLocator.RegisterInstance(msBuildInstance);
+            // QueryVisualStudioInstances returns Visual Studio installations on .NET Framework,
+            // and .NET Core SDK installations on .NET Core. We use the one with the most recent version.
+            var msBuildInstances = MSBuildLocator
+                .QueryVisualStudioInstances()
+                .OrderByDescending(x => x.Version)
+                .ToList();
+
+            if (LogEnabled)
+            {
+                Console.Error.WriteLine($"Running on {RuntimeInformation.FrameworkDescription}");
+                Console.Error.WriteLine("MSBuild instances:");
+
+                if (msBuildInstances.Count > 0)
+                {
+                    foreach (var instance in msBuildInstances)
+                    {
+                        Console.Error.WriteLine($"  {instance.Version} @ {instance.MSBuildPath}");
+                    }
+                }
+                else
+                {
+                    Console.Error.WriteLine($"  none found");
+                }
+            }
+
+            var msBuildInstance = msBuildInstances[0];
+
+            if (MSBuildLocator.CanRegister)
+            {
+                MSBuildLocator.RegisterInstance(msBuildInstance);
+
+                if (LogEnabled)
+                {
+                    Console.Error.WriteLine(
+                        $"MSBuild instance {msBuildInstance.Version} @ {msBuildInstance.MSBuildPath} registered."
+                    );
+                }
+            }
+            else if (LogEnabled)
+            {
+                Console.Error.WriteLine(
+                    $"Could not register found MSBuild instance {msBuildInstance.Version} @ {msBuildInstance.MSBuildPath}."
+                );
+            }
+        }
+        catch (Exception e)
+        {
+            Console.Error.WriteLine(e);
+            throw;
         }
     }
 
@@ -78,6 +121,9 @@ public static class MSBuildHelper
                 DisableInProcNode = true,
                 // don't ask the user for anything
                 Interactive = false,
+                Loggers = Enum.TryParse<LoggerVerbosity>(LoggerVerbosity, true, out var verbosity)
+                    ? [new ConsoleLogger(verbosity)]
+                    : [],
             }
         );
 
