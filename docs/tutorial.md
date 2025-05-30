@@ -35,7 +35,7 @@ contracts level.
 
 A common use case for attributes is:
 
-1. Deprecation with [`Obsolete`](https://docs.microsoft.com/en-us/dotnet/api/system.obsoleteattribute) attribute,
+1. Deprecation with [`Obsolete`](https://learn.microsoft.com/en-us/dotnet/api/system.obsoleteattribute) attribute,
 1. Authorization with a [`AuthorizeWhen`](../src/LeanCode.Contracts/Security/AuthorizeWhenAttribute.cs) or any of the
    derived classes.
 

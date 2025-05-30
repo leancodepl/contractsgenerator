@@ -18,7 +18,7 @@ public class ExternalTypeCheck : BaseAnalyzer
         TypeRef.Types.Internal i
     )
     {
-        if (knownTypes.Contains(i.Name) || InvalidTypeCheck.InvalidTypes.ContainsKey(i.Name))
+        if (knownTypes.Contains(i.Name))
         {
             return base.AnalyzeInternalTypeRef(context, typeRef, i);
         }
