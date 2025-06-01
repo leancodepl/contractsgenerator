@@ -23,6 +23,10 @@ This is currently not blocked, but might be in the future.
 
 Unless it is impossible to model as a two separate actions or the resulting API would be awkward.
 
+### Prefer globally unique error codes in nested DTOs
+
+2 DTOs can be used by 1 command in the future. In that case those DTOs will have to have unique error codes. Changing error codes values is a breaking change. To omit breaking change, it is better to have globally unique error codes in nested DTOs.
+
 ## DTOs & Enums
 
 ### Postfix DTOs & enums with `DTO`
