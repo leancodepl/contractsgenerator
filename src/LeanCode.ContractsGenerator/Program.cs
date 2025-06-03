@@ -22,6 +22,9 @@ public interface IOptions
 
     [Option("check-only", HelpText = "Check the contracts only. Do not generate output.", Group = "output")]
     public bool CheckOnly { get; set; }
+
+    [Option("allow-date-time", HelpText = "Allow usage of System.DateTime type. Highly discouraged.")]
+    public bool AllowDateTime { get; set; }
 }
 
 [Verb("project", HelpText = "Generate contracts from C# project.")]
@@ -29,6 +32,7 @@ public class ProjectOptions : IOptions
 {
     public string OutputFile { get; set; } = string.Empty;
     public bool CheckOnly { get; set; }
+    public bool AllowDateTime { get; set; }
 
     [Option(
         "exclude-external-contracts-from-output",
@@ -52,6 +56,7 @@ public class FileOptions : IOptions
 {
     public string OutputFile { get; set; } = string.Empty;
     public bool CheckOnly { get; set; }
+    public bool AllowDateTime { get; set; }
 
     [Option('i', "input", Required = true, MetaValue = "FILE", HelpText = "Input file.")]
     public string InputFile { get; set; } = string.Empty;
@@ -62,6 +67,7 @@ public class PathOptions : IOptions
 {
     public string OutputFile { get; set; } = string.Empty;
     public bool CheckOnly { get; set; }
+    public bool AllowDateTime { get; set; }
 
     [Option(
         'i',
@@ -178,7 +184,7 @@ internal class Program
 
     private static async Task<int> WriteAsync(IOptions opts, CompiledContracts contracts, string output)
     {
-        var generated = new Generation.ContractsGenerator(contracts).Generate();
+        var generated = new Generation.ContractsGenerator(contracts, new(opts)).Generate();
         if (!opts.CheckOnly)
         {
             if (output == IOptions.StdoutMarker)
@@ -202,7 +208,7 @@ internal class Program
         string output
     )
     {
-        var generated = new Generation.ContractsGenerator(contracts).Generate(
+        var generated = new Generation.ContractsGenerator(contracts, new(opts)).Generate(
             externalContracts,
             excludeExternalContractsFromOutput
         );

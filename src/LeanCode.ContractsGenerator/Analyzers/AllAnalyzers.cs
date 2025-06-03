@@ -1,6 +1,6 @@
 namespace LeanCode.ContractsGenerator.Analyzers;
 
-public class AllAnalyzers : IAnalyzer
+public class AllAnalyzers(GeneratorConfiguration configuration) : IAnalyzer
 {
     private readonly IReadOnlyList<IAnalyzer> analyzers =
     [
@@ -8,7 +8,7 @@ public class AllAnalyzers : IAnalyzer
         new KnownTypeCheck(),
         new ErrorCodesUniqueness(),
         new ExternalTypeCheck(),
-        new InvalidTypeCheck(),
+        .. configuration.AllowDateTime ? Enumerable.Empty<IAnalyzer>() : [new DateTimeTypeCheck()],
         new TopicWithoutNotificationCheck(),
         new TopicWithNullableNotificationCheck(),
         new TopicMustProduceInternalType(),

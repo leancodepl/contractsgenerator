@@ -7,13 +7,15 @@ The contracts provide 4 date/datetime-like known types:
 3. `DateTimeOffset` - represents date with time and offset (e.g. event in a time and space), e.g. 2022-09-08 16:02:20 +02:00,
 4. `TimeSpan` - represents a duration of time, e.g. 2 days, 10 hours, 50 min, 30 sec and 222 ms.
 
-Previously, there was also a `DateTime` type but it got removed in v2.0 and is prohibited in contracts.
+Finally, there is also a `DateTime` type, which represents date with time in some unspecified time zone, or in UTC.
+It has been removed in v2.0 and later restored but banned by default in v4.0. Its usage is strongly discouraged;
+it is being kept on life support only for legacy purposes.
 
-## Why `DateTime` got removed
+## Why `DateTime` got banned
 
 `DateTime` represented date and time in UTC. This case is also handled by `DateTimeOffset` with `Offset = 00:00`, so
 having `DateTime` introduced redundancy. There is also a problem with the `DateTime` implementation in supported
-runtimes. Both .NET ([`DateTime` struct](https://docs.microsoft.com/en-us/dotnet/api/system.datetime)) and Dart
+runtimes. Both .NET ([`DateTime` struct](https://learn.microsoft.com/en-us/dotnet/api/system.datetime)) and Dart
 ([`DateTime` class](https://api.dart.dev/stable/2.18.0/dart-core/DateTime-class.html)) provide types that allow handling
 of the `DateTime` contracts type **but** this is not a one-to-one translation.
 

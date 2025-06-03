@@ -5,8 +5,9 @@ using Microsoft.CodeAnalysis;
 
 namespace LeanCode.ContractsGenerator.Generation;
 
-public class ContractsGenerator(CompiledContracts contracts)
+public class ContractsGenerator(CompiledContracts contracts, GeneratorConfiguration? configuration = null)
 {
+    private readonly GeneratorConfiguration configuration = configuration ?? GeneratorConfiguration.Default;
     private readonly TypeRefFactory typeRef = new(contracts);
 
     public Export Generate()
@@ -48,9 +49,9 @@ public class ContractsGenerator(CompiledContracts contracts)
         return export;
     }
 
-    private static void Analyze(Export export)
+    private void Analyze(Export export)
     {
-        var errors = new Analyzers.AllAnalyzers().Analyze(export).ToList();
+        var errors = new Analyzers.AllAnalyzers(configuration).Analyze(export).ToList();
 
         if (errors.Count > 0)
         {
