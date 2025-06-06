@@ -29,6 +29,7 @@ public class ContractsGenerator(CompiledContracts contracts, GeneratorConfigurat
         }
 
         merged.ProjectName = export.ProjectName;
+        merged.Protocol = Protocol.Max([export.Protocol, .. externalContracts.Select(e => e.Protocol)]);
         Analyze(merged);
 
         return excludeExternalContractsFromOutput ? export : merged;
@@ -36,7 +37,7 @@ public class ContractsGenerator(CompiledContracts contracts, GeneratorConfigurat
 
     private Export GenerateCore()
     {
-        var export = new Export() { ProjectName = contracts.ProjectName };
+        Export export = new() { ProjectName = contracts.ProjectName, Protocol = new(configuration) };
         contracts
             .ListAllTypes()
             .Select(ProcessType)

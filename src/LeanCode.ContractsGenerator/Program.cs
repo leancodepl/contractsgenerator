@@ -7,7 +7,13 @@ using Microsoft.Extensions.FileSystemGlobbing;
 
 namespace LeanCode.ContractsGenerator;
 
-public interface IOptions
+public interface IGenerationOptions
+{
+    [Option("allow-date-time", HelpText = "Allow usage of System.DateTime type. Highly discouraged.")]
+    public bool AllowDateTime { get; set; }
+}
+
+public interface IOutputOptions : IGenerationOptions
 {
     public const string StdoutMarker = "-";
 
@@ -22,13 +28,10 @@ public interface IOptions
 
     [Option("check-only", HelpText = "Check the contracts only. Do not generate output.", Group = "output")]
     public bool CheckOnly { get; set; }
-
-    [Option("allow-date-time", HelpText = "Allow usage of System.DateTime type. Highly discouraged.")]
-    public bool AllowDateTime { get; set; }
 }
 
 [Verb("project", HelpText = "Generate contracts from C# project.")]
-public class ProjectOptions : IOptions
+public class ProjectOptions : IOutputOptions
 {
     public string OutputFile { get; set; } = string.Empty;
     public bool CheckOnly { get; set; }
@@ -52,7 +55,7 @@ public class ProjectOptions : IOptions
 }
 
 [Verb("file", HelpText = "Generate contracts from a single file.")]
-public class FileOptions : IOptions
+public class FileOptions : IOutputOptions
 {
     public string OutputFile { get; set; } = string.Empty;
     public bool CheckOnly { get; set; }
@@ -63,7 +66,7 @@ public class FileOptions : IOptions
 }
 
 [Verb("path", HelpText = "Generate contracts based on globbed path.")]
-public class PathOptions : IOptions
+public class PathOptions : IOutputOptions
 {
     public string OutputFile { get; set; } = string.Empty;
     public bool CheckOnly { get; set; }
@@ -96,6 +99,12 @@ public class PathOptions : IOptions
     public string? BaseDirectory { get; set; }
 }
 
+[Verb("protocol", HelpText = "Emit current protocol version.")]
+public class ProtocolOptions : IGenerationOptions
+{
+    public bool AllowDateTime { get; set; }
+}
+
 internal class Program
 {
     [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1031", Justification = "Exception boundary.")]
@@ -104,7 +113,7 @@ internal class Program
         try
         {
             return await Parser
-                .Default.ParseArguments<ProjectOptions, FileOptions, PathOptions>(args)
+                .Default.ParseArguments<ProjectOptions, FileOptions, PathOptions, ProtocolOptions>(args)
                 .WithNotParsed(errs =>
                 {
                     Console.Error.WriteLine($"Running on {RuntimeInformation.FrameworkDescription}");
@@ -113,6 +122,7 @@ internal class Program
                     (ProjectOptions p) => HandleProjectAsync(p),
                     (FileOptions f) => HandleFileAsync(f),
                     (PathOptions p) => HandlePathAsync(p),
+                    (ProtocolOptions p) => HandleProtocolAsync(p),
                     err => Task.FromResult(1)
                 );
         }
@@ -182,12 +192,20 @@ internal class Program
         return await WriteAsync(p, contracts, p.OutputFile);
     }
 
-    private static async Task<int> WriteAsync(IOptions opts, CompiledContracts contracts, string output)
+    private static async Task<int> HandleProtocolAsync(ProtocolOptions p)
+    {
+        GeneratorConfiguration configuration = new(p);
+        Protocol protocol = new(configuration);
+        await WriteToStdoutAsync(protocol);
+        return 0;
+    }
+
+    private static async Task<int> WriteAsync(IOutputOptions opts, CompiledContracts contracts, string output)
     {
         var generated = new Generation.ContractsGenerator(contracts, new(opts)).Generate();
         if (!opts.CheckOnly)
         {
-            if (output == IOptions.StdoutMarker)
+            if (output == IOutputOptions.StdoutMarker)
             {
                 await WriteToStdoutAsync(generated);
             }
@@ -201,7 +219,7 @@ internal class Program
     }
 
     private static async Task<int> WriteAsync(
-        IOptions opts,
+        IOutputOptions opts,
         CompiledContracts contracts,
         List<Export> externalContracts,
         bool excludeExternalContractsFromOutput,
@@ -215,7 +233,7 @@ internal class Program
 
         if (!opts.CheckOnly)
         {
-            if (output == IOptions.StdoutMarker)
+            if (output == IOutputOptions.StdoutMarker)
             {
                 await WriteToStdoutAsync(generated);
             }
@@ -228,14 +246,14 @@ internal class Program
         return 0;
     }
 
-    private static async Task WriteToFileAsync(Export generated, string filepath)
+    private static async Task WriteToFileAsync(IMessage generated, string filepath)
     {
         await using var outputStream = File.OpenWrite(filepath);
         using var codedOutput = new CodedOutputStream(outputStream, true);
         generated.WriteTo(codedOutput);
     }
 
-    private static async Task WriteToStdoutAsync(Export generated)
+    private static async Task WriteToStdoutAsync(IMessage generated)
     {
         await using var outputStream = Console.OpenStandardOutput();
         using var codedOutput = new CodedOutputStream(outputStream, true);
