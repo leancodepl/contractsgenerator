@@ -14,11 +14,11 @@ public static class ExampleBasedHelpers
         }
     );
 
-    public static AssertedExport Compiles(this string path)
+    public static AssertedExport Compiles(this string path, GeneratorConfiguration? configuration = null)
     {
         var code = File.ReadAllText(Path.Join("examples", path));
         var compiled = ContractsCompiler.CompileCode(code, "test");
-        return new(new ContractsGenerator.Generation.ContractsGenerator(compiled).Generate());
+        return new(new ContractsGenerator.Generation.ContractsGenerator(compiled, configuration).Generate());
     }
 
     public static AssertedErrors AnalyzeFails(this string path)
