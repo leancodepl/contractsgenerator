@@ -30,6 +30,33 @@ public static class ExampleBasedAsserts
         return stmt;
     }
 
+    public static AssertedExport WithProtocolVersion(this AssertedExport export, string version)
+    {
+        Assert.Equal(version, export.Export?.Protocol?.Version, StringComparer.Ordinal);
+        return export;
+    }
+
+    public static AssertedExport WithProtocolExtensions(
+        this AssertedExport export,
+        IReadOnlyCollection<string> extensions
+    )
+    {
+        Assert.Equal(extensions.Order(), (export.Export?.Protocol?.Extensions ?? []).Order(), StringComparer.Ordinal);
+        return export;
+    }
+
+    public static AssertedExport WithProtocolExtension(this AssertedExport export, string extension)
+    {
+        Assert.Contains(extension, export.Export?.Protocol?.Extensions ?? [], StringComparer.Ordinal);
+        return export;
+    }
+
+    public static AssertedExport WithoutProtocolExtension(this AssertedExport export, string extension)
+    {
+        Assert.DoesNotContain(extension, export.Export?.Protocol?.Extensions ?? [], StringComparer.Ordinal);
+        return export;
+    }
+
     public static AssertedCommand WithCommand(this AssertedExport export, string name)
     {
         return export.With(name).Command(name);

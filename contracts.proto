@@ -177,8 +177,14 @@ message Statement {
   }
 }
 
+message Protocol {
+  string version = 1;
+  repeated string extensions = 2;
+}
+
 message Export {
   string projectName = 1;
   repeated Statement statements = 2;
   repeated ErrorCode.Group knownErrorGroups = 3;
+  Protocol protocol = 4;
 }
