@@ -3,5 +3,6 @@
     <ProjectReference Include="../A/A.csproj" />
     <ProjectReference Include="../B/B.csproj" />
     <ProjectReference Include="../C/C.csproj" />
+    <ProjectReference Include="../D/D.csproj" />
   </ItemGroup>
 </Project>
