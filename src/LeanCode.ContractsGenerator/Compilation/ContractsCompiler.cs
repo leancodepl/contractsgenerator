@@ -133,35 +133,39 @@ public static class ContractsCompiler
     )]
     private static List<Export> TryLoadEmbeddedContracts(IReadOnlyCollection<CSharpCompilation> compilations)
     {
-        var externalReferences = compilations
-            .SelectMany(c => c.ExternalReferences)
-            .OfType<PortableExecutableReference>()
-            .Where(per => !string.IsNullOrEmpty(per.FilePath) && File.Exists(per.FilePath))
-            .Select(per => per.FilePath!)
-            .Distinct()
-            .ToList();
-
-        using var context = new MetadataLoadContext(new PathAssemblyResolver(externalReferences));
         var exports = new List<Export>();
+        var processed = new HashSet<string>();
 
-        foreach (var assemblyPath in externalReferences)
+        foreach (var compilation in compilations)
         {
-            try
-            {
-                var assembly = context.LoadFromAssemblyPath(assemblyPath);
-                using var stream = assembly.GetManifestResourceStream("LeanCode.Contracts.pb");
+            var externalReferences = compilation
+                .ExternalReferences.OfType<PortableExecutableReference>()
+                .Where(per => !string.IsNullOrEmpty(per.FilePath) && File.Exists(per.FilePath))
+                .Select(per => per.FilePath!)
+                .Distinct()
+                .ToList();
 
-                if (stream is null)
+            using var context = new MetadataLoadContext(new PathAssemblyResolver(externalReferences));
+
+            foreach (var assemblyPath in externalReferences.Where(p => !processed.Contains(p)))
+            {
+                try
                 {
-                    continue;
-                }
+                    var assembly = context.LoadFromAssemblyPath(assemblyPath);
+                    using var stream = assembly.GetManifestResourceStream("LeanCode.Contracts.pb");
 
-                exports.Add(Export.Parser.ParseFrom(stream));
-            }
-            catch (Exception e)
-            {
-                Console.Error.WriteLine($"Failed to search assembly at {assemblyPath} for embedded contracts.");
-                Console.Error.WriteLine(e.ToString());
+                    if (stream is not null)
+                    {
+                        exports.Add(Export.Parser.ParseFrom(stream));
+                    }
+
+                    processed.Add(assemblyPath);
+                }
+                catch (Exception e)
+                {
+                    Console.Error.WriteLine($"Failed to search assembly at {assemblyPath} for embedded contracts.");
+                    Console.Error.WriteLine(e.ToString());
+                }
             }
         }
 
