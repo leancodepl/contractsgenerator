@@ -59,7 +59,7 @@ public class SubscriptionEnvelopeSerializationTests
         deserializedTopic.Should().BeEquivalentTo(SampleTopic);
     }
 
-    private class Topic : ITopic
+    private sealed class Topic : ITopic
     {
         public List<string> EntityIds { get; set; } = default!;
     }

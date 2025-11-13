@@ -105,7 +105,7 @@ public class ProtocolOptions : IGenerationOptions
     public bool AllowDateTime { get; set; }
 }
 
-internal class Program
+internal sealed class Program
 {
     [System.Diagnostics.CodeAnalysis.SuppressMessage("?", "CA1031", Justification = "Exception boundary.")]
     private static async Task<int> Main(string[] args)

@@ -75,12 +75,12 @@ public class NotificationEnvelopeSerializationTests
         deserializedNotification.Should().BeEquivalentTo(SampleNotification);
     }
 
-    private class Topic : ITopic, IProduceNotification<Notification>
+    private sealed class Topic : ITopic, IProduceNotification<Notification>
     {
         public List<string> EntityIds { get; set; } = default!;
     }
 
-    private class Notification
+    private sealed class Notification
     {
         public string EntityId { get; set; } = default!;
     }

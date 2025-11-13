@@ -32,12 +32,13 @@ jobs:
           dotnet-version: |
             8.0.x
             9.0.x
+            10.0.x
       - name: Restore
         working-directory: src/LeanCode.Contracts.Admin
         run: dotnet restore
       - name: Generate Protobuf
         working-directory: src/LeanCode.Contracts.Admin
-        run: dotnet run -f net9.0 --project ../LeanCode.ContractsGenerator/LeanCode.ContractsGenerator.csproj -- project -p ./LeanCode.Contracts.Admin.csproj -o LeanCode.Contracts.pb
+        run: dotnet run -f net10.0 --project ../LeanCode.ContractsGenerator/LeanCode.ContractsGenerator.csproj -- project -p ./LeanCode.Contracts.Admin.csproj -o LeanCode.Contracts.pb
       - name: Build
         env:
           BUILD_VERSION: ${{ steps.version.outputs.version }}
