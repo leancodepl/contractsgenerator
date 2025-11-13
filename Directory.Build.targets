@@ -18,11 +18,11 @@
     <LncdCaVer>9.0.2703</LncdCaVer>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Update="Google.Protobuf" Version="3.31.0" />
-    <PackageReference Update="Grpc.Tools" Version="2.72.0" />
+    <PackageReference Update="Google.Protobuf" Version="3.33.0" />
+    <PackageReference Update="Grpc.Tools" Version="2.76.0" />
     <PackageReference Update="CommandLineParser" Version="2.9.1" />
     <PackageReference Update="Microsoft.SourceLink.GitHub" Version="8.0.0" />
-    <PackageReference Update="Microsoft.Build.Locator" Version="1.9.1" />
+    <PackageReference Update="Microsoft.Build.Locator" Version="1.10.12" />
     <PackageReference Update="Microsoft.Build" Version="$(MsbVer)" />
     <PackageReference Update="Microsoft.Build.Framework" Version="$(MsbVer)" />
     <PackageReference Update="Microsoft.Build.Tasks.Core" Version="$(MsbVer)" />
@@ -32,12 +32,12 @@
     <PackageReference Update="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="$(CscVer)" />
     <PackageReference Update="Microsoft.Extensions.DependencyModel" Version="$(ExtsVer)" />
     <PackageReference Update="Microsoft.Extensions.FileSystemGlobbing" Version="$(ExtsVer)" />
-    <PackageReference Update="System.Collections.Immutable" Version="9.0.0" />
+    <PackageReference Update="System.Collections.Immutable" Version="10.0.0" />
     <PackageReference Update="System.Reflection.MetadataLoadContext" Version="$(ExtsVer)" />
     <PackageReference Include="LeanCode.CodeAnalysis" Version="$(LncdCaVer)" PrivateAssets="all" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="17.13.0" />
+    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="18.0.1" />
     <PackageReference Update="xunit" Version="2.9.3" />
     <PackageReference Update="xunit.analyzers" Version="1.21.0" />
     <PackageReference Update="xunit.runner.visualstudio" Version="3.1.0" />
