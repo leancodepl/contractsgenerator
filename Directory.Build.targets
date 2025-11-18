@@ -1,12 +1,12 @@
 <Project>
   <PropertyGroup Condition="'$(TargetFramework)' == 'net8.0'">
-    <MsbVer>17.8.43</MsbVer>
+    <MsbVer>17.8.3</MsbVer>
     <CscVer>4.8.0-3.final</CscVer>
     <ExtsVer>8.0.0</ExtsVer>
     <LncdCaVer>8.1.2496</LncdCaVer>
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'net9.0'">
-    <MsbVer>17.12.50</MsbVer>
+    <MsbVer>17.12.6</MsbVer>
     <CscVer>4.12.0-3.final</CscVer>
     <ExtsVer>9.0.0</ExtsVer>
     <LncdCaVer>8.1.2496</LncdCaVer>

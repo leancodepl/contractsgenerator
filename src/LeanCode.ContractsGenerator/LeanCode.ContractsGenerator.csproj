@@ -13,6 +13,7 @@
   <ItemGroup>
     <!-- We don't actually ship affected versions, instead the versions from .NET SDK are used. -->
     <NuGetAuditSuppress Include="https://github.com/advisories/GHSA-h4j7-5rxr-p4wc" />
+    <NuGetAuditSuppress Include="https://github.com/advisories/GHSA-w3q9-fxm7-j8fq" />
   </ItemGroup>
   <ItemGroup>
     <Protobuf Include="../../contracts.proto" GrpcServices="None" />
