@@ -12,7 +12,7 @@ public class BinarySerializationTests
 
     private static readonly BinaryDTO DTO = new(null, Hello?.AsBinary(), Hello!.AsBinary());
 
-    private static readonly string Json = $$"""
+    private const string Json = $$"""
         {
           "{{nameof(BinaryDTO.Null)}}": null,
           "{{nameof(BinaryDTO.NullableValue)}}": "aGVsbG8=",

@@ -1,5 +1,9 @@
 <Project>
   <PropertyGroup Condition="'$(NETCoreAppMaximumVersion)' != ''">
+    <TargetFrameworks
+      Condition="$([MSBuild]::VersionGreaterThanOrEquals('$(NETCoreAppMaximumVersion)', '9.0')) AND $([MSBuild]::VersionLessThan('$(NETCoreAppMaximumVersion)', '10.0'))"
+      >net8.0;net9.0</TargetFrameworks
+    >
     <TargetFrameworks Condition="$([MSBuild]::VersionLessThan('$(NETCoreAppMaximumVersion)', '9.0'))"
       >net8.0</TargetFrameworks
     >

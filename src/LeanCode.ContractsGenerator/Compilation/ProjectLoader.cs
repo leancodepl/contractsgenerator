@@ -72,7 +72,7 @@ public sealed class ProjectLoader(ImmutableDictionary<string, string> properties
         return output.Values;
     }
 
-    private async Task CompileTransitivelyAsync(
+    private static async Task CompileTransitivelyAsync(
         Workspace workspace,
         ProjectId id,
         Dictionary<ProjectId, CSharpCompilation> output
