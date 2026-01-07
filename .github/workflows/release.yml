@@ -14,13 +14,13 @@ jobs:
     steps:
       - name: Get the version
         id: get_version
-        run: echo ::set-output name=version::$(echo $GITHUB_REF | cut -d / -f 3 | cut -c2-)
+        run: echo "version=$(echo $GITHUB_REF | cut -d / -f 3 | cut -c2-)" >> $GITHUB_OUTPUT
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           lfs: true
       - name: Setup .NET SDK
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: |
             8.0.x
@@ -35,7 +35,11 @@ jobs:
       - name: Test
         env:
           BUILD_VERSION: ${{ steps.get_version.outputs.version }}
-        run: dotnet test --no-build --configuration Release
+        run: >
+          dotnet test
+          --project src/LeanCode.ContractsGenerator.Tests/LeanCode.ContractsGenerator.Tests.csproj
+          --no-build
+          --configuration Release
       - name: Publish
         env:
           BUILD_VERSION: ${{ steps.get_version.outputs.version }}

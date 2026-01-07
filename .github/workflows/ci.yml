@@ -12,13 +12,17 @@ jobs:
     env:
       DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
       DOTNET_CLI_TELEMETRY_OPTOUT: 1
+    permissions:
+      contents: read
+      checks: write
+      pull-requests: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           lfs: true
       - name: Setup .NET SDK
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: |
             8.0.x
@@ -31,44 +35,39 @@ jobs:
       - name: Check formatting
         run: dotnet tool run csharpier -- check .
       - name: Build
-        run: dotnet build --framework net${{ matrix.dotnet }}
+        run: dotnet build --framework net${{ matrix.dotnet }} --no-restore
       - name: Test
-        run: dotnet test --no-build --collect "XPlat Code Coverage" --settings coverlet.runsettings --logger trx --framework net${{ matrix.dotnet }}
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
-        with:
-          flags: net${{ matrix.dotnet }}
+        run: >
+          dotnet test
+          --project src/LeanCode.ContractsGenerator.Tests/LeanCode.ContractsGenerator.Tests.csproj
+          --no-build
+          --framework net${{ matrix.dotnet }}
+      - name: Process test results
         if: always()
-      - name: Upload Test Results
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: test_results_${{ matrix.dotnet }}.zip
-          path: TestResults/*.trx
-
-  publish-test-results:
-    name: "Publish Tests Results"
-    needs: ci
-    runs-on: ubuntu-latest
-    permissions:
-      checks: write
-      pull-requests: write
-    if: always()
-    steps:
-      - name: Download Artifacts
-        uses: actions/download-artifact@v4
-        with:
-          path: artifacts
-      - name: Extract Artifacts
         run: |
-          for file in artifacts/*.zip; do
-            if [[ -f "$file" ]]; then
-              dir="${file%.zip}"
-              mkdir -p "$dir"
-              unzip -d "$dir" "$file"
-            fi
-          done
-      - name: Publish Test Results
-        uses: EnricoMi/publish-unit-test-result-action@v2
+          # Strip BOM from JSON files
+          find TestResults -name '*.json' | xargs -n 1 sed -i "$(printf '1s/^\357\273\277//')"
+          # Merge coverage XML files
+          dotnet tool run dotnet-coverage merge TestResults/*.xml -o TestResults/cobertura.xml -f cobertura
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
         with:
-          trx_files: "artifacts/*/**/*.trx"
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: TestResults/cobertura.xml
+          flags: net${{ matrix.dotnet }}
+          fail_ci_if_error: false
+        if: always()
+      - name: Publish test report
+        uses: ctrf-io/github-test-reporter@v1
+        if: always()
+        with:
+          report-path: 'TestResults/*.json'
+          summary-report: true
+          failed-folded-report: true
+          skipped-report: true
+          annotate: true
+          pull-request: true
+          overwrite-comment: true
+          comment-tag: 'net${{ matrix.dotnet }}'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -37,12 +37,10 @@
     <PackageReference Include="LeanCode.CodeAnalysis" Version="$(LncdCaVer)" PrivateAssets="all" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="18.0.1" />
-    <PackageReference Update="xunit" Version="2.9.3" />
-    <PackageReference Update="xunit.analyzers" Version="1.21.0" />
-    <PackageReference Update="xunit.runner.visualstudio" Version="3.1.0" />
+    <PackageReference Update="Microsoft.Testing.Extensions.CodeCoverage" Version="18.1.0" />
+    <PackageReference Update="xunit.v3.mtp-v2" Version="3.2.0" />
+    <PackageReference Update="xunit.analyzers" Version="1.25.0" />
     <PackageReference Update="FluentAssertions" Version="7.2.0" />
-    <PackageReference Update="coverlet.collector" Version="6.0.4" />
     <!-- Use latest NuGet.Frameworks available at build time for tests
          to make sure we don't reference anything older than what current MSBuild uses -->
     <PackageReference Update="NuGet.Frameworks" Version="*" />
