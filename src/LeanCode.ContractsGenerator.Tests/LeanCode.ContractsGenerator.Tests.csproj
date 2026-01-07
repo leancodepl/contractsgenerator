@@ -3,6 +3,12 @@
     <TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
     <PreserveCompilationContext>true</PreserveCompilationContext>
     <IsPackable>false</IsPackable>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+  <PropertyGroup>
+    <TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
+    <UseMicrosoftTestingPlatformRunner>true</UseMicrosoftTestingPlatformRunner>
+    <TestingPlatformCommandLineArguments>$(TestingPlatformCommandLineArguments) --report-ctrf --coverage --ignore-exit-code 8 --results-directory $(MSBuildThisFileDirectory)/../../TestResults --coverage-output-format cobertura --report-ctrf-filename $(MSBuildProjectName)-$([System.DateTime]::Now.ToString("HH-mm-ss")).json --coverage-output $(MSBuildProjectName)-$([System.DateTime]::Now.ToString("HH-mm-ss")).xml</TestingPlatformCommandLineArguments>
   </PropertyGroup>
   <Target Name="PackDependenciesForTests" BeforeTargets="AfterBuild">
     <Message Text="Packing the LeanCode.Contracts" Importance="high" />
@@ -28,18 +34,10 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" />
-    <PackageReference Include="xunit" />
+    <PackageReference Include="Microsoft.Testing.Extensions.CodeCoverage" />
+    <PackageReference Include="xunit.v3.mtp-v2" />
     <PackageReference Include="xunit.analyzers" />
-    <PackageReference Include="xunit.runner.visualstudio">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
     <PackageReference Include="FluentAssertions" />
-    <PackageReference Include="coverlet.collector">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
     <!-- workaround for MSBuild trying to load multiple versions of this package into the process -->
     <PackageReference Include="NuGet.Frameworks" PrivateAssets="all" />
   </ItemGroup>
