@@ -70,4 +70,23 @@ public class Attributes
             .WithDto("AuthorizeWhenCustomGenericAttribute")
             .ThatExtends(Known(KnownType.AuthorizeWhenAttribute));
     }
+
+    [Fact]
+    public void AuthorizeWhen_array_params()
+    {
+        "attributes/authorize_when_array_params.cs"
+            .Compiles()
+            .WithCommand("A")
+            .WithAttribute(
+                "LeanCode.Contracts.Security.AuthorizeWhenHasAnyOfAttribute",
+                Positional(0, "P1"),
+                Positional(1, "P2")
+            )
+            .WithCommand("B")
+            .WithAttribute(
+                "LeanCode.Contracts.Security.AuthorizeWhenHasAnyOfAttribute",
+                Positional(0, "P1"),
+                Positional(1, "P2")
+            );
+    }
 }
