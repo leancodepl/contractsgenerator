@@ -55,19 +55,10 @@ public sealed class ContractTypes
     private static HashSet<INamedTypeSymbol> GetTypeSymbols<T>(IReadOnlyCollection<CSharpCompilation> compilations)
     {
         var name = typeof(T).FullName!;
-        var result = new HashSet<INamedTypeSymbol>(SymbolEqualityComparer.Default);
 
-        foreach (var c in compilations)
-        {
-            var type =
-                c.GetTypeByMetadataName(name)
-                ?? throw new CompilationFailedException(
-                    $"Cannot locate type {name} in compilation unit `{c.AssemblyName ?? "UNKNOWN"}`."
-                );
-            result.Add(type);
-        }
-
-        return result;
+        return compilations
+            .SelectMany(c => c.GetTypesByMetadataName(name))
+            .ToHashSet<INamedTypeSymbol>(SymbolEqualityComparer.Default);
     }
 
     private static HashSet<INamedTypeSymbol> GetUnboundTypeSymbols(
@@ -76,19 +67,11 @@ public sealed class ContractTypes
     )
     {
         var name = type.FullName!;
-        var result = new HashSet<INamedTypeSymbol>(SymbolEqualityComparer.Default);
 
-        foreach (var c in compilations)
-        {
-            var t =
-                (c.GetTypeByMetadataName(name)?.ConstructUnboundGenericType())
-                ?? throw new CompilationFailedException(
-                    $"Cannot locate generic type {name} in compilation unit `{c.AssemblyName ?? "UNKNOWN"}`."
-                );
-            result.Add(t);
-        }
-
-        return result;
+        return compilations
+            .SelectMany(c => c.GetTypesByMetadataName(name))
+            .Select(nts => nts.ConstructUnboundGenericType())
+            .ToHashSet<INamedTypeSymbol>(SymbolEqualityComparer.Default);
     }
 
     public bool IsQuery(ITypeSymbol symbol) =>
