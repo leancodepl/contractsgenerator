@@ -9,7 +9,7 @@ namespace LeanCode.ContractsGenerator.Tests.Serialization;
 public class CommandResultSerializationTests
 {
     private static readonly CommandResult SampleCommandResult = CommandResult.NotValid(
-        new([new ValidationError("A property", "An error message", 1)])
+        new([new ValidationError("A property", "An error message", 1, "ErrorCodeName")])
     );
 
     private const string Json = $$"""
@@ -18,7 +18,8 @@ public class CommandResultSerializationTests
             {
               "{{nameof(ValidationError.PropertyName)}}": "A property",
               "{{nameof(ValidationError.ErrorMessage)}}": "An error message",
-              "{{nameof(ValidationError.ErrorCode)}}": 1
+              "{{nameof(ValidationError.ErrorCode)}}": 1,
+              "{{nameof(ValidationError.ErrorCodeName)}}": "ErrorCodeName"
             }
           ],
           "{{nameof(CommandResult.WasSuccessful)}}": false
