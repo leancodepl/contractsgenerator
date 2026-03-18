@@ -19,7 +19,7 @@ public class CommandResultSerializationTests
               "{{nameof(ValidationError.PropertyName)}}": "A property",
               "{{nameof(ValidationError.ErrorMessage)}}": "An error message",
               "{{nameof(ValidationError.ErrorCode)}}": 1,
-              "{{nameof(ValidationError.ErrorCodeName)}}": "ErrorCodeName"
+              "{{nameof(ValidationError.ErrorName)}}": "ErrorCodeName"
             }
           ],
           "{{nameof(CommandResult.WasSuccessful)}}": false
