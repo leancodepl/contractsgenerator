@@ -27,7 +27,8 @@ public class Project
             .WithTopic("C.Topic")
             .WithNotification(
                 NotificationTypeRefExtensions.WithTag(TypeRefExtensions.Internal("C.Notification"), "C.Notification")
-            );
+            )
+            .WithDto("D.DTO");
     }
 
     [Fact]
@@ -36,14 +37,16 @@ public class Project
         ProjectsCompile(
                 "project/aggregated/A/A.csproj",
                 "project/aggregated/B/B.csproj",
-                "project/aggregated/C/C.csproj"
+                "project/aggregated/C/C.csproj",
+                "project/aggregated/D/D.csproj"
             )
             .WithCommand("A.Command")
             .WithQuery("B.Query")
             .WithTopic("C.Topic")
             .WithNotification(
                 NotificationTypeRefExtensions.WithTag(TypeRefExtensions.Internal("C.Notification"), "C.Notification")
-            );
+            )
+            .WithDto("D.DTO");
     }
 
     [Fact]
@@ -62,6 +65,7 @@ public class Project
                 "project/aggregated/A/A.csproj",
                 "project/aggregated/B/B.csproj",
                 "project/aggregated/C/C.csproj",
+                "project/aggregated/D/D.csproj",
                 "project/aggregated/Combined/Combined.csproj"
             )
             .WithCommand("A.Command")
@@ -69,20 +73,23 @@ public class Project
             .WithTopic("C.Topic")
             .WithNotification(
                 NotificationTypeRefExtensions.WithTag(TypeRefExtensions.Internal("C.Notification"), "C.Notification")
-            );
+            )
+            .WithDto("D.DTO");
 
         ProjectsCompile(
                 "project/aggregated/Combined/Combined.csproj",
                 "project/aggregated/A/A.csproj",
                 "project/aggregated/B/B.csproj",
-                "project/aggregated/C/C.csproj"
+                "project/aggregated/C/C.csproj",
+                "project/aggregated/D/D.csproj"
             )
             .WithCommand("A.Command")
             .WithQuery("B.Query")
             .WithTopic("C.Topic")
             .WithNotification(
                 NotificationTypeRefExtensions.WithTag(TypeRefExtensions.Internal("C.Notification"), "C.Notification")
-            );
+            )
+            .WithDto("D.DTO");
     }
 
     [Fact]
